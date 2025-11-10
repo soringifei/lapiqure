@@ -12,9 +12,9 @@ export default function Badge({
   className = '' 
 }: BadgeProps) {
   const variantClasses = {
-    default: 'bg-ink text-paper',
-    outline: 'bg-transparent border border-ink text-ink',
-    subtle: 'bg-sand text-ink',
+    default: 'bg-slate-800 text-paper',
+    outline: 'bg-transparent border border-ink/30 text-ink',
+    subtle: 'bg-emerald-700 text-paper',
   }
   
   return (

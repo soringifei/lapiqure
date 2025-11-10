@@ -7,15 +7,15 @@ export default function ProductBadge({ type, className = '' }: ProductBadgeProps
   const badges = {
     'new': {
       text: 'NEW',
-      styles: 'bg-accent-olive text-paper'
+      styles: 'bg-ink text-paper'
     },
     'exclusive': {
       text: 'EXCLUSIVE',
-      styles: 'bg-accent-burgundy text-paper'
+      styles: 'bg-amber-600 text-paper'
     },
     'low-stock': {
       text: 'LOW STOCK',
-      styles: 'bg-sand text-ink'
+      styles: 'bg-orange-500 text-paper'
     }
   };
 
