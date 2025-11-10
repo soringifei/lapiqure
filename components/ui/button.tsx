@@ -4,7 +4,6 @@ import Link from 'next/link'
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'ghost'
   size?: 'sm' | 'md' | 'lg'
-  asChild?: boolean
   href?: string
 }
 
@@ -13,7 +12,6 @@ export default function Button({
   variant = 'primary',
   size = 'md',
   className = '',
-  asChild = false,
   href,
   ...props
 }: ButtonProps) {

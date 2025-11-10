@@ -42,7 +42,7 @@ export default function OrderConfirmationPage() {
                   Order Updates
                 </h2>
                 <p className="font-sans text-sm text-ink-700 leading-relaxed mb-3">
-                  We've sent a confirmation email to:
+                  We&apos;ve sent a confirmation email to:
                 </p>
                 <p className="font-mono text-xs text-ink">
                   {email}
@@ -50,7 +50,7 @@ export default function OrderConfirmationPage() {
               </div>
             </div>
             <p className="font-sans text-xs text-ink-700 leading-relaxed mt-4 pl-16">
-              You'll receive shipping updates and tracking information at this address.
+              You&apos;ll receive shipping updates and tracking information at this address.
             </p>
           </div><div className="p-8 border border-ink/10 bg-paper">
             <div className="flex items-start gap-4 mb-4">
@@ -120,7 +120,7 @@ export default function OrderConfirmationPage() {
                   Tracking Information
                 </h3>
                 <p className="font-sans text-sm text-ink-700 leading-relaxed">
-                  Once shipped, you'll receive tracking details to follow your package every step of the way to your door.
+                  Once shipped, you&apos;ll receive tracking details to follow your package every step of the way to your door.
                 </p>
               </div>
             </div>

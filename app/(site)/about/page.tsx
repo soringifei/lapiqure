@@ -99,7 +99,7 @@ export default function AboutPage() {
             </p>
             
             <p className="font-display text-lg tracking-luxury text-ink pt-6">
-              Fashion doesn't need to be disposable. We prove that with every collection.
+              Fashion doesn&apos;t need to be disposable. We prove that with every collection.
             </p>
           </div>
         </div>
