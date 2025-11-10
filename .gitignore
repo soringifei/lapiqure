@@ -32,3 +32,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# lighthouse reports
+lighthouse-report*.html
+lighthouse-report*.json
+
+# image optimization backups
+/public/images-backup
+
+# development summaries (optional - keep if you want them in repo)
+CLEANUP_SUMMARY.md
