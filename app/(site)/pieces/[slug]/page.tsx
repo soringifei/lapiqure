@@ -28,6 +28,10 @@ const WaitlistModal = dynamic(() => import('@/components/waitlist-modal'), {
   ssr: false
 });
 
+const RestockNotifyModal = dynamic(() => import('@/components/restock-notify-modal'), {
+  ssr: false
+});
+
 interface ProductPageProps {
   params: {
     slug: string;
@@ -39,11 +43,12 @@ export default function ProductPage({ params }: ProductPageProps) {
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [personalizationOpen, setPersonalizationOpen] = useState(false);
   const [waitlistOpen, setWaitlistOpen] = useState(false);
+  const [restockNotifyOpen, setRestockNotifyOpen] = useState(false);
   const [customText, setCustomText] = useState<string>('');
   const { addItem } = useCart();
   const { toggleItem, isInWishlist } = useWishlist();
   const { toast } = useToast();
-  const { addToWaitlist, isOnWaitlist } = useWaitlist();
+  const { addToWaitlist } = useWaitlist();
   const { addToRecentlyViewed } = useRecentlyViewed();
 
   if (!piece) {
@@ -169,16 +174,12 @@ export default function ProductPage({ params }: ProductPageProps) {
                 <Button onClick={handleAddToCart} variant="primary" className="w-full">
                   Add to Cart
                 </Button>
-              ) : isOnWaitlist(piece.id) ? (
-                <Button variant="secondary" className="w-full" disabled>
-                  On Waitlist
-                </Button>
               ) : (
                 <button
-                  onClick={() => setWaitlistOpen(true)}
+                  onClick={() => setRestockNotifyOpen(true)}
                   className="w-full px-10 py-4 border border-ink/10 text-ink hover:border-ink/30 hover:bg-ink/5 transition-all duration-500 font-sans uppercase tracking-[0.15em] text-[11px]"
                 >
-                  Join Waitlist
+                  Notify When Available
                 </button>
               )}
               <Button 
@@ -298,6 +299,13 @@ export default function ProductPage({ params }: ProductPageProps) {
         productId={piece.id}
         productName={piece.name}
         onJoin={(email) => addToWaitlist(piece.id, piece.name, email)}
+      />
+      
+      <RestockNotifyModal
+        open={restockNotifyOpen}
+        onOpenChange={setRestockNotifyOpen}
+        productId={piece.id}
+        productName={piece.name}
       />
     </div>
   );

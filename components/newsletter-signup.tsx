@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 
 export default function NewsletterSignup() {
