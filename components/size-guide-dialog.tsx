@@ -1,11 +1,14 @@
 'use client';
 
+import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Ruler } from 'lucide-react';
 
 export default function SizeGuideDialog() {
+  const [open, setOpen] = useState(false);
+  
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <button className="flex items-center gap-2 text-xs font-sans tracking-editorial uppercase text-ink-700 hover:text-ink transition-colors">
           <Ruler className="h-3 w-3" />
