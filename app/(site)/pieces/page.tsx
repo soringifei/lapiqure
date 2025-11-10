@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import SectionHeading from '@/components/section-heading';
 import { samplePieces } from '@/lib/sample-data';
 import PiecesClient from './pieces-client';
 import EditorialStory from '@/components/editorial-story';

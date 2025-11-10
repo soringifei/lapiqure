@@ -38,6 +38,12 @@ export default function CheckoutPage() {
     saveCard: false,
   });
 
+  useEffect(() => {
+    return () => {
+      setIsProcessing(false);
+    };
+  }, []);
+
   if (items.length === 0) {
     return (
       <div className="min-h-screen bg-paper flex items-center justify-center px-4">
@@ -75,12 +81,6 @@ export default function CheckoutPage() {
       router.push('/order-confirmation');
     }, 2000);
   };
-
-  useEffect(() => {
-    return () => {
-      setIsProcessing(false);
-    };
-  }, []);
 
   return (
     <div className="min-h-screen bg-paper">
