@@ -13,7 +13,6 @@ export default function NewsletterSignup() {
     e.preventDefault();
     setLoading(true);
 
-    // Simulate API call
     setTimeout(() => {
       toast({
         title: "Subscribed!",
