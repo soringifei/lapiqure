@@ -7,6 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 interface WaitlistModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  productId: string;
   productName: string;
   onJoin: (email: string) => void;
 }

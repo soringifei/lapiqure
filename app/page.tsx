@@ -96,7 +96,6 @@ export default function Home() {
                 condition={piece.condition}
                 imageSrc={piece.images[0]}
                 price={piece.price}
-                collectionName={piece.collectionName}
               />
             ))}
           </div>

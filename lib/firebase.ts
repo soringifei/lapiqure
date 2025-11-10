@@ -45,3 +45,10 @@ export function getFirebaseAnalytics(): Analytics | null {
   }
   return analytics;
 }
+
+export function getFirebaseApp(): FirebaseApp {
+  if (!app) {
+    initFirebase();
+  }
+  return app;
+}

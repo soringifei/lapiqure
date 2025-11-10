@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Courier_Prime, Forum } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/navbar';
-import Footer from '@/components/footer';
+import Footer from '@/components/Footer';
 import { AuthProvider } from '@/lib/auth-context';
 import { CartProvider } from '@/lib/cart-context';
 import { WishlistProvider } from '@/lib/wishlist-context';

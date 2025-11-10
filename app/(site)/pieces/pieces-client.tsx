@@ -106,7 +106,6 @@ export default function PiecesClient({ pieces }: PiecesClientProps) {
               condition={piece.condition}
               imageSrc={piece.images[0]}
               price={piece.price}
-              collectionName={piece.collectionName}
             />
           ))}
       </div>
