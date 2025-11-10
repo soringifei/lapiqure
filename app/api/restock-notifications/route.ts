@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
     }
 
     const app = getFirebaseApp();
-    const db = getFirestore(app);
+    const db = getFirestore(app, 'lapiqure');
 
     await addDoc(collection(db, 'restockNotifications'), {
       email,
