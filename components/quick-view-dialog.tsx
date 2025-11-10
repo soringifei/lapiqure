@@ -7,8 +7,7 @@ import { Piece } from '@/lib/types';
 import { useCart } from '@/lib/cart-context';
 import { useWishlist } from '@/lib/wishlist-context';
 import { useToast } from '@/hooks/use-toast';
-import { Heart, X } from 'lucide-react';
-import Badge from './ui/badge';
+import { Heart } from 'lucide-react';
 import Link from 'next/link';
 
 interface QuickViewDialogProps {

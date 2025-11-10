@@ -7,7 +7,6 @@ import { useToast } from '@/hooks/use-toast';
 interface WaitlistModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  productId: string;
   productName: string;
   onJoin: (email: string) => void;
 }
@@ -15,7 +14,6 @@ interface WaitlistModalProps {
 export default function WaitlistModal({
   open,
   onOpenChange,
-  productId,
   productName,
   onJoin
 }: WaitlistModalProps) {
@@ -28,8 +26,8 @@ export default function WaitlistModal({
     if (email.trim()) {
       onJoin(email.trim());
       toast({
-        title: "You're on the waitlist",
-        description: `We'll notify you at ${email} when ${productName} is back in stock.`,
+        title: "You&apos;re on the waitlist",
+        description: `We&apos;ll notify you at ${email} when ${productName} is back in stock.`,
       });
       onOpenChange(false);
       setEmail('');
@@ -51,7 +49,7 @@ export default function WaitlistModal({
               {productName}
             </p>
             <p className="font-sans text-xs text-ink-700 leading-relaxed">
-              This piece is currently unavailable. Join our priority waitlist to be notified immediately when it's back in stock.
+              This piece is currently unavailable. Join our priority waitlist to be notified immediately when it&apos;s back in stock.
             </p>
           </div>
 
@@ -79,7 +77,7 @@ export default function WaitlistModal({
           </form>
 
           <p className="font-sans text-[10px] text-ink-700 leading-relaxed">
-            You'll receive priority access when this item is restocked. We respect your privacy and won't share your email.
+            You&apos;ll receive priority access when this item is restocked. We respect your privacy and won&apos;t share your email.
           </p>
         </div>
       </DialogContent>

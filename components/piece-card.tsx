@@ -18,7 +18,6 @@ interface PieceCardProps {
   condition: string;
   imageSrc: string;
   price: number;
-  collectionName?: string;
 }
 
 export default function PieceCard({ 
@@ -27,8 +26,7 @@ export default function PieceCard({
   designer, 
   condition, 
   imageSrc, 
-  price,
-  collectionName 
+  price
 }: PieceCardProps) {
   const { isInWishlist, toggleItem } = useWishlist();
   const { toast } = useToast();
