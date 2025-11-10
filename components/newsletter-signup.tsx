@@ -24,38 +24,41 @@ export default function NewsletterSignup() {
   };
 
   return (
-    <section className="bg-gradient-to-b from-sand/5 to-transparent py-24">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl tracking-luxury text-ink mb-4">
-            Stay Updated
-          </h2>
-          <p className="font-sans text-sm md:text-base leading-relaxed text-ink-700 mb-8">
-            Subscribe to receive early access to new collections, exclusive pieces, and invitations to private events.
-          </p>
+    <section className="bg-ink text-paper py-32 lg:py-40 mt-48">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-12">
+            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-paper/50 mb-6">
+              Newsletter
+            </p>
+            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl tracking-[0.05em] uppercase text-paper mb-6 leading-tight">
+              Stay Informed
+            </h2>
+            <p className="font-sans text-sm leading-loose text-paper/70 max-w-xl mx-auto">
+              Receive advance notice of new collections, private viewings, and exclusive pieces. Unsubscribe at any time.
+            </p>
+          </div>
 
-          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-            <Input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="your@email.com"
-              required
-              className="flex-1 h-12"
-              disabled={loading}
-            />
-            <button
-              type="submit"
-              disabled={loading}
-              className="bg-ink text-paper px-8 py-3 text-xs font-sans tracking-editorial uppercase hover:bg-ink-800 hover:shadow-2xl hover:scale-105 transition-all duration-500 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
-            >
-              {loading ? 'Subscribing...' : 'Subscribe'}
-            </button>
+          <form onSubmit={handleSubmit} className="max-w-lg mx-auto">
+            <div className="flex flex-col sm:flex-row gap-0 border border-paper/20">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email address"
+                required
+                disabled={loading}
+                className="flex-1 bg-transparent border-none px-6 py-4 text-sm text-paper placeholder:text-paper/40 focus:outline-none font-sans"
+              />
+              <button
+                type="submit"
+                disabled={loading}
+                className="px-8 py-4 bg-paper text-ink font-mono text-[10px] uppercase tracking-[0.2em] hover:bg-paper/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed border-t sm:border-t-0 sm:border-l border-paper/20"
+              >
+                {loading ? 'Submitting' : 'Submit'}
+              </button>
+            </div>
           </form>
-
-          <p className="font-sans text-xs text-ink-700 mt-4">
-            By subscribing, you agree to receive updates from LA PIQÛRE. Unsubscribe anytime.
-          </p>
         </div>
       </div>
     </section>
