@@ -1,56 +1,71 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Footer() {
   return (
-    <footer className="bg-ink-900 text-cream-100 py-16 mt-32">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+    <footer className="bg-ink text-paper py-24 mt-48">
+      <div className="max-w-7xl mx-auto px-8 lg:px-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-16">
           <div>
-            <h3 className="font-display text-sm tracking-luxury mb-4">ATELIER</h3>
-            <p className="text-xs font-sans leading-relaxed text-cream-200">
+            <div className="relative h-6 w-[120px] mb-6">
+              <Image 
+                src="/brand/logo.png" 
+                alt="LA PIQÛRE" 
+                fill 
+                sizes="120px" 
+                className="object-contain" 
+                style={{ filter: 'brightness(0) invert(1)' }}
+              />
+            </div>
+            <p className="text-xs font-sans leading-relaxed text-paper/60">
               Independent fashion atelier. Paris.
             </p>
           </div>
           
           <div>
-            <h4 className="text-xs font-sans tracking-editorial uppercase mb-4">Navigate</h4>
-            <ul className="space-y-2 text-xs font-sans">
+            <h4 className="text-[10px] font-sans tracking-[0.2em] uppercase mb-6 text-paper/70">Navigate</h4>
+            <ul className="space-y-3 text-xs font-sans">
               <li>
-                <Link href="/collections" className="text-cream-200 hover:text-cream-50 transition-colors">
+                <Link href="/collections" className="text-paper/60 hover:text-paper transition-colors duration-300">
                   Collections
                 </Link>
               </li>
               <li>
-                <Link href="/pieces" className="text-cream-200 hover:text-cream-50 transition-colors">
+                <Link href="/pieces" className="text-paper/60 hover:text-paper transition-colors duration-300">
                   Shop
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="text-cream-200 hover:text-cream-50 transition-colors">
+                <Link href="/about" className="text-paper/60 hover:text-paper transition-colors duration-300">
                   Story
+                </Link>
+              </li>
+              <li>
+                <Link href="/faq" className="text-paper/60 hover:text-paper transition-colors duration-300">
+                  FAQ
                 </Link>
               </li>
             </ul>
           </div>
           
           <div>
-            <h4 className="text-xs font-sans tracking-editorial uppercase mb-4">Contact</h4>
-            <ul className="space-y-2 text-xs font-sans text-cream-200">
-              <li>atelier@example.com</li>
+            <h4 className="text-[10px] font-sans tracking-[0.2em] uppercase mb-6 text-paper/70">Contact</h4>
+            <ul className="space-y-3 text-xs font-sans text-paper/60">
+              <li>contact@lapiqure.com</li>
               <li>Paris, France</li>
             </ul>
           </div>
           
           <div>
-            <h4 className="text-xs font-sans tracking-editorial uppercase mb-4">Legal</h4>
-            <ul className="space-y-2 text-xs font-sans">
+            <h4 className="text-[10px] font-sans tracking-[0.2em] uppercase mb-6 text-paper/70">Legal</h4>
+            <ul className="space-y-3 text-xs font-sans">
               <li>
-                <Link href="#" className="text-cream-200 hover:text-cream-50 transition-colors">
+                <Link href="#" className="text-paper/60 hover:text-paper transition-colors duration-300">
                   Terms & Conditions
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-cream-200 hover:text-cream-50 transition-colors">
+                <Link href="#" className="text-paper/60 hover:text-paper transition-colors duration-300">
                   Privacy Policy
                 </Link>
               </li>
@@ -58,9 +73,10 @@ export default function Footer() {
           </div>
         </div>
         
-        <div className="mt-12 pt-8 border-t border-ink-700">
-          <p className="text-xs font-sans text-cream-300">
-            © {new Date().getFullYear()} Atelier. All rights reserved.
+        <div className="mt-16 pt-12">
+          <div className="h-px bg-gradient-to-r from-transparent via-paper/10 to-transparent mb-12" />
+          <p className="text-[10px] font-sans text-paper/50 tracking-wide">
+            © {new Date().getFullYear()} La Piqûre. All rights reserved.
           </p>
         </div>
       </div>

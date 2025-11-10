@@ -4,16 +4,123 @@
 
 @layer base {
   body {
-    @apply bg-warm-white text-ink-900 antialiased;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+  }
+}
+
+@layer utilities {
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Custom Copperplate webfont - add your licensed font files here */
+@font-face {
+  font-family: 'Copperplate';
+  src: url('/fonts/copperplate.woff2') format('woff2'),
+       url('/fonts/copperplate.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Copperplate';
+  src: url('/fonts/copperplate-bold.woff2') format('woff2'),
+       url('/fonts/copperplate-bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+  
+  body {
+    @apply bg-background text-ink antialiased;
+    font-size: 18px;
   }
   
   h1, h2, h3, h4, h5, h6 {
     @apply font-display tracking-luxury;
+  }
+  
+  *:not(svg, svg *) {
+    @apply transition-colors duration-300;
+  }
+  :root {
+    /* LA PIQÛRE Color Scheme */
+    --background: 31 19% 94%;        /* #F6F2EB warm off-white */
+    --foreground: 24 15% 11%;        /* #1F1A17 deep ink */
+    --card: 0 0% 100%;               /* #FFFFFF paper white */
+    --card-foreground: 24 15% 11%;   /* #1F1A17 ink */
+    --popover: 0 0% 100%;            /* #FFFFFF */
+    --popover-foreground: 24 15% 11%; /* #1F1A17 */
+    --primary: 24 15% 11%;           /* #1F1A17 ink */
+    --primary-foreground: 0 0% 100%; /* white */
+    --secondary: 38 38% 83%;         /* #D9C6A3 sand */
+    --secondary-foreground: 24 15% 11%; /* #1F1A17 ink */
+    --muted: 38 38% 83%;             /* #D9C6A3 sand */
+    --muted-foreground: 24 15% 30%;  /* lighter ink */
+    --accent: 72 21% 35%;            /* #6B7445 olive */
+    --accent-foreground: 0 0% 100%;  /* white */
+    --destructive: 4 63% 31%;        /* #7A231D burgundy */
+    --destructive-foreground: 0 0% 100%; /* white */
+    --border: 0 0% 0% / 0.06;        /* rgba(0,0,0,0.06) subtle */
+    --input: 0 0% 0% / 0.06;         /* rgba(0,0,0,0.06) */
+    --ring: 24 15% 11%;              /* #1F1A17 ink */
+    --radius: 0rem;                  /* sharp corners for luxury */
+  }
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
   }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+}
+
+
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }

@@ -28,6 +28,11 @@ export interface Piece {
   available: boolean;
   material?: string;
   care?: string;
+  badges?: ('new' | 'exclusive' | 'low-stock')[];
+  colors?: { name: string; hex: string }[];
+  batchNumber?: string;
+  productionDate?: string;
+  materialComposition?: { name: string; percentage: number; origin?: string }[];
 }
 
 export interface FilterState {

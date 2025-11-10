@@ -1,9 +1,9 @@
 {
-  "name": "atelier-fashion",
+  "name": "lapiqure",
   "version": "0.1.0",
   "private": true,
-  "author": "Casanova",
-  "description": "An elevated fashion e-commerce site for an independent designer",
+  "author": "soringifei",
+  "description": "LA PIQÛRE - Contemporary luxury fashion e-commerce platform",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

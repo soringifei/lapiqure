@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { getBlurDataURL } from '@/lib/blur-placeholders';
 
 interface HeroProps {
   imageSrc: string;
@@ -8,7 +9,7 @@ interface HeroProps {
   height?: 'full' | 'large' | 'medium';
 }
 
-export default function Hero({ 
+export default function Hero({
   imageSrc, 
   imageAlt, 
   title, 
@@ -22,29 +23,34 @@ export default function Hero({
   };
 
   return (
-    <div className={`relative ${heightClasses[height]} w-full overflow-hidden`}>
+    <div className={`relative ${heightClasses[height]} w-full overflow-hidden animate-in fade-in duration-1000`}>
       <Image
         src={imageSrc}
         alt={imageAlt}
         fill
-        className="object-cover"
         priority
+        sizes="100vw"
+        className="object-cover"
+        quality={75}
+        placeholder="blur"
+        blurDataURL={getBlurDataURL(imageSrc.split('/').pop() || '') || 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWEREiMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=='}
+        fetchPriority="high"
       />
       
       {(title || subtitle) && (
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/40" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/60" />
       )}
       
       {(title || subtitle) && (
-        <div className="absolute inset-0 flex items-end justify-start">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8 pb-16 w-full">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center animate-in slide-in-from-bottom-8 duration-1000 delay-300">
             {subtitle && (
-              <p className="font-display text-xs tracking-luxury uppercase text-cream-50 mb-2">
+              <p className="font-display text-sm md:text-base tracking-[0.3em] uppercase text-paper mb-4 opacity-90">
                 {subtitle}
               </p>
             )}
             {title && (
-              <h1 className="font-display text-5xl md:text-6xl lg:text-7xl tracking-luxury text-white">
+              <h1 className="font-display text-6xl md:text-8xl lg:text-9xl tracking-[0.2em] uppercase text-paper drop-shadow-2xl">
                 {title}
               </h1>
             )}
