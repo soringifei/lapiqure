@@ -49,10 +49,10 @@ export default function PersonalizationModal({
                   </svg>
                 </div>
                 <p className="font-mono text-sm uppercase text-ink mb-2">
-                  Customization is exclusive to members
+                  Customization is a member benefit
                 </p>
                 <p className="font-sans text-sm text-ink/60 leading-relaxed max-w-sm mx-auto">
-                  Sign in to access personalized embroidery, monogramming, and bespoke customization services.
+                  Members enjoy exclusive access to bespoke embroidery, monogramming, and personalization services for all pieces.
                 </p>
               </div>
               

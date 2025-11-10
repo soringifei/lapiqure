@@ -108,16 +108,58 @@ export default function Home() {
       <CraftProcess />
 
       <section className="max-w-7xl mx-auto px-8 lg:px-12 py-48">
-        <div className="text-center max-w-xl mx-auto">
+        <div className="text-center max-w-2xl mx-auto">
           <SectionHeading className="mb-6">Exclusive Access</SectionHeading>
           <h3 className="font-display text-3xl md:text-4xl lg:text-5xl tracking-luxury text-ink mb-6">
             Members-Only Collection
           </h3>
-          <p className="font-sans text-sm leading-relaxed text-ink-700 mb-8">
+          <p className="font-sans text-sm leading-relaxed text-ink-700 mb-10">
             {user 
               ? 'Welcome back. Browse exclusive pieces available only to members.'
               : 'Early access to new releases, private archive viewings, and exclusive pieces.'}
           </p>
+          
+          {!user && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 text-left">
+              <div className="space-y-2">
+                <div className="w-8 h-8 border border-ink/20 flex items-center justify-center mb-3">
+                  <svg className="w-4 h-4 text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                </div>
+                <h4 className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink">Early Access</h4>
+                <p className="font-sans text-xs leading-relaxed text-ink/60">
+                  First view of new collections and archive pieces
+                </p>
+              </div>
+              
+              <div className="space-y-2">
+                <div className="w-8 h-8 border border-ink/20 flex items-center justify-center mb-3">
+                  <svg className="w-4 h-4 text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                  </svg>
+                </div>
+                <h4 className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink">Customization</h4>
+                <p className="font-sans text-xs leading-relaxed text-ink/60">
+                  Bespoke embroidery and monogramming services
+                </p>
+              </div>
+              
+              <div className="space-y-2">
+                <div className="w-8 h-8 border border-ink/20 flex items-center justify-center mb-3">
+                  <svg className="w-4 h-4 text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                  </svg>
+                </div>
+                <h4 className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink">Exclusive Pieces</h4>
+                <p className="font-sans text-xs leading-relaxed text-ink/60">
+                  Access to limited edition and one-of-a-kind garments
+                </p>
+              </div>
+            </div>
+          )}
+          
           {user ? (
             <Link
               href="/pieces"
