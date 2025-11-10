@@ -19,9 +19,7 @@ export default function SizeGuideDialog() {
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-8 mt-6">
-          {/* Size Chart */}
-          <div>
+        <div className="space-y-8 mt-6"><div>
             <h3 className="font-display text-sm tracking-luxury uppercase text-ink mb-4">
               Clothing Measurements
             </h3>
@@ -75,10 +73,7 @@ export default function SizeGuideDialog() {
                 </tbody>
               </table>
             </div>
-          </div>
-
-          {/* How to Measure */}
-          <div className="pt-6 border-t border-border">
+          </div><div className="pt-6 border-t border-border">
             <h3 className="font-display text-sm tracking-luxury uppercase text-ink mb-4">
               How to Measure
             </h3>
@@ -108,10 +103,7 @@ export default function SizeGuideDialog() {
                 </p>
               </div>
             </div>
-          </div>
-
-          {/* Fit Notes */}
-          <div className="pt-6 border-t border-border">
+          </div><div className="pt-6 border-t border-border">
             <h3 className="font-display text-sm tracking-luxury uppercase text-ink mb-4">
               Fit Notes
             </h3>

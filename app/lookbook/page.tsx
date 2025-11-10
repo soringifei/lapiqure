@@ -46,9 +46,7 @@ const lookbooks = [
 
 export default function LookbookPage() {
   return (
-    <div className="min-h-screen">
-      {/* Hero */}
-      <section className="relative h-screen">
+    <div className="min-h-screen"><section className="relative h-screen">
         <Image
           src="/images/faux_leather_mixed_with_embossed_zebra_leather_jacket1_optimized.jpg"
           alt="LA PIQÛRE Lookbook"
@@ -75,10 +73,7 @@ export default function LookbookPage() {
             </div>
           </FadeIn>
         </div>
-      </section>
-
-      {/* Introduction */}
-      <section className="py-24 bg-paper">
+      </section><section className="py-24 bg-paper">
         <div className="max-w-4xl mx-auto px-8 lg:px-12 text-center">
           <FadeIn>
             <SectionHeading className="mb-8">Editorial</SectionHeading>
@@ -89,18 +84,13 @@ export default function LookbookPage() {
             </p>
           </FadeIn>
         </div>
-      </section>
-
-      {/* Lookbooks */}
-      <div>
+      </section><div>
 
         {lookbooks.map((lookbook, index) => (
           <section key={lookbook.id} className={index % 2 === 0 ? 'bg-paper' : 'bg-sand/5'}>
             <div className="max-w-7xl mx-auto px-8 lg:px-12 py-32">
               <FadeIn delay={index * 50}>
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-                  {/* Text Content */}
-                  <div className={`lg:col-span-5 ${index % 2 === 1 ? 'lg:col-start-8' : ''}`}>
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center"><div className={`lg:col-span-5 ${index % 2 === 1 ? 'lg:col-start-8' : ''}`}>
                     <div className="space-y-6">
                       <div>
                         <p className="font-mono text-[9px] uppercase tracking-wide text-ink-700 mb-3">
@@ -125,13 +115,8 @@ export default function LookbookPage() {
                         </svg>
                       </Link>
                     </div>
-                  </div>
-
-                  {/* Image Grid */}
-                  <div className={`lg:col-span-7 ${index % 2 === 1 ? 'lg:col-start-1 lg:row-start-1' : ''}`}>
-                    <div className="grid grid-cols-12 gap-4">
-                      {/* Large image */}
-                      <div className="col-span-12 md:col-span-8">
+                  </div><div className={`lg:col-span-7 ${index % 2 === 1 ? 'lg:col-start-1 lg:row-start-1' : ''}`}>
+                    <div className="grid grid-cols-12 gap-4"><div className="col-span-12 md:col-span-8">
                         <div className="relative aspect-[4/5] overflow-hidden bg-sand/20 group">
                           <Image
                             src={lookbook.coverImage}
@@ -142,10 +127,7 @@ export default function LookbookPage() {
                             quality={90}
                           />
                         </div>
-                      </div>
-                      
-                      {/* Small images */}
-                      <div className="col-span-12 md:col-span-4 space-y-4">
+                      </div><div className="col-span-12 md:col-span-4 space-y-4">
                         {lookbook.images.slice(0, 2).map((img, imgIndex) => (
                           <div key={imgIndex} className="relative aspect-square overflow-hidden bg-sand/20 group">
                             <Image
@@ -167,10 +149,7 @@ export default function LookbookPage() {
           </section>
         ))}
 
-      </div>
-
-      {/* CTA Section */}
-      <section className="bg-ink text-paper py-32">
+      </div><section className="bg-ink text-paper py-32">
         <div className="max-w-4xl mx-auto px-8 lg:px-12 text-center">
           <FadeIn>
             <SectionHeading className="mb-8 text-paper/70">Services</SectionHeading>

@@ -63,14 +63,9 @@ export default function PieceCard({
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-      <div className="relative aspect-[3/4] bg-background overflow-hidden mb-8">
-        {/* Loading Skeleton */}
-        {!imageLoaded && (
+      <div className="relative aspect-[3/4] bg-background overflow-hidden mb-8">{!imageLoaded && (
           <div className="absolute inset-0 bg-sand/20 animate-pulse" />
-        )}
-        
-        {/* Primary Image */}
-        <Image
+        )}<Image
           src={imageSrc}
           alt={name}
           fill
@@ -82,9 +77,7 @@ export default function PieceCard({
           quality={80}
           loading="lazy"
           onLoad={() => setImageLoaded(true)}
-        />
-        {/* Hover Image */}
-        {piece && piece.images[1] && (
+        />{piece && piece.images[1] && (
           <Image
             src={piece.images[1]}
             alt={`${name} alternate view`}

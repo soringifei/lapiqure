@@ -76,18 +76,13 @@ export default function WishlistPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {items.map((piece) => (
-            <div key={piece.id} className="group relative">
-              {/* Remove Button */}
-              <button
+            <div key={piece.id} className="group relative"><button
                 onClick={() => handleRemove(piece.id)}
                 className="absolute top-4 right-4 z-10 p-2 bg-paper/90 backdrop-blur-sm border border-ink/20 hover:bg-ink hover:text-paper transition-all"
                 title="Remove from wishlist"
               >
                 <X className="h-4 w-4" />
-              </button>
-
-              {/* Image with Loading State */}
-              <Link href={`/pieces/${piece.slug}`} className="block relative aspect-[3/4] bg-sand/20 overflow-hidden mb-4">
+              </button><Link href={`/pieces/${piece.slug}`} className="block relative aspect-[3/4] bg-sand/20 overflow-hidden mb-4">
                 {imageLoading[piece.id] !== false && (
                   <div className="absolute inset-0 bg-sand/20 animate-pulse" />
                 )}
@@ -105,10 +100,7 @@ export default function WishlistPage() {
                   onLoad={() => setImageLoading(prev => ({ ...prev, [piece.id]: false }))}
                   priority={false}
                 />
-              </Link>
-
-              {/* Info */}
-              <div className="space-y-3">
+              </Link><div className="space-y-3">
                 <Link href={`/pieces/${piece.slug}`}>
                   <h3 className="font-display text-lg tracking-luxury text-ink group-hover:text-ink-700 transition-colors">
                     {piece.name}

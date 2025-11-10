@@ -34,9 +34,7 @@ const locations = [
 
 export default function AtelierPage() {
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative h-[70vh] overflow-hidden">
+    <div className="min-h-screen"><section className="relative h-[70vh] overflow-hidden">
         <Image
           src="/images/faux_leather_mixed_with_embossed_zebra_leather_jacket1_optimized.jpg"
           alt="LA PIQÛRE Atelier"
@@ -64,16 +62,11 @@ export default function AtelierPage() {
             </div>
           </FadeIn>
         </div>
-      </section>
-
-      {/* Locations Grid */}
-      <section className="max-w-7xl mx-auto px-8 lg:px-12 py-24">
+      </section><section className="max-w-7xl mx-auto px-8 lg:px-12 py-24">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
           {locations.map((location, index) => (
             <FadeIn key={location.city} delay={index * 100}>
-              <div className="group border border-ink/10 hover:border-ink bg-paper hover:shadow-xl transition-all duration-500">
-                {/* Location Header */}
-                <div className="p-8 pb-6">
+              <div className="group border border-ink/10 hover:border-ink bg-paper hover:shadow-xl transition-all duration-500"><div className="p-8 pb-6">
                   <div className="flex items-start justify-between mb-6">
                     <div>
                       <span className="font-mono text-[9px] uppercase tracking-wide text-ink-700 block mb-2">
@@ -87,10 +80,7 @@ export default function AtelierPage() {
                   </div>
                   
                   <div className="h-px bg-ink/10 mb-6" />
-                </div>
-
-                {/* Location Details */}
-                <div className="px-8 space-y-4">
+                </div><div className="px-8 space-y-4">
                   <div className="flex items-start gap-3">
                     <MapPin className="h-4 w-4 text-ink-700 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                     <div>
@@ -132,10 +122,7 @@ export default function AtelierPage() {
                       </a>
                     </div>
                   </div>
-                </div>
-
-                {/* Appointment Button */}
-                <div className="p-8 pt-8">
+                </div><div className="p-8 pt-8">
                   <button className="w-full px-6 py-3 border border-ink/20 text-ink font-mono text-xs uppercase tracking-wide hover:border-ink hover:bg-sand/5 transition-all group">
                     <span className="flex items-center justify-center gap-2">
                       Book Appointment
@@ -147,10 +134,7 @@ export default function AtelierPage() {
             </FadeIn>
           ))}
         </div>
-      </section>
-
-      {/* Services Section */}
-      <section className="bg-sand/10 py-24">
+      </section><section className="bg-sand/10 py-24">
         <div className="max-w-7xl mx-auto px-8 lg:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <FadeIn>
@@ -206,10 +190,7 @@ export default function AtelierPage() {
             </FadeIn>
           </div>
         </div>
-      </section>
-
-      {/* Contact CTA */}
-      <section className="py-24">
+      </section><section className="py-24">
         <div className="max-w-4xl mx-auto px-8 lg:px-12 text-center">
           <FadeIn>
             <SectionHeading className="mb-6">Visit Us</SectionHeading>

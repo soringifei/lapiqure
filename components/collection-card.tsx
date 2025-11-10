@@ -17,9 +17,7 @@ export default function CollectionCard({
 }) {
   return (
     <Link href={`/collections/${slug}`} className="group block hover:shadow-2xl hover:-translate-y-2 transition-all duration-700">
-      <div className="relative aspect-[4/5] bg-sand/20 overflow-hidden mb-6">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+      <div className="relative aspect-[4/5] bg-sand/20 overflow-hidden mb-6"><img
           src={heroImage}
           alt={title}
           className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-all duration-1000"

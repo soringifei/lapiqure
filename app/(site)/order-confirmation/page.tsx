@@ -15,27 +15,14 @@ export default function OrderConfirmationPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-paper">
-      {/* Hero Section */}
-      <div className="bg-sand/5 border-b border-ink/10">
-        <div className="max-w-3xl mx-auto px-6 py-20 text-center">
-          {/* Success Icon */}
-          <div className="inline-flex items-center justify-center w-20 h-20 border-2 border-ink mb-8 relative">
+    <div className="min-h-screen bg-paper"><div className="bg-sand/5 border-b border-ink/10">
+        <div className="max-w-3xl mx-auto px-6 py-20 text-center"><div className="inline-flex items-center justify-center w-20 h-20 border-2 border-ink mb-8 relative">
             <Check className="h-10 w-10 text-ink" strokeWidth={1.5} />
-          </div>
-
-          {/* Title */}
-          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl tracking-[0.15em] uppercase text-ink mb-4">
+          </div><h1 className="font-display text-4xl md:text-5xl lg:text-6xl tracking-[0.15em] uppercase text-ink mb-4">
             Order Confirmed
-          </h1>
-
-          {/* Subtitle */}
-          <p className="font-sans text-base text-ink-700 leading-relaxed max-w-xl mx-auto mb-8">
+          </h1><p className="font-sans text-base text-ink-700 leading-relaxed max-w-xl mx-auto mb-8">
             Thank you for your purchase. Your order has been received and is being prepared with care.
-          </p>
-
-          {/* Order Number */}
-          <div className="inline-block">
+          </p><div className="inline-block">
             <div className="font-mono text-[9px] uppercase tracking-wide text-ink-700 mb-2">
               Order Number
             </div>
@@ -44,13 +31,8 @@ export default function OrderConfirmationPage() {
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="max-w-3xl mx-auto px-6 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-          {/* Order Updates */}
-          <div className="p-8 border border-ink/10 bg-paper">
+      </div><div className="max-w-3xl mx-auto px-6 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16"><div className="p-8 border border-ink/10 bg-paper">
             <div className="flex items-start gap-4 mb-4">
               <div className="w-12 h-12 border border-ink/20 flex items-center justify-center flex-shrink-0">
                 <Mail className="h-6 w-6 text-ink" strokeWidth={1.5} />
@@ -70,10 +52,7 @@ export default function OrderConfirmationPage() {
             <p className="font-sans text-xs text-ink-700 leading-relaxed mt-4 pl-16">
               You'll receive shipping updates and tracking information at this address.
             </p>
-          </div>
-
-          {/* Delivery Info */}
-          <div className="p-8 border border-ink/10 bg-paper">
+          </div><div className="p-8 border border-ink/10 bg-paper">
             <div className="flex items-start gap-4 mb-4">
               <div className="w-12 h-12 border border-ink/20 flex items-center justify-center flex-shrink-0">
                 <Package className="h-6 w-6 text-ink" strokeWidth={1.5} />
@@ -94,10 +73,7 @@ export default function OrderConfirmationPage() {
               Standard shipping times apply. Expedited options available.
             </p>
           </div>
-        </div>
-
-        {/* What's Next */}
-        <div className="mb-16">
+        </div><div className="mb-16">
           <h2 className="font-display text-2xl tracking-[0.1em] uppercase text-ink mb-8 text-center">
             What Happens Next
           </h2>
@@ -165,13 +141,7 @@ export default function OrderConfirmationPage() {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Divider */}
-        <div className="h-px bg-ink/10 mb-12" />
-
-        {/* Additional Info */}
-        <div className="bg-sand/5 border border-ink/10 p-8 mb-12">
+        </div><div className="h-px bg-ink/10 mb-12" /><div className="bg-sand/5 border border-ink/10 p-8 mb-12">
           <h3 className="font-display text-lg tracking-[0.1em] uppercase text-ink mb-4">
             Need Assistance?
           </h3>
@@ -192,10 +162,7 @@ export default function OrderConfirmationPage() {
               </button>
             </Link>
           </div>
-        </div>
-
-        {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4">
+        </div><div className="flex flex-col sm:flex-row gap-4">
           <Link href="/pieces" className="flex-1">
             <button className="w-full group bg-ink text-paper px-8 py-4 font-mono text-xs uppercase tracking-wide hover:bg-ink/90 transition-all flex items-center justify-center gap-2">
               Continue Shopping
@@ -208,10 +175,7 @@ export default function OrderConfirmationPage() {
             </button>
           </Link>
         </div>
-      </div>
-
-      {/* Footer Note */}
-      <div className="border-t border-ink/10 bg-sand/5">
+      </div><div className="border-t border-ink/10 bg-sand/5">
         <div className="max-w-3xl mx-auto px-6 py-12 text-center">
           <p className="font-sans text-xs text-ink-700 leading-relaxed max-w-2xl mx-auto">
             Thank you for choosing LA PIQÛRE. Each piece in our collection has been thoughtfully curated to stand the test of time. We appreciate your trust in our atelier and look forward to serving you again.

@@ -46,10 +46,7 @@ export default function CommandPalette() {
         <kbd className="pointer-events-none flex items-center justify-center gap-0.5 border border-ink/20 bg-sand/10 px-1.5 py-0.5 font-mono text-[9px] font-medium min-w-[28px]">
           <span className="text-[10px]">⌘</span>K
         </kbd>
-      </button>
-
-      {/* Mobile Search Button */}
-      <button
+      </button><button
         onClick={() => setOpen(true)}
         className="md:hidden p-2 text-ink-700 hover:text-ink transition-colors"
         title="Search"
@@ -177,10 +174,7 @@ export default function CommandPalette() {
               <span className="font-mono text-xs uppercase tracking-wide text-ink">FAQ</span>
             </CommandItem>
           </CommandGroup>
-        </CommandList>
-        
-        {/* Footer with keyboard shortcuts */}
-        <div className="border-t border-ink/10 px-4 py-3 bg-sand/5">
+        </CommandList><div className="border-t border-ink/10 px-4 py-3 bg-sand/5">
           <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wide text-ink-700">
             <div className="flex items-center gap-4">
               <span className="flex items-center gap-1.5">

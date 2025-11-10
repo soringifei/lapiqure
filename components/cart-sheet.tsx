@@ -136,9 +136,7 @@ export default function CartSheet() {
         </div>
 
         {items.length > 0 && (
-          <SheetFooter className="flex-col gap-6 pt-6 border-t border-ink/10">
-            {/* Subtotal */}
-            <div className="w-full space-y-3">
+          <SheetFooter className="flex-col gap-6 pt-6 border-t border-ink/10"><div className="w-full space-y-3">
               <div className="flex items-center justify-between">
                 <span className="font-mono text-[10px] tracking-wide uppercase text-ink-700">
                   Subtotal
@@ -150,10 +148,7 @@ export default function CartSheet() {
               <p className="font-sans text-[10px] text-ink-700 leading-relaxed">
                 Shipping, taxes, and discount codes calculated at checkout
               </p>
-            </div>
-            
-            {/* Free shipping indicator */}
-            {totalPrice < 500 && (
+            </div>{totalPrice < 500 && (
               <div className="w-full p-3 bg-sand/10 border border-ink/10">
                 <p className="font-mono text-[10px] uppercase tracking-wide text-ink text-center">
                   Add ${(500 - totalPrice).toLocaleString()} for free shipping
@@ -165,17 +160,11 @@ export default function CartSheet() {
                   />
                 </div>
               </div>
-            )}
-            
-            {/* Checkout button */}
-            <Link href="/checkout" className="w-full">
+            )}<Link href="/checkout" className="w-full">
               <button className="w-full bg-ink text-paper px-8 py-4 font-mono text-xs uppercase tracking-wide hover:bg-ink-800 transition-all duration-300">
                 Proceed to Checkout
               </button>
-            </Link>
-            
-            {/* Continue shopping */}
-            <Link href="/pieces" className="w-full">
+            </Link><Link href="/pieces" className="w-full">
               <button className="w-full border border-ink/20 text-ink px-8 py-3 font-mono text-xs uppercase tracking-wide hover:border-ink hover:bg-sand/5 transition-all">
                 Continue Shopping
               </button>

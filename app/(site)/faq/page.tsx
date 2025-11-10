@@ -194,25 +194,17 @@ export default function FAQPage() {
   };
 
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="bg-ink text-paper py-32 relative">
+    <div className="min-h-screen"><section className="bg-ink text-paper py-32 relative">
         <div className="max-w-7xl mx-auto px-8 lg:px-12 text-center">
           <h1 className="font-display text-4xl md:text-5xl tracking-[0.3em] uppercase">
             Frequently Asked Questions
           </h1>
-        </div>
-        
-        {/* Decorative divider */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">
+        </div><div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2">
           <div className="w-12 h-12 bg-ink border-2 border-paper rotate-45 flex items-center justify-center">
             <span className="font-display text-xs text-paper -rotate-45">?</span>
           </div>
         </div>
-      </section>
-
-      {/* Category Tabs */}
-      <section className="bg-paper border-b border-ink/10 sticky top-0 z-40">
+      </section><section className="bg-paper border-b border-ink/10 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-8 lg:px-12 py-6">
           <div className="flex flex-wrap gap-4 justify-center">
             {faqData.map((category, index) => (
@@ -233,10 +225,7 @@ export default function FAQPage() {
             ))}
           </div>
         </div>
-      </section>
-
-      {/* FAQ Content */}
-      <section className="max-w-4xl mx-auto px-8 lg:px-12 py-24">
+      </section><section className="max-w-4xl mx-auto px-8 lg:px-12 py-24">
         <div className="mb-12 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <h2 className="font-display text-2xl tracking-luxury uppercase text-ink">
@@ -282,10 +271,7 @@ export default function FAQPage() {
               </div>
             </div>
           ))}
-        </div>
-
-        {/* Contact CTA */}
-        <div className="mt-16 p-12 border border-ink/20 bg-sand/10 text-center">
+        </div><div className="mt-16 p-12 border border-ink/20 bg-sand/10 text-center">
           <h3 className="font-display text-xl tracking-luxury uppercase text-ink mb-4">
             Still Have Questions?
           </h3>

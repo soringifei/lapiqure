@@ -60,9 +60,7 @@ export default function QuickViewDialog({ piece, open, onOpenChange }: QuickView
           <DialogTitle>Quick View: {piece.name}</DialogTitle>
         </DialogHeader>
 
-        <div className="grid grid-cols-1 md:grid-cols-[1.2fr,1fr] gap-0">
-          {/* Image Gallery */}
-          <div className="bg-sand/5 p-8 md:p-12">
+        <div className="grid grid-cols-1 md:grid-cols-[1.2fr,1fr] gap-0"><div className="bg-sand/5 p-8 md:p-12">
             <div className="space-y-4">
               <div className="relative aspect-[3/4] bg-sand/20 overflow-hidden group">
                 <Image
@@ -101,12 +99,7 @@ export default function QuickViewDialog({ piece, open, onOpenChange }: QuickView
                 </div>
               )}
             </div>
-          </div>
-
-          {/* Product Details */}
-          <div className="p-8 md:p-12 flex flex-col">
-            {/* Header */}
-            <div className="space-y-6 mb-8">
+          </div><div className="p-8 md:p-12 flex flex-col"><div className="space-y-6 mb-8">
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-[9px] uppercase tracking-wide text-ink-700 px-3 py-1.5 border border-ink/10">
@@ -145,10 +138,7 @@ export default function QuickViewDialog({ piece, open, onOpenChange }: QuickView
                   </p>
                 )}
               </div>
-            </div>
-
-            {/* Size Selection */}
-            <div className="mb-8">
+            </div><div className="mb-8">
               <h3 className="font-mono text-[9px] tracking-wide uppercase text-ink mb-4">
                 Select Size
               </h3>
@@ -167,10 +157,7 @@ export default function QuickViewDialog({ piece, open, onOpenChange }: QuickView
                   </button>
                 ))}
               </div>
-            </div>
-
-            {/* Actions */}
-            <div className="space-y-3 mb-8">
+            </div><div className="space-y-3 mb-8">
               <button
                 onClick={handleAddToCart}
                 disabled={!piece.available}
@@ -191,19 +178,13 @@ export default function QuickViewDialog({ piece, open, onOpenChange }: QuickView
                 />
                 {isInWishlist(piece.id) ? 'Saved' : 'Save'}
               </button>
-            </div>
-
-            {/* Story */}
-            {piece.story && (
+            </div>{piece.story && (
               <div className="pt-6 border-t border-ink/10 mb-6">
                 <p className="font-sans text-sm leading-relaxed text-ink-700">
                   {piece.story}
                 </p>
               </div>
-            )}
-
-            {/* Full Details Link */}
-            <div className="mt-auto pt-6 border-t border-ink/10">
+            )}<div className="mt-auto pt-6 border-t border-ink/10">
               <Link 
                 href={`/pieces/${piece.slug}`} 
                 onClick={() => onOpenChange(false)}

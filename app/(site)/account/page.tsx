@@ -59,9 +59,7 @@ export default function AccountPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-paper pt-20 sm:pt-24">
-      {/* Header */}
-      <div className="border-b border-ink/10 bg-sand/5">
+    <div className="min-h-screen bg-paper pt-20 sm:pt-24"><div className="border-b border-ink/10 bg-sand/5">
         <div className="max-w-7xl mx-auto px-6 lg:px-12 py-12">
           <div className="flex items-start justify-between">
             <div>
@@ -83,9 +81,7 @@ export default function AccountPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 lg:px-12 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-[280px,1fr] gap-12">
-          {/* Sidebar Navigation */}
-          <aside>
+        <div className="grid grid-cols-1 lg:grid-cols-[280px,1fr] gap-12"><aside>
             <nav className="space-y-2 lg:sticky lg:top-32">
               {tabs.map((tab) => {
                 const Icon = tab.icon;
@@ -112,12 +108,7 @@ export default function AccountPage() {
                 );
               })}
             </nav>
-          </aside>
-
-          {/* Main Content */}
-          <main>
-            {/* Order History */}
-            {activeTab === 'orders' && (
+          </aside><main>{activeTab === 'orders' && (
               <div className="space-y-8">
                 <div>
                   <h2 className="font-display text-2xl tracking-[0.1em] uppercase text-ink mb-2">
@@ -218,10 +209,7 @@ export default function AccountPage() {
                   </div>
                 )}
               </div>
-            )}
-
-            {/* Profile */}
-            {activeTab === 'profile' && (
+            )}{activeTab === 'profile' && (
               <div className="space-y-8">
                 <div>
                   <h2 className="font-display text-2xl tracking-[0.1em] uppercase text-ink mb-2">
@@ -305,10 +293,7 @@ export default function AccountPage() {
                       Cancel
                     </button>
                   </div>
-                </form>
-
-                {/* Password Section */}
-                <div className="pt-8 border-t border-ink/10">
+                </form><div className="pt-8 border-t border-ink/10">
                   <h3 className="font-display text-lg tracking-[0.1em] uppercase text-ink mb-4">
                     <Lock className="inline h-4 w-4 mr-2" strokeWidth={1.5} />
                     Password & Security
@@ -318,10 +303,7 @@ export default function AccountPage() {
                   </button>
                 </div>
               </div>
-            )}
-
-            {/* Addresses */}
-            {activeTab === 'addresses' && (
+            )}{activeTab === 'addresses' && (
               <div className="space-y-8">
                 <div className="flex items-start justify-between">
                   <div>
@@ -361,10 +343,7 @@ export default function AccountPage() {
                   </div>
                 </div>
               </div>
-            )}
-
-            {/* Payment Methods */}
-            {activeTab === 'payment' && (
+            )}{activeTab === 'payment' && (
               <div className="space-y-8">
                 <div className="flex items-start justify-between">
                   <div>
@@ -406,10 +385,7 @@ export default function AccountPage() {
                   </p>
                 </div>
               </div>
-            )}
-
-            {/* Preferences */}
-            {activeTab === 'preferences' && (
+            )}{activeTab === 'preferences' && (
               <div className="space-y-8">
                 <div>
                   <h2 className="font-display text-2xl tracking-[0.1em] uppercase text-ink mb-2">
