@@ -125,9 +125,15 @@ export default function ProductPage({ params }: ProductPageProps) {
                 )}
               </div>
 
-              <p className="font-sans text-xs tracking-editorial uppercase text-ink-700">
-                {piece.designer}
-              </p>
+              <div className="flex items-center">
+                {piece.designer && piece.designer.toUpperCase().includes('LA PIQ') ? (
+                  <div className="relative h-4 w-[90px]">
+                    <Image src="/brand/logo.png" alt="LA PIQÛRE" fill sizes="90px" className="object-contain" />
+                  </div>
+                ) : (
+                  <p className="font-sans text-xs tracking-editorial uppercase text-ink-700">{piece.designer}</p>
+                )}
+              </div>
             </div>
 
             <div className="pt-12">

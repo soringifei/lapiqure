@@ -126,9 +126,15 @@ export default function PieceCard({
       
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <p className="font-display text-[10px] tracking-[0.2em] uppercase text-ink-700">
-            {designer}
-          </p>
+          <div className="flex items-center">
+            {designer && designer.toUpperCase().includes('LA PIQ') ? (
+              <div className="relative h-3 w-[70px]">
+                <Image src="/brand/logo.png" alt="LA PIQÛRE" fill sizes="70px" className="object-contain" />
+              </div>
+            ) : (
+              <p className="font-display text-[10px] tracking-[0.2em] uppercase text-ink-700">{designer}</p>
+            )}
+          </div>
           <p className="font-display text-base text-ink">
             ${price.toLocaleString()}
           </p>
