@@ -40,5 +40,24 @@ lighthouse-report*.json
 # image optimization backups
 /public/images-backup
 
-# development summaries (optional - keep if you want them in repo)
+# AI-generated documentation (keep local only)
 CLEANUP_SUMMARY.md
+COLOR_MIGRATION.md
+COLOR_PALETTE.md
+COLOR_UPDATE_COMPLETE.md
+DEPLOYMENT.md
+FILTER_SORT_IMPROVEMENTS.md
+FINAL_PERFORMANCE_SUMMARY.md
+FIREBASE_SETUP.md
+FONT_SETUP_GUIDE.md
+GETTING_STARTED.md
+IMAGE_INTEGRATION_GUIDE.md
+NAVBAR_IMPROVEMENTS.md
+PERFORMANCE_ACTION_PLAN.md
+PERFORMANCE_REPORT.md
+PREMIUM_DESIGN_SYSTEM.md
+PROJECT_COMPLETE.md
+PROJECT_STRUCTURE.md
+QUICK_REFERENCE.md
+README_NEW.md
+WARP.md
