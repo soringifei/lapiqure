@@ -52,7 +52,7 @@ export default function ProductPage({ params }: ProductPageProps) {
 
   useEffect(() => {
     addToRecentlyViewed(piece);
-  }, [piece.id]);
+  }, [piece, addToRecentlyViewed]);
 
   const handleAddToCart = () => {
     if (!selectedSize) {

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import SectionHeading from '@/components/section-heading';
 import { sampleCollections } from '@/lib/sample-data';
 
@@ -24,10 +25,14 @@ export default function CollectionsPage() {
               href={`/collections/${collection.slug}`}
               className="group block"
             >
-              <div className="relative aspect-[4/5] bg-sand/20 overflow-hidden mb-6"><img
+              <div className="relative aspect-[4/5] bg-sand/20 overflow-hidden mb-6">
+                <Image
                   src={collection.heroImage}
                   alt={collection.title}
-                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover group-hover:scale-105 transition-transform duration-700"
+                  quality={85}
                 />
               </div>
               

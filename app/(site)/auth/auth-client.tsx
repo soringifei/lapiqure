@@ -39,8 +39,8 @@ export default function AuthClient() {
         });
       }
       router.push('/');
-    } catch (err: any) {
-      const message = err.message || 'Authentication failed';
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Authentication failed';
       setError(message);
       toast({
         variant: "destructive",
@@ -63,8 +63,8 @@ export default function AuthClient() {
         description: "Welcome to LA PIQÛRE.",
       });
       router.push('/');
-    } catch (err: any) {
-      const message = err.message || 'Google sign-in failed';
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Google sign-in failed';
       setError(message);
       toast({
         variant: "destructive",

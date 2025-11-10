@@ -1,5 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function CollectionCard({
   title,
@@ -16,11 +17,14 @@ export default function CollectionCard({
 }) {
   return (
     <Link href={`/collections/${slug}`} className="group block hover:shadow-2xl hover:-translate-y-2 transition-all duration-700">
-      <div className="relative aspect-[4/5] bg-sand/20 overflow-hidden mb-6"><img
+      <div className="relative aspect-[4/5] bg-sand/20 overflow-hidden mb-6">
+        <Image
           src={heroImage}
           alt={title}
-          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-all duration-1000"
-          style={{ objectFit: 'cover' }}
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className="object-cover group-hover:scale-105 transition-all duration-1000"
+          quality={85}
         />
       </div>
       <div className="space-y-3">

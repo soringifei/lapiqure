@@ -7,6 +7,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { X } from 'lucide-react';
 import { useState } from 'react';
+import { Piece } from '@/lib/types';
 
 export default function WishlistPage() {
   const { items, removeItem } = useWishlist();
@@ -14,7 +15,7 @@ export default function WishlistPage() {
   const { toast } = useToast();
   const [imageLoading, setImageLoading] = useState<Record<string, boolean>>({});
 
-  const handleAddToCart = (piece: any) => {
+  const handleAddToCart = (piece: Piece) => {
     if (!piece.sizes || piece.sizes.length === 0) {
       toast({
         variant: "destructive",

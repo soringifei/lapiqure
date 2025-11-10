@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { ZoomIn, ZoomOut, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
@@ -65,14 +66,19 @@ export default function ImageLightbox({
             </>
           )}
 
-          <div className="w-full h-full flex items-center justify-center overflow-hidden p-16">
-            <img
-              src={images[currentIndex]}
-              alt={`${productName} - Image ${currentIndex + 1}`}
-              className="max-w-full max-h-full object-contain transition-transform duration-500 cursor-zoom-in"
-              style={{ transform: `scale(${zoom})` }}
-              onClick={toggleZoom}
-            />
+          <div className="relative w-full h-full flex items-center justify-center p-16">
+            <div className="relative w-full h-full" onClick={toggleZoom} style={{ cursor: 'zoom-in' }}>
+              <Image
+                src={images[currentIndex]}
+                alt={`${productName} - Image ${currentIndex + 1}`}
+                fill
+                sizes="100vw"
+                className="object-contain transition-transform duration-500"
+                style={{ transform: `scale(${zoom})` }}
+                quality={100}
+                priority
+              />
+            </div>
           </div>
 
           <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2 z-50">
