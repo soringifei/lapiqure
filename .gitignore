@@ -41,6 +41,8 @@ lighthouse-report*.json
 /public/images-backup
 
 # AI-generated documentation (keep local only)
+CONTRIBUTING.md
+.github/PULL_REQUEST_TEMPLATE.md
 CLEANUP_SUMMARY.md
 COLOR_MIGRATION.md
 COLOR_PALETTE.md
