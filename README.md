@@ -1,6 +1,6 @@
 # LA PIQÛRE
 
-Contemporary luxury fashion e-commerce platform.
+Fashion e-commerce platform.
 
 ## Tech Stack
 
