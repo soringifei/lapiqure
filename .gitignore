@@ -40,6 +40,14 @@ lighthouse-report*.json
 # image optimization backups
 /public/images-backup
 
+# utility scripts
+compress-*.js
+optimize-*.js
+optimize-*.ps1
+generate-*.js
+update-*.js
+run-*.ps1
+
 # AI-generated documentation (keep local only)
 CONTRIBUTING.md
 .github/PULL_REQUEST_TEMPLATE.md
