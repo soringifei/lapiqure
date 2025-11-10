@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import Hero from '@/components/hero';
+import Hero from '@/components/Hero';
 import SectionHeading from '@/components/section-heading';
 import PieceCard from '@/components/piece-card';
 import { sampleCollections, samplePieces } from '@/lib/sample-data';

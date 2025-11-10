@@ -1,4 +1,4 @@
-import Hero from '@/components/hero';
+import Hero from '@/components/Hero';
 import SectionHeading from '@/components/section-heading';
 import StoryBlock from '@/components/story-block';
 
