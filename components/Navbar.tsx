@@ -21,12 +21,12 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-20 sm:h-24">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 -ml-2 text-ink hover:text-ink-700 transition-colors"
+            className="lg:hidden p-2 -ml-2 text-ink hover:text-ink-700 transition-colors z-10"
           >
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
 
-          <Link href="/" aria-label="LA PIQÛRE" className="flex items-center">
+          <Link href="/" aria-label="LA PIQÛRE" className="flex items-center absolute left-1/2 -translate-x-1/2 lg:relative lg:left-auto lg:translate-x-0">
             <div className="relative h-5 sm:h-6 w-[100px] sm:w-[120px]">
               <Image src="/brand/logo.png" alt="LA PIQÛRE" fill sizes="120px" className="object-contain" priority />
             </div>
