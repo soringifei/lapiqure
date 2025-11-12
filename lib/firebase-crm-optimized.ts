@@ -228,6 +228,18 @@ export class OptimizedCRMService {
     })
   }
 
+  async addProduct(product: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
+    const docRef = doc(collection(this.db, 'crm_products'))
+    const now = Timestamp.now()
+    await setDoc(docRef, {
+      ...product,
+      createdAt: now,
+      updatedAt: now,
+    })
+    this.cache.delete(this.getCacheKey('products', ''))
+    return docRef.id
+  }
+
   async getCustomersByTier(tier: string): Promise<Customer[]> {
     return this.getCustomers([where('tier', '==', tier)])
   }
