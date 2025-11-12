@@ -1,18 +1,18 @@
 'use client';
 
-import { createContext, useContext, ReactNode } from 'react';
+import { createContext, useContext, ReactNode, useMemo } from 'react';
 import { Firestore } from 'firebase/firestore';
-import { CRMService } from '@/lib/firebase-crm';
+import { OptimizedCRMService } from '@/lib/firebase-crm-optimized';
 
 interface CRMContextType {
-  service: CRMService | null;
+  service: OptimizedCRMService | null;
   isLoading: boolean;
 }
 
 const CRMContext = createContext<CRMContextType | undefined>(undefined);
 
 export function CRMProvider({ children, db }: { children: ReactNode; db: Firestore }) {
-  const service = db ? new CRMService(db) : null;
+  const service = useMemo(() => (db ? new OptimizedCRMService(db) : null), [db])
 
   return (
     <CRMContext.Provider value={{ service, isLoading: !service }}>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo, memo } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
 import { useCRM } from '@/hooks/useCRM'
@@ -34,7 +34,7 @@ function MetricCard({ label, value, icon: Icon, trend }: MetricCardProps) {
   )
 }
 
-function RecentOrdersTable({ orders }: { orders: Order[] }) {
+const RecentOrdersTable = memo(function RecentOrdersTable({ orders }: { orders: Order[] }) {
   return (
     <div className="bg-card border border-border rounded overflow-hidden">
       <div className="p-6 border-b border-border">
@@ -68,9 +68,9 @@ function RecentOrdersTable({ orders }: { orders: Order[] }) {
       </div>
     </div>
   )
-}
+})
 
-function TopCustomersCard({ customers }: { customers: Customer[] }) {
+const TopCustomersCard = memo(function TopCustomersCard({ customers }: { customers: Customer[] }) {
   return (
     <div className="bg-card border border-border rounded">
       <div className="p-6 border-b border-border">
@@ -91,7 +91,7 @@ function TopCustomersCard({ customers }: { customers: Customer[] }) {
       </div>
     </div>
   )
-}
+})
 
 export default function CRMDashboard() {
   const router = useRouter()
