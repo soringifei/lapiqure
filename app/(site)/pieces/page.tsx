@@ -5,7 +5,8 @@ import EditorialStory from '@/components/editorial-story';
 
 export default function PiecesPage() {
   return (
-    <div className="min-h-screen"><section className="relative h-[70vh] overflow-hidden">
+    <div className="min-h-screen">
+      <section className="relative h-[70vh] overflow-hidden">
         <Image
           src="/images/oversized_green_faux_leather_pants1_opt.jpg"
           alt="LA PIQÛRE Collection"
@@ -31,7 +32,9 @@ export default function PiecesPage() {
             </p>
           </div>
         </div>
-      </section><section className="bg-sand/10 py-16">
+      </section>
+
+      <section className="bg-sand/10 py-16">
         <div className="max-w-7xl mx-auto px-8 lg:px-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div className="border-r border-ink/10 last:border-r-0">
@@ -68,9 +71,13 @@ export default function PiecesPage() {
             </div>
           </div>
         </div>
-      </section><section className="max-w-7xl mx-auto px-8 lg:px-12 py-24">
+      </section>
+
+      <section className="max-w-7xl mx-auto px-8 lg:px-12 py-24">
         <PiecesClient pieces={samplePieces} />
-      </section><EditorialStory
+      </section>
+
+      <EditorialStory
         title="Crafted in Our Atelier"
         subtitle="Heritage"
         description="Each piece passes through the hands of skilled artisans in our Paris atelier. We believe in the value of human touch—hand-finished seams, individually placed stitches, and careful attention to every detail that machines cannot replicate."

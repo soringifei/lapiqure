@@ -35,7 +35,8 @@ const locations = [
 
 export default function AtelierPage() {
   return (
-    <div className="min-h-screen"><section className="relative h-[75vh] overflow-hidden">
+    <div className="min-h-screen">
+      <section className="relative h-[75vh] overflow-hidden">
         <Image
           src="/images/faux_leather_mixed_with_embossed_zebra_leather_jacket1_optimized.jpg"
           alt="LA PIQÛRE Atelier"
@@ -63,7 +64,9 @@ export default function AtelierPage() {
             </div>
           </FadeIn>
         </div>
-       </section><section className="max-w-7xl mx-auto px-8 lg:px-12 py-32">
+      </section>
+
+      <section className="max-w-7xl mx-auto px-8 lg:px-12 py-32">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
           {locations.map((location, index) => (
             <FadeIn key={location.city} delay={index * 100}>
@@ -130,7 +133,9 @@ export default function AtelierPage() {
             </FadeIn>
           ))}
         </div>
-      </section><section className="bg-ink text-paper py-32">
+      </section>
+
+      <section className="bg-ink text-paper py-32">
         <div className="max-w-7xl mx-auto px-8 lg:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <FadeIn>

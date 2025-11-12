@@ -46,7 +46,8 @@ const lookbooks = [
 
 export default function LookbookPage() {
   return (
-    <div className="min-h-screen"><section className="relative h-screen">
+    <div className="min-h-screen">
+      <section className="relative h-screen">
         <Image
           src="/images/faux_leather_mixed_with_embossed_zebra_leather_jacket1_optimized.jpg"
           alt="LA PIQÛRE Lookbook"
@@ -74,7 +75,9 @@ export default function LookbookPage() {
             </div>
           </FadeIn>
         </div>
-      </section><section className="py-32 bg-paper">
+      </section>
+
+      <section className="py-32 bg-paper">
         <div className="max-w-3xl mx-auto px-8 lg:px-12 text-center">
           <FadeIn>
             <p className="font-display text-xs tracking-[0.3em] uppercase text-ink-700 mb-8">Editorial</p>
@@ -87,6 +90,8 @@ export default function LookbookPage() {
           </FadeIn>
         </div>
       </section>
+
+      <div>
 
         {lookbooks.map((lookbook, index) => (
           <section key={lookbook.id} className={index % 2 === 0 ? 'bg-paper' : 'bg-sand/5'}>
@@ -150,8 +155,9 @@ export default function LookbookPage() {
             </div>
           </section>
         ))}
+      </div>
 
-      </div><section className="bg-ink text-paper py-32">
+      <section className="bg-ink text-paper py-32">
         <div className="max-w-3xl mx-auto px-8 lg:px-12 text-center">
           <FadeIn>
             <p className="font-display text-xs tracking-[0.3em] uppercase text-paper/60 mb-8">Services</p>
