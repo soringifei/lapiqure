@@ -97,7 +97,8 @@ export default function LookbookPage() {
           <section key={lookbook.id} className={index % 2 === 0 ? 'bg-paper' : 'bg-sand/5'}>
             <div className="max-w-7xl mx-auto px-8 lg:px-12 py-32">
               <FadeIn delay={index * 50}>
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center"><div className={`lg:col-span-5 ${index % 2 === 1 ? 'lg:col-start-8' : ''}`}>
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+                  <div className={`lg:col-span-5 ${index % 2 === 1 ? 'lg:col-start-8' : ''}`}>
                     <div className="space-y-8">
                       <div>
                         <p className="font-display text-xs uppercase tracking-[0.3em] text-ink-700 mb-4">
@@ -123,7 +124,10 @@ export default function LookbookPage() {
                       </Link>
                     </div>
                   </div>
-                    <div className="grid grid-cols-12 gap-4"><div className="col-span-12 md:col-span-8">
+
+                  <div className={`lg:col-span-7 ${index % 2 === 1 ? 'lg:col-start-1 lg:row-start-1' : ''}`}>
+                    <div className="grid grid-cols-12 gap-4">
+                      <div className="col-span-12 md:col-span-8">
                         <div className="relative aspect-[4/5] overflow-hidden bg-sand/20 group">
                           <Image
                             src={lookbook.coverImage}
@@ -134,7 +138,9 @@ export default function LookbookPage() {
                             quality={90}
                           />
                         </div>
-                      </div><div className="col-span-12 md:col-span-4 space-y-4">
+                      </div>
+
+                      <div className="col-span-12 md:col-span-4 space-y-4">
                         {lookbook.images.slice(0, 2).map((img, imgIndex) => (
                           <div key={imgIndex} className="relative aspect-square overflow-hidden bg-sand/20 group">
                             <Image

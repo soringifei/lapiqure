@@ -70,7 +70,8 @@ export default function AtelierPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
           {locations.map((location, index) => (
             <FadeIn key={location.city} delay={index * 100}>
-              <div className="group border border-ink/10 hover:border-ink bg-paper hover:shadow-xl transition-all duration-500"><div className="p-8 pb-6">
+              <div className="group border border-ink/10 hover:border-ink bg-paper hover:shadow-xl transition-all duration-500">
+                <div className="p-8 pb-6">
                   <div className="flex items-start justify-between mb-6">
                     <div>
                       <span className="font-display text-xs uppercase tracking-[0.2em] text-ink-700 block mb-3">
@@ -85,6 +86,8 @@ export default function AtelierPage() {
                   
                   <div className="w-24 h-px bg-ink/20 mb-6" />
                 </div>
+
+                <div className="px-8 space-y-4">
                   <div className="flex items-start gap-3">
                     <MapPin className="h-4 w-4 text-ink-700 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
                     <div>
@@ -126,7 +129,9 @@ export default function AtelierPage() {
                       </a>
                     </div>
                   </div>
-                </div><div className="p-8 pt-8">
+                </div>
+
+                <div className="p-8 pt-8">
                   <AppointmentForm location={location.city} />
                 </div>
               </div>
