@@ -40,10 +40,12 @@ export default function CategoryMegaMenu() {
         <ChevronDown className={`h-3 w-3 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
-      <div className={`absolute top-full left-1/2 -translate-x-1/2 pt-4 transition-all duration-300 ${
+      <div className={`absolute top-full left-1/2 -translate-x-1/2 pt-4 transition-all duration-300 pointer-events-none ${
         isOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-4'
       }`}>
-        <div className="bg-paper border border-border shadow-2xl p-8">
+        <div className={`bg-paper border border-border shadow-2xl p-8 ${
+          isOpen ? 'pointer-events-auto' : 'pointer-events-none'
+        }`}>
           <div className="grid grid-cols-4 gap-6 min-w-[800px]">
             {categories.map((category) => (
               <Link

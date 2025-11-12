@@ -1,155 +1,183 @@
 import Hero from '@/components/Hero';
 import SectionHeading from '@/components/section-heading';
 import StoryBlock from '@/components/story-block';
+import Image from 'next/image';
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen">
-      <Hero
-        imageSrc="/images/turtleneck_sweater_with_intarsia_pattern5.jpg"
-        imageAlt="LA PIQÛRE Studio"
-        title="Our Story"
-        subtitle="About"
-        height="medium"
-      />
-
-      <section className="max-w-7xl mx-auto px-6 lg:px-8 py-24">
-        <div className="max-w-3xl mx-auto text-center">
-          <SectionHeading className="mb-6">Philosophy</SectionHeading>
-          <h2 className="font-display text-3xl md:text-4xl tracking-luxury text-ink mb-8">
-            Bold Materials. Contemporary Edge.
-          </h2>
-          <p className="font-sans text-base md:text-lg leading-relaxed text-ink-700">
-            Founded in 2020, LA PIQÛRE exists outside the traditional fashion calendar. 
-            We design with intention, source premium materials, and produce in limited runs. 
-            Each collection challenges convention through striking textures and architectural silhouettes.
-          </p>
+    <div className="min-h-screen bg-paper">
+      <section className="relative h-[70vh] lg:h-[80vh] overflow-hidden">
+        <Image
+          src="/images/turtleneck_sweater_with_intarsia_pattern5.jpg"
+          alt="LA PIQÛRE Studio"
+          fill
+          priority
+          className="object-cover"
+          quality={90}
+        />
+        <div className="absolute inset-0 bg-black/20" />
+        <div className="absolute inset-0 flex items-end justify-center pb-16 lg:pb-24">
+          <div className="text-center">
+            <h1 className="font-display text-5xl md:text-7xl lg:text-8xl tracking-[0.3em] uppercase text-paper mb-4">
+              Our Story
+            </h1>
+            <div className="w-24 h-px bg-paper/50 mx-auto" />
+          </div>
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-6 lg:px-8 py-16">
-        <StoryBlock
-          imageSrc="/images/faux_leather_cropped_pants4.jpeg"
-          imageAlt="Premium materials"
-          title="Material First"
-          content="We begin every collection with material research. Premium faux leathers, distressed knits, embossed textures—each fabric is chosen for its character and durability. We work with specialized suppliers who share our commitment to quality and innovation."
-          imagePosition="left"
-        />
-      </section>
-
-      <section className="max-w-7xl mx-auto px-6 lg:px-8 py-16">
-        <StoryBlock
-          imageSrc="/images/cropped_sleeveless_top_with_zipper_&_flat_silver_studs4.jpg"
-          imageAlt="LA PIQÛRE craftsmanship"
-          title="Small Scale by Choice"
-          content="Our studio operates with a focused team dedicated to quality. This allows us to maintain complete control over every detail—from initial design to final finishing. We reject mass production in favor of considered craftsmanship and limited releases."
-          imagePosition="right"
-        />
-      </section>
-
-      <section className="max-w-7xl mx-auto px-6 lg:px-8 py-16">
-        <StoryBlock
-          imageSrc="/images/oversized_green_faux_leather_pants2.jpg"
-          imageAlt="Archive pieces"
-          title="Design for Longevity"
-          content="We design garments to transcend trends. Bold silhouettes, premium construction, and materials that age with character. Each piece is engineered to become more personal over time—softening, molding, developing patina. Built to be worn, not replaced."
-          imagePosition="left"
-        />
-      </section>
-
-      <section className="max-w-7xl mx-auto px-6 lg:px-8 py-24">
-        <div className="max-w-3xl mx-auto">
-          <SectionHeading className="mb-6 text-center">Our Commitment</SectionHeading>
-          <h2 className="font-display text-3xl md:text-4xl tracking-luxury text-ink mb-12 text-center">
-            Responsible by Design
-          </h2>
+      <section className="py-24 lg:py-32">
+        <div className="max-w-5xl mx-auto px-8 lg:px-12">
+          <div className="text-center mb-20">
+            <div className="relative h-8 w-[160px] mx-auto mb-12">
+              <Image 
+                src="/brand/logo.png" 
+                alt="LA PIQÛRE" 
+                fill 
+                className="object-contain"
+              />
+            </div>
+            <h2 className="font-display text-2xl md:text-3xl tracking-[0.2em] uppercase text-ink mb-12">
+              The Sting That Awakens
+            </h2>
+            <div className="w-32 h-px bg-ink/20 mx-auto mb-12" />
+          </div>
           
-          <div className="space-y-8 font-sans text-base leading-relaxed text-ink-700">
+          <div className="max-w-3xl mx-auto space-y-8 font-sans text-base md:text-lg leading-relaxed text-ink text-center">
             <p>
-              LA PIQÛRE approaches fashion with intention. We reject the cycle of overproduction 
-              and disposability that defines the industry. Instead, we focus on creating pieces 
-              that justify their existence through quality, design integrity, and lasting value.
+              Born from the belief that fashion holds the power to transform the way we see ourselves, 
+              LA PIQÛRE merges bold design with refined craftsmanship. Each piece is thoughtfully 
+              created using premium materials that embody both strength and sophistication.
             </p>
             
             <p>
-              Our commitment begins with material selection. We prioritize premium faux leathers 
-              and synthetic alternatives that offer durability without compromise. By choosing 
-              innovative materials over traditional leather, we reduce environmental impact while 
-              maintaining the textures and finishes our designs demand.
-            </p>
-            
-            <p>
-              Limited production is central to our model. Each collection is released in small runs, 
-              ensuring we never overproduce. This approach reduces waste, allows for meticulous quality 
-              control, and creates pieces that retain their value. We believe scarcity has purpose when 
-              it serves design and sustainability equally.
-            </p>
-            
-            <p>
-              We design for extended wear. Every garment is engineered with reinforced construction, 
-              premium hardware, and materials chosen for their ability to develop character over time. 
-              Our pieces are built to soften, mold, and evolve—becoming more personal with age rather 
-              than deteriorating into obsolescence.
-            </p>
-            
-            <p>
-              Transparency matters. We work directly with specialized suppliers and maintain complete 
-              oversight of our production process. Our studio-scale operations allow us to know exactly 
-              where our materials originate and how each piece is constructed. No middlemen, no mystery.
-            </p>
-            
-            <p className="font-display text-lg tracking-luxury text-ink pt-6">
-              Fashion doesn&apos;t need to be disposable. We prove that with every collection.
+              The name symbolizes the sting that awakens—a reminder of resilience, growth, 
+              and the power of self-expression. Founded from a personal journey, our mission 
+              is to design pieces that ignite inner strength.
             </p>
           </div>
         </div>
       </section>
 
-      <section className="bg-sand/10 py-24 mt-24">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+      <section className="bg-sand/5 py-24 lg:py-32">
+        <div className="max-w-6xl mx-auto px-8 lg:px-12">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-16 lg:gap-20">
+            <div className="text-center">
+              <div className="w-16 h-16 border border-ink/20 mx-auto mb-8 flex items-center justify-center">
+                <span className="font-display text-2xl text-ink">01</span>
+              </div>
+              <h3 className="font-display text-sm tracking-[0.3em] uppercase text-ink mb-6">
+                Material First
+              </h3>
+              <p className="font-sans text-sm leading-relaxed text-ink-700">
+                Premium faux leathers, distressed knits, embossed textures—each fabric chosen for character and durability.
+              </p>
+            </div>
+            
+            <div className="text-center">
+              <div className="w-16 h-16 border border-ink/20 mx-auto mb-8 flex items-center justify-center">
+                <span className="font-display text-2xl text-ink">02</span>
+              </div>
+              <h3 className="font-display text-sm tracking-[0.3em] uppercase text-ink mb-6">
+                Atelier Craft
+              </h3>
+              <p className="font-sans text-sm leading-relaxed text-ink-700">
+                Small-scale production with complete control over every detail. Considered craftsmanship, limited releases.
+              </p>
+            </div>
+            
+            <div className="text-center">
+              <div className="w-16 h-16 border border-ink/20 mx-auto mb-8 flex items-center justify-center">
+                <span className="font-display text-2xl text-ink">03</span>
+              </div>
+              <h3 className="font-display text-sm tracking-[0.3em] uppercase text-ink mb-6">
+                Timeless Design
+              </h3>
+              <p className="font-sans text-sm leading-relaxed text-ink-700">
+                Pieces engineered to transcend trends. Premium construction that develops character over time.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <section className="py-0">
+        <div className="grid grid-cols-1 md:grid-cols-2">
+          <div className="relative aspect-square">
+            <Image
+              src="/images/faux_leather_cropped_pants4.jpeg"
+              alt="Craftsmanship"
+              fill
+              className="object-cover"
+              quality={90}
+            />
+          </div>
+          <div className="relative aspect-square">
+            <Image
+              src="/images/cropped_sleeveless_top_with_zipper_&_flat_silver_studs4.jpg"
+              alt="Materials"
+              fill
+              className="object-cover"
+              quality={90}
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className="py-24 lg:py-32 bg-paper">
+        <div className="max-w-4xl mx-auto px-8 lg:px-12 text-center">
+          <h2 className="font-display text-2xl md:text-3xl tracking-[0.2em] uppercase text-ink mb-12">
+            Savoir-Faire
+          </h2>
+          <div className="w-32 h-px bg-ink/20 mx-auto mb-16" />
+          
+          <div className="max-w-2xl mx-auto space-y-8 font-sans text-base leading-relaxed text-ink-700">
+            <p>
+              Each collection is released in small runs, ensuring meticulous quality control. 
+              We work directly with specialized suppliers, maintaining complete oversight 
+              of our production process.
+            </p>
+            
+            <p>
+              Premium materials chosen for durability and character. Reinforced construction 
+              designed to develop patina over time. Built to be worn, not replaced.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-t border-ink/10 py-16">
+        <div className="max-w-7xl mx-auto px-8 lg:px-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
-            <div>
-              <h3 className="font-display text-2xl tracking-luxury text-ink mb-4">
-                Est. 2020
-              </h3>
-              <p className="font-sans text-sm text-ink-700">
-                Founded with a focus on bold materials and contemporary design
-              </p>
+            <div className="border-r border-ink/10 last:border-r-0">
+              <p className="font-display text-4xl text-ink mb-3">2020</p>
+              <p className="font-display text-xs tracking-[0.2em] uppercase text-ink-700">Founded</p>
+            </div>
+            <div className="border-r border-ink/10 last:border-r-0">
+              <p className="font-display text-4xl text-ink mb-3">Paris</p>
+              <p className="font-display text-xs tracking-[0.2em] uppercase text-ink-700">Atelier</p>
             </div>
             <div>
-              <h3 className="font-display text-2xl tracking-luxury text-ink-900 mb-4">
-                Small Team
-              </h3>
-              <p className="font-sans text-sm text-ink-700">
-                Focused studio structure allowing for complete quality control
-              </p>
-            </div>
-            <div>
-              <h3 className="font-display text-2xl tracking-luxury text-ink-900 mb-4">
-                2 Collections/Year
-              </h3>
-              <p className="font-sans text-sm text-ink-700">
-                Limited seasonal releases plus ongoing archive pieces
-              </p>
+              <p className="font-display text-4xl text-ink mb-3">2/Year</p>
+              <p className="font-display text-xs tracking-[0.2em] uppercase text-ink-700">Collections</p>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-6 lg:px-8 py-24">
-        <div className="text-center max-w-2xl mx-auto">
-          <SectionHeading className="mb-6">Visit Us</SectionHeading>
-          <h3 className="font-display text-2xl md:text-3xl tracking-luxury text-ink-900 mb-6">
-            Studio & Showroom
-          </h3>
-          <p className="font-sans text-base leading-relaxed text-ink-700 mb-8">
-            Our studio is open by appointment for fittings, consultations, and 
-            private viewings of current and archive collections.
+      <section className="py-24 lg:py-32 bg-ink text-paper">
+        <div className="max-w-4xl mx-auto px-8 lg:px-12 text-center">
+          <h2 className="font-display text-2xl md:text-3xl tracking-[0.2em] uppercase mb-12">
+            Private Atelier
+          </h2>
+          <div className="w-32 h-px bg-paper/30 mx-auto mb-12" />
+          <p className="font-sans text-sm md:text-base leading-relaxed text-paper/80 mb-12 max-w-xl mx-auto">
+            By appointment only for private viewings, fittings, and consultations.
           </p>
-          <div className="space-y-2 font-sans text-sm text-ink-700">
-            <p>15 Rue de la Pierre Levée</p>
-            <p>75011 Paris, France</p>
-            <p className="pt-4">contact@lapiqure.com</p>
+          <div className="space-y-2 font-sans text-sm text-paper/70">
+            <p className="tracking-wide">15 Rue de la Pierre Levée</p>
+            <p className="tracking-wide">75011 Paris</p>
+            <p className="pt-6 tracking-wide">contact@lapiqure.com</p>
           </div>
         </div>
       </section>

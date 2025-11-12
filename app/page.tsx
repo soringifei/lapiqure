@@ -33,10 +33,10 @@ export default function Home() {
           className="object-cover"
           quality={75}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/60" />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center">
-            <div className="relative h-8 sm:h-10 w-[180px] sm:w-[220px] mx-auto mb-6">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/80" />
+        <div className="absolute inset-0 flex items-end justify-center pb-24">
+          <div className="text-center px-8">
+            <div className="relative h-8 sm:h-10 w-[180px] sm:w-[220px] mx-auto mb-8">
               <Image 
                 src="/brand/logo.png" 
                 alt="LA PIQÛRE" 
@@ -47,26 +47,28 @@ export default function Home() {
                 priority 
               />
             </div>
-            <h1 className="font-display text-6xl md:text-8xl lg:text-9xl tracking-[0.2em] uppercase text-paper drop-shadow-2xl">
+            <h1 className="font-display text-6xl md:text-8xl lg:text-9xl tracking-[0.25em] uppercase text-paper drop-shadow-2xl mb-6">
               AW 2024
             </h1>
+            <div className="w-32 h-px bg-paper/30 mx-auto" />
           </div>
         </div>
       </div>
 
-      <section className="max-w-7xl mx-auto px-8 lg:px-12 py-48 lg:py-64">
-        <div className="max-w-2xl">
-          <SectionHeading className="mb-12">Our Philosophy</SectionHeading>
-          <h2 className="font-display text-5xl md:text-6xl lg:text-7xl tracking-[0.15em] text-ink mb-16 leading-tight">
+      <section className="max-w-7xl mx-auto px-8 lg:px-12 py-32">
+        <div className="max-w-2xl mx-auto text-center">
+          <p className="font-display text-xs tracking-[0.3em] uppercase text-ink-700 mb-8">Our Philosophy</p>
+          <h2 className="font-display text-5xl md:text-6xl lg:text-7xl tracking-[0.2em] uppercase text-ink mb-8 leading-tight">
             Material. Craft. Time.
           </h2>
-          <p className="font-sans text-sm leading-loose text-ink-700 mb-8">
+          <div className="w-32 h-px bg-ink/20 mx-auto mb-12" />
+          <p className="font-sans text-base leading-relaxed text-ink-700 mb-8">
             We design with restraint. Each collection begins with material research—working 
             directly with mills and artisans to understand the properties of fiber, weave, 
             and finish. The result is garments that improve with age, tell stories through 
             wear, and reject the cycle of disposability.
           </p>
-          <p className="font-sans text-sm leading-loose text-ink-700">
+          <p className="font-sans text-base leading-relaxed text-ink-700">
             Our atelier operates on a small scale by choice. Limited production allows us 
             to control quality, minimize waste, and maintain relationships with every maker 
             in our supply chain. This is slow luxury—thoughtful, enduring, intentional.
@@ -74,19 +76,19 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-sand/10 py-48 lg:py-64">
+      <section className="bg-sand/10 py-32">
         <div className="max-w-7xl mx-auto px-8 lg:px-12">
-          <div className="flex items-center justify-between mb-16">
-            <SectionHeading>Featured Pieces</SectionHeading>
+          <div className="flex items-center justify-between mb-20">
+            <p className="font-display text-xs tracking-[0.3em] uppercase text-ink-700">Featured Pieces</p>
             <a 
               href="/pieces" 
-              className="text-xs font-sans tracking-editorial uppercase text-ink-800 hover:text-ink transition-colors"
+              className="font-display text-xs uppercase tracking-[0.15em] text-ink-800 hover:text-ink transition-colors"
             >
               View All
             </a>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-24">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
             {featuredPieces.map((piece) => (
               <PieceCard
                 key={piece.id}
@@ -106,53 +108,47 @@ export default function Home() {
       
       <CraftProcess />
 
-      <section className="max-w-7xl mx-auto px-8 lg:px-12 py-48">
+      <section className="max-w-7xl mx-auto px-8 lg:px-12 py-32">
         <div className="text-center max-w-2xl mx-auto">
-          <SectionHeading className="mb-6">Exclusive Access</SectionHeading>
-          <h3 className="font-display text-3xl md:text-4xl lg:text-5xl tracking-luxury text-ink mb-6">
+          <p className="font-display text-xs tracking-[0.3em] uppercase text-ink-700 mb-8">Exclusive Access</p>
+          <h3 className="font-display text-4xl md:text-5xl lg:text-6xl tracking-[0.15em] uppercase text-ink mb-8">
             Members-Only Collection
           </h3>
-          <p className="font-sans text-sm leading-relaxed text-ink-700 mb-10">
+          <div className="w-32 h-px bg-ink/20 mx-auto mb-10" />
+          <p className="font-sans text-base leading-relaxed text-ink-700 mb-10">
             {user 
               ? 'Welcome back. Browse exclusive pieces available only to members.'
               : 'Early access to new releases, private archive viewings, and exclusive pieces.'}
           </p>
           
           {!user && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 text-left">
-              <div className="space-y-2">
-                <div className="w-8 h-8 border border-ink/20 flex items-center justify-center mb-3">
-                  <svg className="w-4 h-4 text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  </svg>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+              <div className="text-center">
+                <div className="w-12 h-12 border border-ink/20 flex items-center justify-center mx-auto mb-4">
+                  <div className="font-display text-lg text-ink">01</div>
                 </div>
-                <h4 className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink">Early Access</h4>
-                <p className="font-sans text-xs leading-relaxed text-ink/60">
+                <h4 className="font-display text-xs uppercase tracking-[0.2em] text-ink mb-3">Early Access</h4>
+                <p className="font-sans text-sm leading-relaxed text-ink-700">
                   First view of new collections and archive pieces
                 </p>
               </div>
               
-              <div className="space-y-2">
-                <div className="w-8 h-8 border border-ink/20 flex items-center justify-center mb-3">
-                  <svg className="w-4 h-4 text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-                  </svg>
+              <div className="text-center">
+                <div className="w-12 h-12 border border-ink/20 flex items-center justify-center mx-auto mb-4">
+                  <div className="font-display text-lg text-ink">02</div>
                 </div>
-                <h4 className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink">Customization</h4>
-                <p className="font-sans text-xs leading-relaxed text-ink/60">
+                <h4 className="font-display text-xs uppercase tracking-[0.2em] text-ink mb-3">Customization</h4>
+                <p className="font-sans text-sm leading-relaxed text-ink-700">
                   Bespoke embroidery and monogramming services
                 </p>
               </div>
               
-              <div className="space-y-2">
-                <div className="w-8 h-8 border border-ink/20 flex items-center justify-center mb-3">
-                  <svg className="w-4 h-4 text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                  </svg>
+              <div className="text-center">
+                <div className="w-12 h-12 border border-ink/20 flex items-center justify-center mx-auto mb-4">
+                  <div className="font-display text-lg text-ink">03</div>
                 </div>
-                <h4 className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink">Exclusive Pieces</h4>
-                <p className="font-sans text-xs leading-relaxed text-ink/60">
+                <h4 className="font-display text-xs uppercase tracking-[0.2em] text-ink mb-3">Exclusive Pieces</h4>
+                <p className="font-sans text-sm leading-relaxed text-ink-700">
                   Access to limited edition and one-of-a-kind garments
                 </p>
               </div>
@@ -162,14 +158,14 @@ export default function Home() {
           {user ? (
             <Link
               href="/pieces"
-              className="inline-block bg-ink text-paper px-10 py-4 text-sm font-sans tracking-editorial uppercase hover:bg-ink-800 hover:shadow-2xl hover:scale-105 transition-all duration-500"
+              className="inline-block bg-ink text-paper px-10 py-4 font-display text-xs uppercase tracking-[0.15em] hover:bg-ink-800 transition-all"
             >
               View Collection
             </Link>
           ) : (
             <Link
               href="/auth" 
-              className="inline-block bg-ink text-paper px-10 py-4 text-sm font-sans tracking-editorial uppercase hover:bg-ink-800 hover:shadow-2xl hover:scale-105 transition-all duration-500"
+              className="inline-block bg-ink text-paper px-10 py-4 font-display text-xs uppercase tracking-[0.15em] hover:bg-ink-800 transition-all"
             >
               Request Access
             </Link>

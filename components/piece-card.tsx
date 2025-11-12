@@ -57,7 +57,7 @@ export default function PieceCard({
     <>
       <Link 
         href={`/pieces/${slug}`} 
-        className="group block transition-all duration-700"
+        className="group block"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -68,8 +68,8 @@ export default function PieceCard({
           alt={name}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className={`object-cover transition-all duration-700 ease-out ${
-            isHovered ? 'opacity-0 scale-105' : 'opacity-100 scale-100'
+          className={`object-cover transition-all duration-1000 ease-in-out ${
+            isHovered ? 'opacity-0 scale-[1.03]' : 'opacity-100 scale-100'
           }`}
           style={{ objectFit: 'cover' }}
           quality={80}
@@ -81,8 +81,8 @@ export default function PieceCard({
             alt={`${name} alternate view`}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className={`object-cover transition-all duration-700 ease-out ${
-              isHovered ? 'opacity-100 scale-105' : 'opacity-0 scale-100'
+            className={`object-cover transition-all duration-1000 ease-in-out ${
+              isHovered ? 'opacity-100 scale-[1.03]' : 'opacity-0 scale-100'
             }`}
             style={{ objectFit: 'cover' }}
             quality={75}
@@ -115,7 +115,7 @@ export default function PieceCard({
             </button>
             <button
               onClick={handleQuickView}
-              className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-paper/90 backdrop-blur-sm hover:bg-paper transition-all duration-300 opacity-0 group-hover:opacity-100 flex items-center gap-2"
+              className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-paper/90 backdrop-blur-sm hover:bg-paper transition-all duration-500 opacity-0 group-hover:opacity-100 flex items-center gap-2"
             >
               <Eye className="h-4 w-4 text-ink" />
               <span className="text-xs font-sans tracking-editorial uppercase text-ink">Quick View</span>

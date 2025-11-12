@@ -26,7 +26,7 @@ export default function Navbar() {
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
 
-          <Link href="/" aria-label="LA PIQÛRE" className="flex items-center absolute left-1/2 -translate-x-1/2 lg:relative lg:left-auto lg:translate-x-0">
+          <Link href="/" aria-label="LA PIQÛRE" className="flex items-center absolute left-1/2 -translate-x-1/2 lg:relative lg:left-auto lg:translate-x-0 z-20">
             <div className="relative h-5 sm:h-6 w-[100px] sm:w-[120px]">
               <Image src="/brand/logo.png" alt="LA PIQÛRE" fill sizes="120px" className="object-contain" priority />
             </div>
@@ -91,7 +91,7 @@ export default function Navbar() {
                 <button className="p-2 text-ink-700 hover:text-ink transition-colors">
                   <User className="h-4 w-4" />
                 </button>
-                <div className="absolute right-0 top-full mt-2 w-48 bg-paper border border-ink/10 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                <div className="absolute right-0 top-full mt-2 w-48 bg-paper border border-ink/10 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
                   <Link
                     href="/account"
                     className="block px-6 py-3 text-xs font-display uppercase tracking-wide text-ink-700 hover:bg-sand/10 hover:text-ink transition-colors"

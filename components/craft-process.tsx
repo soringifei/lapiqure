@@ -39,23 +39,23 @@ const processSteps: ProcessStep[] = [
 
 export default function CraftProcess() {
   return (
-    <section className="py-32 bg-paper">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <FadeIn className="text-center mb-20">
-          <p className="font-mono text-xs uppercase tracking-wide text-ink-700 mb-4">
+    <section className="py-24 lg:py-32 bg-paper">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <FadeIn className="text-center mb-16">
+          <p className="font-display text-xs uppercase tracking-wide text-ink-700 mb-4">
             The Atelier
           </p>
           <h2 className="font-display text-4xl md:text-5xl tracking-luxury text-ink mb-6">
             Our Process
           </h2>
-          <p className="font-mono text-sm text-ink-700 max-w-2xl mx-auto leading-relaxed">
-            EACH PIECE PASSES THROUGH FOUR STAGES OF METICULOUS CRAFT. 
-            FROM MATERIAL SELECTION TO FINAL INSPECTION, WE HONOR TRADITIONAL 
-            TECHNIQUES WHILE EMBRACING MODERN SUSTAINABILITY.
+          <p className="font-sans text-base text-ink-700 max-w-2xl mx-auto leading-relaxed">
+            Each piece passes through four stages of meticulous craft. 
+            From material selection to final inspection, we honor traditional 
+            techniques while embracing modern sustainability.
           </p>
         </FadeIn>
 
-        <div className="space-y-32">
+        <div className="space-y-24">
           {processSteps.map((step, index) => (
             <FadeIn key={step.number} delay={index * 100}>
               <div className={`grid grid-cols-1 lg:grid-cols-2 gap-16 items-center ${
@@ -81,11 +81,11 @@ export default function CraftProcess() {
                     </span>
                   </div>
                   
-                  <h3 className="font-mono text-xl uppercase tracking-wide text-ink">
+                  <h3 className="font-display text-xl uppercase tracking-wide text-ink">
                     {step.title}
                   </h3>
                   
-                  <p className="font-mono text-sm leading-relaxed text-ink-700 max-w-xl">
+                  <p className="font-sans text-base leading-relaxed text-ink-700 max-w-xl">
                     {step.description}
                   </p>
                 </div>
@@ -94,16 +94,16 @@ export default function CraftProcess() {
           ))}
         </div>
 
-        <FadeIn delay={400} className="mt-32 text-center">
-          <div className="inline-block border border-ink p-8 bg-background">
-            <p className="font-mono text-xs uppercase tracking-wide text-ink mb-4">
+        <FadeIn delay={400} className="mt-24 text-center">
+          <div className="inline-block border border-ink p-8 bg-paper">
+            <p className="font-display text-xs uppercase tracking-wide text-ink mb-4">
               Production Time
             </p>
-            <p className="font-mono text-4xl text-ink mb-2">
-              14-21 DAYS
+            <p className="font-display text-4xl text-ink mb-2">
+              14-21 Days
             </p>
-            <p className="font-mono text-[10px] text-ink-700">
-              FROM CUT TO COMPLETION
+            <p className="font-sans text-xs text-ink-700 uppercase tracking-wide">
+              From Cut to Completion
             </p>
           </div>
         </FadeIn>

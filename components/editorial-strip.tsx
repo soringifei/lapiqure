@@ -12,31 +12,37 @@ interface EditorialStripProps {
 
 export default function EditorialStrip({ images, title }: EditorialStripProps) {
   return (
-    <section className="py-32 bg-gradient-to-b from-transparent via-sand/5 to-transparent">
-      {title && (
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 mb-12">
-          <h2 className="font-display text-xs tracking-luxury uppercase text-ink-800">
-            {title}
-          </h2>
-        </div>
-      )}
-      
-      <div className="flex overflow-x-auto gap-8 px-6 lg:px-8 pb-4 scrollbar-hide justify-center">
-        {images.map((image, index) => (
-          <div 
-            key={index} 
-            className="relative flex-shrink-0 w-[450px] h-[600px] bg-sand/20 overflow-hidden hover:shadow-2xl transition-shadow duration-700 group"
-          >
-            <Image
-              src={image.src}
-              alt={image.alt}
-              fill
-              sizes="450px"
-              className="object-cover group-hover:scale-110 transition-all duration-700"
-              quality={85}
-            />
+    <section className="py-32 lg:py-40 bg-gradient-to-b from-transparent via-sand/5 to-transparent">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        {title && (
+          <div className="mb-12 text-center">
+            <h2 className="font-display text-xs tracking-wide uppercase text-ink-800">
+              {title}
+            </h2>
           </div>
-        ))}
+        )}
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+          {images.map((image, index) => (
+            <div 
+              key={index} 
+              className="relative aspect-[3/4] bg-sand/20 overflow-hidden group animate-in fade-in slide-in-from-bottom-8 duration-700"
+              style={{
+                animationDelay: `${index * 100}ms`,
+                animationFillMode: 'both'
+              }}
+            >
+              <Image
+                src={image.src}
+                alt={image.alt}
+                fill
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                className="object-cover group-hover:scale-105 transition-transform duration-700"
+                quality={85}
+              />
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

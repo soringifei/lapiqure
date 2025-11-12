@@ -61,45 +61,47 @@ export default function LookbookPage() {
         <div className="absolute inset-0 flex items-end justify-center pb-24">
           <FadeIn>
             <div className="text-center px-8">
-              <p className="font-display text-sm tracking-[0.3em] uppercase text-paper/80 mb-4">
+              <p className="font-display text-sm tracking-[0.3em] uppercase text-paper/80 mb-6">
                 AW 2024
               </p>
               <h1 className="font-display text-6xl md:text-8xl lg:text-9xl tracking-[0.25em] uppercase text-paper mb-6">
                 Lookbook
               </h1>
-              <p className="font-sans text-base text-paper/70 max-w-md mx-auto leading-relaxed">
+              <div className="w-32 h-px bg-paper/30 mx-auto mb-6" />
+              <p className="font-sans text-base text-paper/70 max-w-xl mx-auto leading-relaxed">
                 Curated visual narratives exploring design, material, and form
               </p>
             </div>
           </FadeIn>
         </div>
-      </section><section className="py-24 bg-paper">
-        <div className="max-w-4xl mx-auto px-8 lg:px-12 text-center">
+      </section><section className="py-32 bg-paper">
+        <div className="max-w-3xl mx-auto px-8 lg:px-12 text-center">
           <FadeIn>
-            <SectionHeading className="mb-8">Editorial</SectionHeading>
-            <p className="font-sans text-lg leading-relaxed text-ink-700 max-w-2xl mx-auto">
+            <p className="font-display text-xs tracking-[0.3em] uppercase text-ink-700 mb-8">Editorial</p>
+            <div className="w-32 h-px bg-ink/20 mx-auto mb-12" />
+            <p className="font-sans text-base leading-relaxed text-ink-700 max-w-2xl mx-auto">
               Each lookbook explores a distinct aesthetic vision, showcasing how our pieces 
               come together to create complete statements. From urban elegance to quiet power, 
               discover the stories behind the collections.
             </p>
           </FadeIn>
         </div>
-      </section><div>
+      </section>
 
         {lookbooks.map((lookbook, index) => (
           <section key={lookbook.id} className={index % 2 === 0 ? 'bg-paper' : 'bg-sand/5'}>
             <div className="max-w-7xl mx-auto px-8 lg:px-12 py-32">
               <FadeIn delay={index * 50}>
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center"><div className={`lg:col-span-5 ${index % 2 === 1 ? 'lg:col-start-8' : ''}`}>
-                    <div className="space-y-6">
+                    <div className="space-y-8">
                       <div>
-                        <p className="font-mono text-[9px] uppercase tracking-wide text-ink-700 mb-3">
+                        <p className="font-display text-xs uppercase tracking-[0.3em] text-ink-700 mb-4">
                           {lookbook.season}
                         </p>
-                        <h2 className="font-display text-5xl md:text-6xl tracking-luxury text-ink mb-6 uppercase">
+                        <h2 className="font-display text-5xl md:text-6xl tracking-[0.15em] text-ink mb-6 uppercase">
                           {lookbook.title}
                         </h2>
-                        <div className="w-16 h-px bg-ink/20 mb-6" />
+                        <div className="w-24 h-px bg-ink/20 mb-6" />
                         <p className="font-sans text-base leading-relaxed text-ink-700">
                           {lookbook.description}
                         </p>
@@ -107,7 +109,7 @@ export default function LookbookPage() {
 
                       <Link
                         href="/pieces"
-                        className="inline-flex items-center gap-2 px-8 py-3 border border-ink/20 text-ink hover:border-ink hover:bg-sand/5 transition-all font-mono text-xs uppercase tracking-wide group"
+                        className="inline-flex items-center gap-2 px-8 py-3 border border-ink/20 text-ink hover:border-ink hover:bg-sand/5 transition-all font-display text-xs uppercase tracking-[0.15em] group"
                       >
                         <span>Explore Collection</span>
                         <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -115,7 +117,7 @@ export default function LookbookPage() {
                         </svg>
                       </Link>
                     </div>
-                  </div><div className={`lg:col-span-7 ${index % 2 === 1 ? 'lg:col-start-1 lg:row-start-1' : ''}`}>
+                  </div>
                     <div className="grid grid-cols-12 gap-4"><div className="col-span-12 md:col-span-8">
                         <div className="relative aspect-[4/5] overflow-hidden bg-sand/20 group">
                           <Image
@@ -150,20 +152,21 @@ export default function LookbookPage() {
         ))}
 
       </div><section className="bg-ink text-paper py-32">
-        <div className="max-w-4xl mx-auto px-8 lg:px-12 text-center">
+        <div className="max-w-3xl mx-auto px-8 lg:px-12 text-center">
           <FadeIn>
-            <SectionHeading className="mb-8 text-paper/70">Services</SectionHeading>
-            <h3 className="font-display text-4xl md:text-5xl tracking-luxury text-paper mb-8 uppercase">
+            <p className="font-display text-xs tracking-[0.3em] uppercase text-paper/60 mb-8">Services</p>
+            <h3 className="font-display text-4xl md:text-5xl tracking-[0.15em] text-paper mb-8 uppercase">
               Private Styling
             </h3>
+            <div className="w-32 h-px bg-paper/20 mx-auto mb-12" />
             <p className="font-sans text-base leading-relaxed text-paper/70 max-w-2xl mx-auto mb-12">
-              Book a private styling session with our team to create your personalized look. 
-              Explore how pieces from different collections work together to express your unique aesthetic.
+              By appointment only. Discover how pieces from different collections 
+              work together to express your unique aesthetic.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/atelier"
-                className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-paper text-ink hover:bg-paper/90 transition-all font-mono text-xs uppercase tracking-wide"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-paper text-ink hover:bg-paper/90 transition-all font-display text-xs uppercase tracking-[0.15em]"
               >
                 Book Appointment
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -172,7 +175,7 @@ export default function LookbookPage() {
               </Link>
               <Link
                 href="/pieces"
-                className="inline-flex items-center justify-center gap-2 px-8 py-3 border border-paper/20 text-paper hover:border-paper hover:bg-paper/5 transition-all font-mono text-xs uppercase tracking-wide"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 border border-paper/20 text-paper hover:border-paper hover:bg-paper/5 transition-all font-display text-xs uppercase tracking-[0.15em]"
               >
                 Browse Collection
               </Link>

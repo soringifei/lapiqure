@@ -214,7 +214,7 @@ export default function FAQPage() {
                   setActiveCategory(index);
                   setExpandedItems(new Set());
                 }}
-                className={`font-mono text-xs uppercase tracking-wide px-4 py-2 transition-all duration-300 ${
+                className={`font-display text-xs uppercase tracking-wide px-4 py-2 transition-all duration-300 ${
                   activeCategory === index
                     ? 'bg-ink text-paper'
                     : 'border border-ink/20 text-ink hover:border-ink'
@@ -235,7 +235,7 @@ export default function FAQPage() {
           
           <button
             onClick={expandedItems.size === faqData[activeCategory].items.length ? collapseAll : expandAll}
-            className="font-mono text-xs uppercase tracking-wide text-ink-700 hover:text-ink transition-colors"
+            className="font-display text-xs uppercase tracking-wide text-ink-700 hover:text-ink transition-colors"
           >
             {expandedItems.size === faqData[activeCategory].items.length ? 'Collapse All' : 'Expand All'}
           </button>
@@ -248,7 +248,7 @@ export default function FAQPage() {
                 onClick={() => toggleItem(index)}
                 className="w-full px-8 py-6 flex items-center justify-between text-left hover:bg-sand/5 transition-colors"
               >
-                <span className="font-mono text-sm uppercase tracking-wide text-ink pr-8">
+                <span className="font-display text-sm uppercase tracking-wide text-ink pr-8">
                   {item.question}
                 </span>
                 <ChevronDown
@@ -280,7 +280,7 @@ export default function FAQPage() {
           </p>
           <a
             href="mailto:contact@lapiqure.com"
-            className="inline-block px-8 py-3 bg-ink text-paper font-mono text-xs uppercase tracking-wide hover:bg-ink-800 transition-all"
+            className="inline-block px-8 py-3 bg-ink text-paper font-display text-xs uppercase tracking-wide hover:bg-ink-800 transition-all"
           >
             Contact Us
           </a>

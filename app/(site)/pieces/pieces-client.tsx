@@ -73,22 +73,22 @@ export default function PiecesClient({ pieces }: PiecesClientProps) {
         />
         
         <div className="flex items-center gap-6">
-          <p className="text-xs font-mono uppercase tracking-wide text-ink-700">
+          <p className="font-display text-xs uppercase tracking-wide text-ink-700">
             {sortedPieces.length} piece{sortedPieces.length !== 1 ? 's' : ''}
           </p>
-          <div className="relative group">
+          <div className="relative">
             <select 
-              className="appearance-none text-xs font-mono uppercase tracking-wide text-ink bg-transparent border border-ink/20 hover:border-ink px-6 py-3 pr-12 cursor-pointer transition-all duration-300 focus:outline-none focus:border-ink"
+              className="appearance-none font-display text-xs uppercase tracking-wide text-ink bg-paper border border-ink/20 hover:border-ink hover:bg-sand/5 px-6 py-3 pr-12 cursor-pointer transition-all duration-300 focus:outline-none focus:border-ink focus:bg-sand/10"
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
             >
               <option value="featured">Featured</option>
-              <option value="price-low">Price ↑</option>
-              <option value="price-high">Price ↓</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
               <option value="newest">Newest</option>
             </select>
             <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-              <svg className="w-3 h-3 text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 text-ink transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </div>

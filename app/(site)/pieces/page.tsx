@@ -5,7 +5,7 @@ import EditorialStory from '@/components/editorial-story';
 
 export default function PiecesPage() {
   return (
-    <div className="min-h-screen"><section className="relative h-[60vh] overflow-hidden">
+    <div className="min-h-screen"><section className="relative h-[70vh] overflow-hidden">
         <Image
           src="/images/oversized_green_faux_leather_pants1_opt.jpg"
           alt="LA PIQÛRE Collection"
@@ -15,54 +15,54 @@ export default function PiecesPage() {
           quality={90}
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/60" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/80" />
         
-        <div className="absolute inset-0 flex items-center justify-center text-center">
-          <div className="max-w-3xl px-8">
-            <p className="font-display text-sm md:text-base tracking-[0.3em] uppercase text-paper/90 mb-6">
-              Current Collection
+        <div className="absolute inset-0 flex items-end justify-center pb-24">
+          <div className="text-center px-8">
+            <p className="font-display text-sm tracking-[0.3em] uppercase text-paper/80 mb-6">
+              Current & Archive
             </p>
-            <h1 className="font-display text-6xl md:text-7xl lg:text-8xl tracking-[0.2em] uppercase text-paper mb-8">
-              Shop
+            <h1 className="font-display text-6xl md:text-8xl lg:text-9xl tracking-[0.25em] uppercase text-paper mb-6">
+              Pieces
             </h1>
-            <p className="font-sans text-base text-paper/80 leading-relaxed max-w-lg mx-auto">
-              Current and archive pieces. Each garment features detailed photography, 
-              material composition, and design story.
+            <div className="w-32 h-px bg-paper/30 mx-auto mb-6" />
+            <p className="font-sans text-base text-paper/70 max-w-xl mx-auto leading-relaxed">
+              Material innovation meets contemporary design
             </p>
           </div>
         </div>
-      </section><section className="bg-sand/10 py-12">
+      </section><section className="bg-sand/10 py-16">
         <div className="max-w-7xl mx-auto px-8 lg:px-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div>
-              <p className="font-display text-3xl md:text-4xl text-ink mb-2">
+            <div className="border-r border-ink/10 last:border-r-0">
+              <p className="font-display text-4xl md:text-5xl text-ink mb-3 tracking-wide">
                 {samplePieces.length}
               </p>
-              <p className="font-mono text-[9px] uppercase tracking-wide text-ink-700">
+              <p className="font-display text-xs uppercase tracking-[0.2em] text-ink-700">
                 Total Pieces
               </p>
             </div>
-            <div>
-              <p className="font-display text-3xl md:text-4xl text-ink mb-2">
+            <div className="border-r border-ink/10 last:border-r-0">
+              <p className="font-display text-4xl md:text-5xl text-ink mb-3 tracking-wide">
                 {samplePieces.filter(p => p.available).length}
               </p>
-              <p className="font-mono text-[9px] uppercase tracking-wide text-ink-700">
+              <p className="font-display text-xs uppercase tracking-[0.2em] text-ink-700">
                 Available Now
               </p>
             </div>
-            <div>
-              <p className="font-display text-3xl md:text-4xl text-ink mb-2">
+            <div className="border-r border-ink/10 last:border-r-0">
+              <p className="font-display text-4xl md:text-5xl text-ink mb-3 tracking-wide">
                 {new Set(samplePieces.map(p => p.category)).size}
               </p>
-              <p className="font-mono text-[9px] uppercase tracking-wide text-ink-700">
+              <p className="font-display text-xs uppercase tracking-[0.2em] text-ink-700">
                 Categories
               </p>
             </div>
-            <div>
-              <p className="font-display text-3xl md:text-4xl text-ink mb-2">
+            <div className="border-r border-ink/10 last:border-r-0">
+              <p className="font-display text-4xl md:text-5xl text-ink mb-3 tracking-wide">
                 {new Set(samplePieces.map(p => p.collectionName)).size}
               </p>
-              <p className="font-mono text-[9px] uppercase tracking-wide text-ink-700">
+              <p className="font-display text-xs uppercase tracking-[0.2em] text-ink-700">
                 Collections
               </p>
             </div>

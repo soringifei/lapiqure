@@ -38,14 +38,16 @@ export default function EditorialStory({
           </FadeIn>
 
           <FadeIn delay={200} className={imagePosition === 'right' ? 'lg:col-start-1 lg:row-start-1' : ''}>
-            <div className="space-y-6">
+            <div className="space-y-8">
               <p className="font-display text-xs tracking-[0.3em] uppercase text-ink-700">
                 {subtitle}
               </p>
               
-              <h2 className="font-display text-4xl md:text-5xl lg:text-6xl tracking-luxury text-ink">
+              <h2 className="font-display text-4xl md:text-5xl tracking-[0.15em] uppercase text-ink">
                 {title}
               </h2>
+              
+              <div className="w-24 h-px bg-ink/20" />
               
               <p className="font-sans text-base leading-relaxed text-ink-700 max-w-xl">
                 {description}
