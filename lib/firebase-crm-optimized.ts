@@ -23,6 +23,7 @@ import {
   Product,
   DashboardMetrics,
 } from '@/types/crm'
+import { Collection } from '@/types/collection'
 
 interface CacheEntry<T> {
   data: T
@@ -238,6 +239,62 @@ export class OptimizedCRMService {
     })
     this.cache.delete(this.getCacheKey('products', ''))
     return docRef.id
+  }
+
+  async getCollections(constraints: QueryConstraint[] = []): Promise<Collection[]> {
+    const key = this.getCacheKey('collections', JSON.stringify(constraints))
+    return this.getCached(key, async () => {
+      const q = query(collection(this.db, 'crm_collections'), ...constraints)
+      const querySnapshot = await getDocs(q)
+      return querySnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      } as Collection))
+    })
+  }
+
+  async getCollection(id: string): Promise<Collection | null> {
+    const key = this.getCacheKey('collection', id)
+    return this.getCached(key, async () => {
+      const docRef = doc(this.db, 'crm_collections', id)
+      const docSnap = await getDoc(docRef)
+      return docSnap.exists() ? ({ ...docSnap.data(), id: docSnap.id } as Collection) : null
+    })
+  }
+
+  async addCollection(collection: Omit<Collection, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
+    const docRef = doc(collection(this.db, 'crm_collections'))
+    const now = Timestamp.now()
+    await setDoc(docRef, {
+      ...collection,
+      createdAt: now,
+      updatedAt: now,
+    })
+    this.cache.delete(this.getCacheKey('collections', ''))
+    return docRef.id
+  }
+
+  async updateCollection(id: string, updates: Partial<Collection>): Promise<void> {
+    const docRef = doc(this.db, 'crm_collections', id)
+    await updateDoc(docRef, {
+      ...updates,
+      updatedAt: Timestamp.now(),
+    })
+    this.cache.delete(this.getCacheKey('collection', id))
+    this.cache.delete(this.getCacheKey('collections', ''))
+  }
+
+  async deleteCollection(id: string): Promise<void> {
+    await deleteDoc(doc(this.db, 'crm_collections', id))
+    this.clearCache()
+  }
+
+  async getActiveCollections(): Promise<Collection[]> {
+    return this.getCollections([where('isActive', '==', true), orderBy('name')])
+  }
+
+  async getFeaturedCollections(): Promise<Collection[]> {
+    return this.getCollections([where('featured', '==', true), limit(5)])
   }
 
   async getCustomersByTier(tier: string): Promise<Customer[]> {
