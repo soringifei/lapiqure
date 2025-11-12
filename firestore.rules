@@ -1,8 +1,73 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    function hasRole(role) {
+      return request.auth != null && 
+             get(/databases/$(database)/documents/crm_staff/$(request.auth.uid)).data.role == role;
+    }
+
+    function isAdmin() {
+      return hasRole('admin');
+    }
+
+    function isManager() {
+      return hasRole('manager') || isAdmin();
+    }
+
+    function isStaff() {
+      return request.auth != null;
+    }
+
     match /users/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    match /crm_customers/{customerId} {
+      allow list: if isStaff();
+      allow read: if isStaff();
+      allow create: if isManager();
+      allow update: if isManager();
+      allow delete: if isAdmin();
+    }
+
+    match /crm_orders/{orderId} {
+      allow list: if isStaff();
+      allow read: if isStaff();
+      allow create: if isManager();
+      allow update: if isManager();
+      allow delete: if isAdmin();
+    }
+
+    match /crm_interactions/{interactionId} {
+      allow list: if isStaff();
+      allow read: if isStaff();
+      allow create: if isStaff();
+      allow update: if resource.data.staffId == request.auth.uid || isManager();
+      allow delete: if isAdmin();
+    }
+
+    match /crm_campaigns/{campaignId} {
+      allow list: if isStaff();
+      allow read: if isStaff();
+      allow create: if isManager();
+      allow update: if isManager();
+      allow delete: if isAdmin();
+    }
+
+    match /crm_staff/{staffId} {
+      allow list: if isManager();
+      allow read: if isManager() || request.auth.uid == staffId;
+      allow create: if isAdmin();
+      allow update: if isAdmin() || request.auth.uid == staffId;
+      allow delete: if isAdmin();
+    }
+
+    match /crm_products/{productId} {
+      allow list: if isStaff();
+      allow read: if isStaff();
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
     }
     
     match /orders/{orderId} {
