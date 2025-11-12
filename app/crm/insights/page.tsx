@@ -6,7 +6,7 @@ import { useAuth } from '@/lib/auth-context'
 import { useCRM } from '@/hooks/useCRM'
 import { DashboardLayout } from '@/components/crm/DashboardLayout'
 import { CRMAnalytics, CustomerScore } from '@/lib/crm-analytics'
-import { AlertCircle, TrendingUp, Heart, Zap } from 'lucide-react'
+import { AlertCircle, TrendingUp, Heart } from 'lucide-react'
 
 interface InsightSection {
   title: string
@@ -24,7 +24,7 @@ export default function InsightsPage() {
   const [churnRisk, setChurnRisk] = useState<CustomerScore[]>([])
   const [highValue, setHighValue] = useState<CustomerScore[]>([])
   const [growth, setGrowth] = useState<CustomerScore[]>([])
-  const [segments, setSegments] = useState<any>(null)
+  const [segments, setSegments] = useState<{ champions: CustomerScore[]; loyal: CustomerScore[]; atrisk: CustomerScore[]; dormant: CustomerScore[]; newCustomers: CustomerScore[] } | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {

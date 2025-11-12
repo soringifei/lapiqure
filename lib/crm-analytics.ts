@@ -46,7 +46,6 @@ export class CRMAnalytics {
       const rfmScore = (rScore + fScore + mScore) / 3
 
       const avgOrderValue = frequency > 0 ? monetary / frequency : 0
-      const purchaseFrequencyMonths = frequency > 0 ? 12 / Math.max(frequency / 1, 0.1) : 12
       const clv = avgOrderValue * frequency * 3
 
       const churnRisk = recency > 180 ? 1 : recency > 90 ? 0.5 : 0

@@ -19,6 +19,7 @@ export default function ProductsPage() {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [showForm, setShowForm] = useState(false)
+  const [editingId, setEditingId] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -62,22 +63,52 @@ export default function ProductsPage() {
     setFilteredProducts(filtered)
   }, [products, searchTerm])
 
-  const handleAddProduct = async (e: React.FormEvent) => {
+  const handleEditProduct = (product: Product) => {
+    setFormData({
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      collection: product.collection,
+      stock: product.stock,
+      size: product.size || '',
+      color: product.color || '',
+      tierExclusive: product.tierExclusive || 'prospect',
+      images: product.images,
+    })
+    setEditingId(product.id)
+    setShowForm(true)
+  }
+
+  const handleSaveProduct = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!service) return
 
     try {
-      await service.addProduct({
-        name: formData.name,
-        description: formData.description,
-        price: formData.price,
-        collection: formData.collection,
-        stock: formData.stock,
-        images: [],
-        size: formData.size || undefined,
-        color: formData.color || undefined,
-        tierExclusive: formData.tierExclusive,
-      })
+      if (editingId) {
+        await service.updateProduct(editingId, {
+          name: formData.name,
+          description: formData.description,
+          price: formData.price,
+          collection: formData.collection,
+          stock: formData.stock,
+          images: formData.images,
+          size: formData.size || undefined,
+          color: formData.color || undefined,
+          tierExclusive: formData.tierExclusive,
+        })
+      } else {
+        await service.addProduct({
+          name: formData.name,
+          description: formData.description,
+          price: formData.price,
+          collection: formData.collection,
+          stock: formData.stock,
+          images: formData.images,
+          size: formData.size || undefined,
+          color: formData.color || undefined,
+          tierExclusive: formData.tierExclusive,
+        })
+      }
 
       setFormData({
         name: '',
@@ -90,12 +121,25 @@ export default function ProductsPage() {
         tierExclusive: 'prospect',
         images: [],
       })
+      setEditingId(null)
       setShowForm(false)
 
       const updatedProducts = await service.getProducts()
       setProducts(updatedProducts)
     } catch (error) {
-      console.error('Error adding product:', error)
+      console.error('Error saving product:', error)
+    }
+  }
+
+  const handleDeleteProduct = async (id: string) => {
+    if (!confirm('Delete this product?')) return
+    if (!service) return
+    try {
+      await service.deleteProduct(id)
+      const updatedProducts = await service.getProducts()
+      setProducts(updatedProducts)
+    } catch (error) {
+      console.error('Error deleting product:', error)
     }
   }
 
@@ -128,8 +172,8 @@ export default function ProductsPage() {
 
         {showForm && (
           <div className="bg-card border border-border rounded p-6">
-            <h2 className="font-display tracking-luxury mb-4">New Product</h2>
-            <form onSubmit={handleAddProduct} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <h2 className="font-display tracking-luxury mb-4">{editingId ? 'Edit Product' : 'New Product'}</h2>
+            <form onSubmit={handleSaveProduct} className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input
                 type="text"
                 placeholder="Product name"
@@ -204,11 +248,25 @@ export default function ProductsPage() {
                   type="submit"
                   className="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90"
                 >
-                  Add Product
+                  {editingId ? 'Update Product' : 'Add Product'}
                 </button>
                 <button
                   type="button"
-                  onClick={() => setShowForm(false)}
+                  onClick={() => {
+                    setShowForm(false)
+                    setEditingId(null)
+                    setFormData({
+                      name: '',
+                      description: '',
+                      price: 0,
+                      collection: '',
+                      stock: 0,
+                      size: '',
+                      color: '',
+                      tierExclusive: 'prospect',
+                      images: [],
+                    })
+                  }}
                   className="flex-1 px-4 py-2 bg-secondary/20 rounded hover:bg-secondary/30"
                 >
                   Cancel
@@ -262,10 +320,10 @@ export default function ProductsPage() {
                     <td className="px-6 py-3 text-xs capitalize">{product.tierExclusive || 'All'}</td>
                     <td className="px-6 py-3">
                       <div className="flex gap-2">
-                        <button className="p-2 hover:bg-secondary/10 rounded transition-colors">
+                        <button onClick={() => handleEditProduct(product)} className="p-2 hover:bg-secondary/10 rounded transition-colors">
                           <Edit size={16} />
                         </button>
-                        <button className="p-2 hover:bg-destructive/10 rounded transition-colors text-destructive">
+                        <button onClick={() => handleDeleteProduct(product.id)} className="p-2 hover:bg-destructive/10 rounded transition-colors text-destructive">
                           <Trash2 size={16} />
                         </button>
                       </div>

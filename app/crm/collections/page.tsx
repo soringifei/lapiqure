@@ -19,6 +19,7 @@ export default function CollectionsPage() {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [showForm, setShowForm] = useState(false)
+  const [editingId, setEditingId] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     name: '',
     slug: '',
@@ -61,21 +62,48 @@ export default function CollectionsPage() {
     setFilteredCollections(filtered)
   }, [collections, searchTerm])
 
-  const handleAddCollection = async (e: React.FormEvent) => {
+  const handleEditCollection = (collection: Collection) => {
+    setFormData({
+      name: collection.name,
+      slug: collection.slug,
+      description: collection.description,
+      image: collection.image,
+      season: collection.season || '',
+      featured: collection.featured,
+      isActive: collection.isActive,
+      productCount: collection.productCount,
+    })
+    setEditingId(collection.id)
+    setShowForm(true)
+  }
+
+  const handleSaveCollection = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!service) return
 
     try {
-      await service.addCollection({
-        name: formData.name,
-        slug: formData.slug || formData.name.toLowerCase().replace(/\s+/g, '-'),
-        description: formData.description,
-        image: formData.image,
-        season: formData.season || undefined,
-        featured: formData.featured,
-        isActive: formData.isActive,
-        productCount: 0,
-      })
+      if (editingId) {
+        await service.updateCollection(editingId, {
+          name: formData.name,
+          slug: formData.slug || formData.name.toLowerCase().replace(/\s+/g, '-'),
+          description: formData.description,
+          image: formData.image,
+          season: formData.season || undefined,
+          featured: formData.featured,
+          isActive: formData.isActive,
+        })
+      } else {
+        await service.addCollection({
+          name: formData.name,
+          slug: formData.slug || formData.name.toLowerCase().replace(/\s+/g, '-'),
+          description: formData.description,
+          image: formData.image,
+          season: formData.season || undefined,
+          featured: formData.featured,
+          isActive: formData.isActive,
+          productCount: 0,
+        })
+      }
 
       setFormData({
         name: '',
@@ -87,12 +115,25 @@ export default function CollectionsPage() {
         isActive: true,
         productCount: 0,
       })
+      setEditingId(null)
       setShowForm(false)
 
       const updatedCollections = await service.getCollections()
       setCollections(updatedCollections)
     } catch (error) {
-      console.error('Error adding collection:', error)
+      console.error('Error saving collection:', error)
+    }
+  }
+
+  const handleDeleteCollection = async (id: string) => {
+    if (!confirm('Delete this collection?')) return
+    if (!service) return
+    try {
+      await service.deleteCollection(id)
+      const updatedCollections = await service.getCollections()
+      setCollections(updatedCollections)
+    } catch (error) {
+      console.error('Error deleting collection:', error)
     }
   }
 
@@ -125,8 +166,8 @@ export default function CollectionsPage() {
 
         {showForm && (
           <div className="bg-card border border-border rounded p-6">
-            <h2 className="font-display tracking-luxury mb-4">New Collection</h2>
-            <form onSubmit={handleAddCollection} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <h2 className="font-display tracking-luxury mb-4">{editingId ? 'Edit Collection' : 'New Collection'}</h2>
+            <form onSubmit={handleSaveCollection} className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input
                 type="text"
                 placeholder="Collection name"
@@ -189,11 +230,24 @@ export default function CollectionsPage() {
                   type="submit"
                   className="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90"
                 >
-                  Create Collection
+                  {editingId ? 'Update Collection' : 'Create Collection'}
                 </button>
                 <button
                   type="button"
-                  onClick={() => setShowForm(false)}
+                  onClick={() => {
+                    setShowForm(false)
+                    setEditingId(null)
+                    setFormData({
+                      name: '',
+                      slug: '',
+                      description: '',
+                      image: '',
+                      season: '',
+                      featured: false,
+                      isActive: true,
+                      productCount: 0,
+                    })
+                  }}
                   className="flex-1 px-4 py-2 bg-secondary/20 rounded hover:bg-secondary/30"
                 >
                   Cancel
@@ -243,10 +297,10 @@ export default function CollectionsPage() {
                       {col.isActive ? '✓ Active' : 'Inactive'}
                     </span>
                     <div className="flex gap-2">
-                      <button className="p-2 hover:bg-secondary/10 rounded transition-colors">
+                      <button onClick={() => handleEditCollection(col)} className="p-2 hover:bg-secondary/10 rounded transition-colors">
                         <Edit size={16} />
                       </button>
-                      <button className="p-2 hover:bg-destructive/10 rounded transition-colors text-destructive">
+                      <button onClick={() => handleDeleteCollection(col.id)} className="p-2 hover:bg-destructive/10 rounded transition-colors text-destructive">
                         <Trash2 size={16} />
                       </button>
                     </div>

@@ -70,6 +70,26 @@ export default function CustomersPage() {
     return colors[tier]
   }
 
+  const handleDeleteCustomer = async (id: string) => {
+    if (!confirm('Delete this customer?')) return
+    if (!service) return
+    try {
+      await service.deleteCustomer(id)
+      const updatedCustomers = await service.getCustomers()
+      setCustomers(updatedCustomers)
+    } catch (error) {
+      console.error('Error deleting customer:', error)
+    }
+  }
+
+  const handleEditCustomer = (id: string) => {
+    router.push(`/crm/customers/${id}`)
+  }
+
+  const handleAddCustomer = () => {
+    router.push('/crm/customers/new')
+  }
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -78,7 +98,7 @@ export default function CustomersPage() {
             <h1 className="font-display text-4xl tracking-luxury mb-2">Customers</h1>
             <p className="text-muted-foreground">{filteredCustomers.length} customers</p>
           </div>
-          <button className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors">
+          <button onClick={handleAddCustomer} className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors">
             <Plus size={20} />
             Add Customer
           </button>
@@ -158,10 +178,10 @@ export default function CustomersPage() {
                     <td className="px-6 py-3">{customer.totalOrders}</td>
                     <td className="px-6 py-3">
                       <div className="flex gap-2">
-                        <button className="p-2 hover:bg-secondary/10 rounded transition-colors">
+                        <button onClick={() => handleEditCustomer(customer.id)} className="p-2 hover:bg-secondary/10 rounded transition-colors">
                           <Edit size={16} />
                         </button>
-                        <button className="p-2 hover:bg-destructive/10 rounded transition-colors text-destructive">
+                        <button onClick={() => handleDeleteCustomer(customer.id)} className="p-2 hover:bg-destructive/10 rounded transition-colors text-destructive">
                           <Trash2 size={16} />
                         </button>
                       </div>

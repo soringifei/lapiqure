@@ -8,7 +8,7 @@ import { DashboardLayout } from '@/components/crm/DashboardLayout'
 import { Order, OrderStatus } from '@/types/crm'
 import { Plus } from 'lucide-react'
 
-const STATUSES: OrderStatus[] = ['pending', 'confirmed', 'processing', 'shipped', 'delivered']
+const STATUSES: OrderStatus[] = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled']
 
 function OrderCard({ order }: { order: Order }) {
   return (
@@ -32,7 +32,8 @@ function PipelineColumn({ status, orders }: { status: OrderStatus, orders: Order
     confirmed: 'Confirmed',
     processing: 'Processing',
     shipped: 'Shipped',
-    delivered: 'Delivered'
+    delivered: 'Delivered',
+    cancelled: 'Cancelled'
   }
 
   return (

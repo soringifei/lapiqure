@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useMemo, memo } from 'react'
+import { useEffect, useState, memo } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
 import { useCRM } from '@/hooks/useCRM'
@@ -145,24 +145,24 @@ export default function CRMDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <MetricCard
             label="Total Revenue"
-            value={`$${metrics?.totalRevenue.toLocaleString()}`}
+            value={metrics?.totalRevenue ? `$${metrics.totalRevenue.toLocaleString()}` : '$0'}
             icon={TrendingUp}
             trend={12}
           />
           <MetricCard
             label="New Customers"
-            value={metrics?.newCustomers}
+            value={metrics?.newCustomers ?? 0}
             icon={Users}
             trend={8}
           />
           <MetricCard
             label="Pending Orders"
-            value={metrics?.pendingOrders}
+            value={metrics?.pendingOrders ?? 0}
             icon={Package}
           />
           <MetricCard
             label="Active Conversations"
-            value={metrics?.activeConversations}
+            value={metrics?.activeConversations ?? 0}
             icon={MessageSquare}
           />
         </div>

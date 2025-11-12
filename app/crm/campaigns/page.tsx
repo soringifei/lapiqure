@@ -56,6 +56,14 @@ export default function CampaignsPage() {
   const { service } = useCRM()
   const [campaigns, setCampaigns] = useState<Campaign[]>([])
   const [loading, setLoading] = useState(true)
+  const [showForm, setShowForm] = useState(false)
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    targetTiers: [] as string[],
+    targetTags: [] as string[],
+    emailTemplate: '',
+  })
 
   useEffect(() => {
     if (!authLoading && !user) router.push('/crm/login')
@@ -80,6 +88,30 @@ export default function CampaignsPage() {
   const activeCampaigns = campaigns.filter(c => c.status === 'running').length
   const totalRecipients = campaigns.reduce((sum, c) => sum + c.recipients.length, 0)
 
+  const handleCreateCampaign = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!service || !user) return
+    try {
+      await service.addCampaign({
+        name: formData.name,
+        description: formData.description,
+        targetTiers: formData.targetTiers as ('platinum' | 'gold' | 'silver' | 'prospect')[],
+        targetTags: formData.targetTags,
+        status: 'draft',
+        emailTemplate: formData.emailTemplate,
+        recipients: [],
+        metrics: { sent: 0, opened: 0, clicked: 0, bounced: 0 },
+        createdBy: user.uid,
+      })
+      setFormData({ name: '', description: '', targetTiers: [], targetTags: [], emailTemplate: '' })
+      setShowForm(false)
+      const updatedCampaigns = await service.getCampaigns()
+      setCampaigns(updatedCampaigns)
+    } catch (error) {
+      console.error('Error creating campaign:', error)
+    }
+  }
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -88,11 +120,28 @@ export default function CampaignsPage() {
             <h1 className="font-display text-4xl tracking-luxury mb-2">Campaigns</h1>
             <p className="text-muted-foreground">{activeCampaigns} active • {totalRecipients} total recipients</p>
           </div>
-          <button className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors">
+          <button onClick={() => setShowForm(!showForm)} className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors">
             <Plus size={20} />
             New Campaign
           </button>
         </div>
+
+        {showForm && (
+          <div className="bg-card border border-border rounded p-6">
+            <h2 className="font-display tracking-luxury mb-4">New Campaign</h2>
+            <form onSubmit={handleCreateCampaign} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input type="text" placeholder="Campaign name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="px-4 py-2 border border-border rounded bg-background col-span-2" required />
+              <textarea placeholder="Description" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} className="px-4 py-2 border border-border rounded bg-background col-span-2" rows={3} required />
+              <input type="text" placeholder="Target tiers (platinum, gold, silver)" value={formData.targetTiers.join(', ')} onChange={(e) => setFormData({ ...formData, targetTiers: e.target.value.split(',').map(t => t.trim()) })} className="px-4 py-2 border border-border rounded bg-background" />
+              <input type="text" placeholder="Target tags (comma-separated)" value={formData.targetTags.join(', ')} onChange={(e) => setFormData({ ...formData, targetTags: e.target.value.split(',').map(t => t.trim()) })} className="px-4 py-2 border border-border rounded bg-background" />
+              <textarea placeholder="Email template" value={formData.emailTemplate} onChange={(e) => setFormData({ ...formData, emailTemplate: e.target.value })} className="px-4 py-2 border border-border rounded bg-background col-span-2" rows={3} />
+              <div className="flex gap-2 col-span-2">
+                <button type="submit" className="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90">Create Campaign</button>
+                <button type="button" onClick={() => { setShowForm(false); setFormData({ name: '', description: '', targetTiers: [], targetTags: [], emailTemplate: '' }) }} className="flex-1 px-4 py-2 bg-secondary/20 rounded hover:bg-secondary/30">Cancel</button>
+              </div>
+            </form>
+          </div>
+        )}
 
         {loading ? (
           <div className="flex items-center justify-center h-96">

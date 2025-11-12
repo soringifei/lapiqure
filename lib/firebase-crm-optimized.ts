@@ -25,8 +25,8 @@ import {
 } from '@/types/crm'
 import { Collection } from '@/types/collection'
 
-interface CacheEntry<T> {
-  data: T
+interface CacheEntry {
+  data: unknown
   timestamp: number
 }
 
@@ -34,7 +34,7 @@ const CACHE_DURATION = 5 * 60 * 1000
 
 export class OptimizedCRMService {
   private db: Firestore
-  private cache: Map<string, CacheEntry<any>> = new Map()
+  private cache: Map<string, CacheEntry> = new Map()
 
   constructor(db: Firestore) {
     this.db = db
@@ -57,7 +57,7 @@ export class OptimizedCRMService {
 
   private async getCached<T>(key: string, fetcher: () => Promise<T>): Promise<T> {
     if (this.isValidCache(key)) {
-      return this.cache.get(key)!.data
+      return this.cache.get(key)!.data as T
     }
     const data = await fetcher()
     return this.setCache(key, data)
@@ -217,6 +217,32 @@ export class OptimizedCRMService {
     })
   }
 
+  async addStaff(member: Omit<StaffMember, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
+    const docRef = doc(collection(this.db, 'crm_staff'))
+    const now = Timestamp.now()
+    await setDoc(docRef, {
+      ...member,
+      createdAt: now,
+      updatedAt: now,
+    })
+    this.cache.delete(this.getCacheKey('staff', ''))
+    return docRef.id
+  }
+
+  async updateStaff(id: string, updates: Partial<StaffMember>): Promise<void> {
+    const docRef = doc(this.db, 'crm_staff', id)
+    await updateDoc(docRef, {
+      ...updates,
+      updatedAt: Timestamp.now(),
+    })
+    this.cache.delete(this.getCacheKey('staff', ''))
+  }
+
+  async deleteStaff(id: string): Promise<void> {
+    await deleteDoc(doc(this.db, 'crm_staff', id))
+    this.cache.delete(this.getCacheKey('staff', ''))
+  }
+
   async getProducts(constraints: QueryConstraint[] = []): Promise<Product[]> {
     const key = this.getCacheKey('products', JSON.stringify(constraints))
     return this.getCached(key, async () => {
@@ -241,6 +267,20 @@ export class OptimizedCRMService {
     return docRef.id
   }
 
+  async updateProduct(id: string, updates: Partial<Product>): Promise<void> {
+    const docRef = doc(this.db, 'crm_products', id)
+    await updateDoc(docRef, {
+      ...updates,
+      updatedAt: Timestamp.now(),
+    })
+    this.cache.delete(this.getCacheKey('products', ''))
+  }
+
+  async deleteProduct(id: string): Promise<void> {
+    await deleteDoc(doc(this.db, 'crm_products', id))
+    this.cache.delete(this.getCacheKey('products', ''))
+  }
+
   async getCollections(constraints: QueryConstraint[] = []): Promise<Collection[]> {
     const key = this.getCacheKey('collections', JSON.stringify(constraints))
     return this.getCached(key, async () => {
@@ -262,11 +302,11 @@ export class OptimizedCRMService {
     })
   }
 
-  async addCollection(collection: Omit<Collection, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
+  async addCollection(collectionData: Omit<Collection, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
     const docRef = doc(collection(this.db, 'crm_collections'))
     const now = Timestamp.now()
     await setDoc(docRef, {
-      ...collection,
+      ...collectionData,
       createdAt: now,
       updatedAt: now,
     })
