@@ -1,6 +1,7 @@
 import { initializeApp, getApps, type FirebaseApp } from 'firebase/app';
 import { getAuth, type Auth } from 'firebase/auth';
 import { getAnalytics, type Analytics, isSupported } from 'firebase/analytics';
+import { getFirestore, type Firestore } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -15,11 +16,13 @@ const firebaseConfig = {
 let app: FirebaseApp;
 let auth: Auth;
 let analytics: Analytics | null = null;
+let db: Firestore;
 
 export function initFirebase() {
   if (!getApps().length) {
     app = initializeApp(firebaseConfig);
     auth = getAuth(app);
+    db = getFirestore(app);
     
     if (typeof window !== 'undefined') {
       isSupported().then((supported) => {
@@ -29,7 +32,7 @@ export function initFirebase() {
       });
     }
   }
-  return { app, auth, analytics };
+  return { app, auth, analytics, db };
 }
 
 export function getFirebaseAuth(): Auth {
@@ -51,4 +54,11 @@ export function getFirebaseApp(): FirebaseApp {
     initFirebase();
   }
   return app;
+}
+
+export function getFirebaseFirestore(): Firestore {
+  if (!db) {
+    initFirebase();
+  }
+  return db;
 }
