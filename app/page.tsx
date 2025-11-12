@@ -1,6 +1,5 @@
 'use client';
 
-import SectionHeading from '@/components/section-heading';
 import PieceCard from '@/components/piece-card';
 import EditorialStrip from '@/components/editorial-strip';
 import CraftProcess from '@/components/craft-process';

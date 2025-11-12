@@ -1,6 +1,7 @@
 'use client';
 
 import { notFound } from 'next/navigation';
+import Image from 'next/image';
 import { samplePieces } from '@/lib/sample-data';
 import ProductGallery from '@/components/product-gallery';
 import Badge from '@/components/ui/badge';

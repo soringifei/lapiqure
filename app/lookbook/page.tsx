@@ -1,6 +1,5 @@
 'use client';
 
-import SectionHeading from '@/components/section-heading';
 import FadeIn from '@/components/fade-in';
 import Image from 'next/image';
 import Link from 'next/link';

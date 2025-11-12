@@ -57,7 +57,7 @@ export default function AppointmentForm({ location }: AppointmentFormProps) {
         setIsOpen(false);
         setSuccess(false);
       }, 3000);
-    } catch (err) {
+    } catch {
       setError('Failed to send request. Please try again or email us directly.');
     } finally {
       setLoading(false);
@@ -146,7 +146,7 @@ export default function AppointmentForm({ location }: AppointmentFormProps) {
                       Request Sent
                     </h3>
                     <p className="font-sans text-base text-ink-700 leading-relaxed">
-                      We'll contact you within 24 hours to confirm your appointment.
+                      We&apos;ll contact you within 24 hours to confirm your appointment.
                     </p>
                   </div>
                 ) : (
