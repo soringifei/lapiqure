@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
 import { useCRM } from '@/hooks/useCRM'
 import { DashboardLayout } from '@/components/crm/DashboardLayout'
+import { ImageUploader } from '@/components/crm/ImageUploader'
 import { Product, CustomerTier } from '@/types/crm'
 import { Plus, Edit, Trash2, Search } from 'lucide-react'
 
@@ -27,6 +28,7 @@ export default function ProductsPage() {
     size: '',
     color: '',
     tierExclusive: 'prospect' as CustomerTier,
+    images: [] as string[],
   })
 
   useEffect(() => {
@@ -86,6 +88,7 @@ export default function ProductsPage() {
         size: '',
         color: '',
         tierExclusive: 'prospect',
+        images: [],
       })
       setShowForm(false)
 
@@ -190,6 +193,11 @@ export default function ProductsPage() {
                 <option value="gold">Gold Only</option>
                 <option value="platinum">Platinum Only</option>
               </select>
+
+              <div className="col-span-2">
+                <label className="block text-sm font-medium mb-2">Product Images</label>
+                <ImageUploader onImagesChange={(urls) => setFormData({ ...formData, images: urls })} maxImages={5} />
+              </div>
 
               <div className="flex gap-2 col-span-2">
                 <button

@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { BarChart3, Users, Package, Mail, Settings, LogOut, Menu, X, Zap, Layers } from 'lucide-react'
+import { BarChart3, Users, Package, Mail, Settings, LogOut, Menu, X, Zap, Layers, FileText } from 'lucide-react'
 
 const NAVIGATION = [
   { href: '/crm', label: 'Dashboard', icon: BarChart3 },
@@ -12,6 +12,7 @@ const NAVIGATION = [
   { href: '/crm/orders', label: 'Orders', icon: Package },
   { href: '/crm/products', label: 'Products', icon: Layers },
   { href: '/crm/campaigns', label: 'Campaigns', icon: Mail },
+  { href: '/crm/content', label: 'Content', icon: FileText },
   { href: '/crm/staff', label: 'Staff', icon: Settings },
 ]
 
