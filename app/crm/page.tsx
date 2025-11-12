@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/lib/auth-context'
 import { useCRM } from '@/hooks/useCRM'
 import { DashboardLayout } from '@/components/crm/DashboardLayout'
 import { DashboardMetrics, Order, Customer } from '@/types/crm'
@@ -92,9 +94,17 @@ function TopCustomersCard({ customers }: { customers: Customer[] }) {
 }
 
 export default function CRMDashboard() {
+  const router = useRouter()
+  const { user, loading: authLoading } = useAuth()
   const { service } = useCRM()
   const [metrics, setMetrics] = useState<DashboardMetrics | null>(null)
   const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/crm/login')
+    }
+  }, [user, authLoading, router])
 
   useEffect(() => {
     const fetchMetrics = async () => {
@@ -112,14 +122,16 @@ export default function CRMDashboard() {
     fetchMetrics()
   }, [service])
 
-  if (loading) {
+  if (authLoading || loading) {
     return (
-      <DashboardLayout>
-        <div className="flex items-center justify-center h-96">
-          <p className="text-muted-foreground">Loading...</p>
-        </div>
-      </DashboardLayout>
+      <div className="flex items-center justify-center h-screen bg-background">
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
     )
+  }
+
+  if (!user) {
+    return null
   }
 
   return (

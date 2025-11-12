@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/lib/auth-context'
 import { useCRM } from '@/hooks/useCRM'
 import { DashboardLayout } from '@/components/crm/DashboardLayout'
 import { Customer, CustomerTier } from '@/types/crm'
@@ -9,12 +11,20 @@ import { Search, Plus, Edit, Trash2 } from 'lucide-react'
 const TIERS: CustomerTier[] = ['platinum', 'gold', 'silver', 'prospect']
 
 export default function CustomersPage() {
+  const router = useRouter()
+  const { user, loading: authLoading } = useAuth()
   const { service } = useCRM()
   const [customers, setCustomers] = useState<Customer[]>([])
   const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedTier, setSelectedTier] = useState<CustomerTier | 'all'>('all')
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/crm/login')
+    }
+  }, [user, authLoading, router])
 
   useEffect(() => {
     const fetchCustomers = async () => {

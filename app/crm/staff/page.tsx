@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/lib/auth-context'
 import { useCRM } from '@/hooks/useCRM'
 import { DashboardLayout } from '@/components/crm/DashboardLayout'
 import { StaffMember, UserRole } from '@/types/crm'
@@ -20,9 +22,15 @@ function RoleBadge({ role }: { role: UserRole }) {
 }
 
 export default function StaffPage() {
+  const router = useRouter()
+  const { user, loading: authLoading } = useAuth()
   const { service } = useCRM()
   const [staff, setStaff] = useState<StaffMember[]>([])
   const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (!authLoading && !user) router.push('/crm/login')
+  }, [user, authLoading, router])
 
   useEffect(() => {
     const fetchStaff = async () => {

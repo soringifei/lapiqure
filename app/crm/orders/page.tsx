@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/lib/auth-context'
 import { useCRM } from '@/hooks/useCRM'
 import { DashboardLayout } from '@/components/crm/DashboardLayout'
 import { Order, OrderStatus } from '@/types/crm'
@@ -49,9 +51,15 @@ function PipelineColumn({ status, orders }: { status: OrderStatus, orders: Order
 }
 
 export default function OrdersPage() {
+  const router = useRouter()
+  const { user, loading: authLoading } = useAuth()
   const { service } = useCRM()
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (!authLoading && !user) router.push('/crm/login')
+  }, [user, authLoading, router])
 
   useEffect(() => {
     const fetchOrders = async () => {

@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/lib/auth-context'
 import { useCRM } from '@/hooks/useCRM'
 import { DashboardLayout } from '@/components/crm/DashboardLayout'
 import { Campaign, CampaignStatus } from '@/types/crm'
@@ -49,9 +51,15 @@ function CampaignMetrics({ campaign }: { campaign: Campaign }) {
 }
 
 export default function CampaignsPage() {
+  const router = useRouter()
+  const { user, loading: authLoading } = useAuth()
   const { service } = useCRM()
   const [campaigns, setCampaigns] = useState<Campaign[]>([])
   const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (!authLoading && !user) router.push('/crm/login')
+  }, [user, authLoading, router])
 
   useEffect(() => {
     const fetchCampaigns = async () => {
