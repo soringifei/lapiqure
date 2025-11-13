@@ -30,14 +30,31 @@ interface CacheEntry {
   timestamp: number
 }
 
-const CACHE_DURATION = 5 * 60 * 1000
+const CACHE_DURATION = 10 * 60 * 1000
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class OptimizedCRMService {
   private db: Firestore
   private cache: Map<string, CacheEntry> = new Map()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private pendingRequests: Map<string, Promise<any>> = new Map()
 
   constructor(db: Firestore) {
     this.db = db
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private async deduplicateRequest<T>(key: string, fn: () => Promise<T>): Promise<T> {
+    if (this.pendingRequests.has(key)) {
+      return this.pendingRequests.get(key)! as T
+    }
+
+    const promise = fn().finally(() => {
+      this.pendingRequests.delete(key)
+    })
+
+    this.pendingRequests.set(key, promise)
+    return promise
   }
 
   private getCacheKey(collection: string, constraint?: string): string {
