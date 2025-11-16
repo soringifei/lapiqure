@@ -6,6 +6,7 @@ import { useAuth } from '@/lib/auth-context'
 import { useCRM } from '@/hooks/useCRM'
 import { DashboardLayout } from '@/components/crm/DashboardLayout'
 import { ImageUploader } from '@/components/crm/ImageUploader'
+import Image from 'next/image'
 import { Collection } from '@/types/collection'
 import { Plus, Edit, Trash2, Search, Star } from 'lucide-react'
 
@@ -274,10 +275,18 @@ export default function CollectionsPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredCollections.map((col) => (
+                {filteredCollections.map((col) => (
               <div key={col.id} className="bg-card border border-border rounded overflow-hidden hover:shadow-lg transition-shadow">
                 {col.image && (
-                  <img src={col.image} alt={col.name} className="w-full h-40 object-cover" />
+                  <div className="relative w-full h-40">
+                    <Image
+                      src={col.image}
+                      alt={col.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="object-cover"
+                    />
+                  </div>
                 )}
                 <div className="p-4 space-y-3">
                   <div className="flex items-start justify-between">

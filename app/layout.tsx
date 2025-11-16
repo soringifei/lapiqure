@@ -11,12 +11,7 @@ import { RecentlyViewedProvider } from '@/lib/recently-viewed-context';
 import RecentlyViewedSidebar from '@/components/recently-viewed-sidebar';
 import { Toaster } from '@/components/ui/toaster';
 import BackToTop from '@/components/back-to-top';
-import dynamic from 'next/dynamic';
-
-const NewsletterModal = dynamic(() => import('@/components/newsletter-modal'), {
-  ssr: false,
-  loading: () => null
-});
+import { NewsletterShell } from '@/components/NewsletterShell';
 
 const courierPrime = Courier_Prime({
   weight: ['400', '700'],
@@ -72,7 +67,7 @@ export default function RootLayout({
               <Toaster />
               <BackToTop />
               <RecentlyViewedSidebar />
-              <NewsletterModal />
+              <NewsletterShell />
                 </RecentlyViewedProvider>
               </WaitlistProvider>
             </WishlistProvider>

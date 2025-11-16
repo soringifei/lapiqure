@@ -19,6 +19,8 @@ export default function CustomersPage() {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedTier, setSelectedTier] = useState<CustomerTier | 'all'>('all')
+  const [compact, setCompact] = useState(false)
+  const [sortDesc, setSortDesc] = useState(true)
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -90,13 +92,17 @@ export default function CustomersPage() {
     router.push('/crm/customers/new')
   }
 
+  const sortedCustomers = [...filteredCustomers].sort((a, b) =>
+    sortDesc ? b.totalSpent - a.totalSpent : a.totalSpent - b.totalSpent
+  )
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="font-display text-4xl tracking-luxury mb-2">Customers</h1>
-            <p className="text-muted-foreground">{filteredCustomers.length} customers</p>
+            <p className="text-muted-foreground">Manage tiers, tags, and assignments for your VIP clients. Showing {filteredCustomers.length} customers.</p>
           </div>
           <button onClick={handleAddCustomer} className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors">
             <Plus size={20} />
@@ -116,7 +122,7 @@ export default function CustomersPage() {
             />
           </div>
 
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-2 flex-wrap items-center justify-between">
             <button
               onClick={() => setSelectedTier('all')}
               className={`px-4 py-2 rounded text-sm transition-colors ${
@@ -141,15 +147,31 @@ export default function CustomersPage() {
               </button>
             ))}
           </div>
+          <button
+            onClick={() => setCompact(!compact)}
+            className="mt-3 px-3 py-1.5 text-xs rounded border border-border hover:bg-secondary/10 transition-colors"
+          >
+            {compact ? 'Comfortable rows' : 'Compact rows'}
+          </button>
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center h-96">
-            <p className="text-muted-foreground">Loading...</p>
+          <div className="flex flex-col gap-4">
+            <div className="bg-card border border-border rounded p-6 animate-pulse h-20" />
+            <div className="bg-card border border-border rounded p-6 animate-pulse h-64" />
           </div>
         ) : filteredCustomers.length === 0 ? (
-          <div className="flex items-center justify-center h-96 bg-card border border-border rounded">
-            <p className="text-muted-foreground">No customers found</p>
+          <div className="flex flex-col items-center justify-center h-96 bg-card border border-border rounded text-center">
+            <p className="font-display tracking-luxury mb-2">No customers yet</p>
+            <p className="text-sm text-muted-foreground mb-4">
+              Start by adding your first client. You can import historical data later.
+            </p>
+            <button
+              onClick={handleAddCustomer}
+              className="px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors text-sm"
+            >
+              Add Customer
+            </button>
           </div>
         ) : (
           <div className="bg-card border border-border rounded overflow-hidden">
@@ -159,16 +181,26 @@ export default function CustomersPage() {
                   <th className="px-6 py-3 text-left text-muted-foreground font-medium">Name</th>
                   <th className="px-6 py-3 text-left text-muted-foreground font-medium">Email</th>
                   <th className="px-6 py-3 text-left text-muted-foreground font-medium">Tier</th>
-                  <th className="px-6 py-3 text-left text-muted-foreground font-medium">Total Spent</th>
+                  <th
+                    className="px-6 py-3 text-left text-muted-foreground font-medium cursor-pointer select-none"
+                    onClick={() => setSortDesc(!sortDesc)}
+                  >
+                    Total Spent {sortDesc ? '↓' : '↑'}
+                  </th>
                   <th className="px-6 py-3 text-left text-muted-foreground font-medium">Orders</th>
                   <th className="px-6 py-3 text-left text-muted-foreground font-medium">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredCustomers.map(customer => (
-                  <tr key={customer.id} className="border-b border-border hover:bg-secondary/5 transition-colors">
-                    <td className="px-6 py-3">{customer.firstName} {customer.lastName}</td>
-                    <td className="px-6 py-3 text-sm text-muted-foreground">{customer.email}</td>
+                {sortedCustomers.map(customer => (
+                  <tr
+                    key={customer.id}
+                    className={`border-b border-border hover:bg-secondary/5 transition-colors ${
+                      compact ? 'text-xs' : 'text-sm'
+                    }`}
+                  >
+                    <td className={compact ? 'px-4 py-2' : 'px-6 py-3'}>{customer.firstName} {customer.lastName}</td>
+                    <td className={compact ? 'px-4 py-2 text-muted-foreground' : 'px-6 py-3 text-sm text-muted-foreground'}>{customer.email}</td>
                     <td className="px-6 py-3">
                       <span className={`px-3 py-1 rounded text-xs font-medium capitalize ${getTierColor(customer.tier)}`}>
                         {customer.tier}

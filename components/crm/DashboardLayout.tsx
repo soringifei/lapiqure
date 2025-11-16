@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { BarChart3, Users, Package, Mail, Settings, LogOut, Menu, X, Zap, Layers, FileText, Palette } from 'lucide-react'
@@ -21,11 +21,13 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const [sidebarOpen, setSidebarOpen] = useState(true)
 
+  const sidebarClass = `transition-all duration-300 bg-primary text-primary-foreground ${
+    sidebarOpen ? 'w-64' : 'w-20'
+  }`
+
   return (
     <div className="flex h-screen bg-background">
-      <aside className={`transition-all duration-300 bg-primary text-primary-foreground ${
-        sidebarOpen ? 'w-64' : 'w-20'
-      }`}>
+      <aside className={sidebarClass}>
         <div className="flex items-center justify-between p-6">
           {sidebarOpen && (
             <h1 className="font-display text-xl tracking-luxury">LA PIQÛRE CRM</h1>
@@ -48,9 +50,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 key={item.href}
                 href={item.href}
                 className={`flex items-center gap-3 px-4 py-3 rounded transition-colors ${
-                  isActive
-                    ? 'bg-secondary text-primary'
-                    : 'hover:bg-primary/90'
+                  isActive ? 'bg-secondary text-primary' : 'hover:bg-primary/90'
                 }`}
               >
                 <Icon size={20} />
@@ -68,8 +68,24 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         </div>
       </aside>
 
-      <main className="flex-1 overflow-auto">
-        <div className="p-8">
+      <main className="flex-1 overflow-auto flex flex-col">
+        <header className="h-12 flex items-center justify-between border-b border-border px-8">
+          <div className="text-xs text-muted-foreground uppercase tracking-[0.18em]">
+            LA PIQÛRE CRM
+          </div>
+          <div className="flex items-center gap-4 text-xs text-muted-foreground">
+            <Link href="/" className="hover:text-primary transition-colors">
+              Back to Storefront
+            </Link>
+            <div className="flex items-center gap-2">
+              <div className="h-7 w-7 rounded-full bg-secondary flex items-center justify-center text-[10px] font-medium">
+                LP
+              </div>
+              <span>Admin</span>
+            </div>
+          </div>
+        </header>
+        <div className="p-8 flex-1 overflow-auto">
           {children}
         </div>
       </main>

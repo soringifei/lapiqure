@@ -3,28 +3,42 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
-import { useCRM } from '@/hooks/useCRM'
 import { DashboardLayout } from '@/components/crm/DashboardLayout'
-import { CRMAnalytics, CustomerScore } from '@/lib/crm-analytics'
+import { CustomerScore } from '@/lib/crm-analytics'
 import { AlertCircle, TrendingUp, Heart } from 'lucide-react'
+
+interface InsightCustomerScore extends CustomerScore {
+  label: string
+}
+
+interface Segments {
+  champions: InsightCustomerScore[]
+  loyal: InsightCustomerScore[]
+  atrisk: InsightCustomerScore[]
+  dormant: InsightCustomerScore[]
+  newCustomers: InsightCustomerScore[]
+}
+
+interface InsightsResponse {
+  churnRisk: InsightCustomerScore[]
+  highValue: InsightCustomerScore[]
+  growth: InsightCustomerScore[]
+  segments: Segments
+}
 
 interface InsightSection {
   title: string
   description: string
   icon: React.ElementType
   color: string
-  items: CustomerScore[]
+  items: InsightCustomerScore[]
 }
 
 export default function InsightsPage() {
   const router = useRouter()
   const { user, loading: authLoading } = useAuth()
-  const { service } = useCRM()
 
-  const [churnRisk, setChurnRisk] = useState<CustomerScore[]>([])
-  const [highValue, setHighValue] = useState<CustomerScore[]>([])
-  const [growth, setGrowth] = useState<CustomerScore[]>([])
-  const [segments, setSegments] = useState<{ champions: CustomerScore[]; loyal: CustomerScore[]; atrisk: CustomerScore[]; dormant: CustomerScore[]; newCustomers: CustomerScore[] } | null>(null)
+  const [data, setData] = useState<InsightsResponse | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -35,18 +49,14 @@ export default function InsightsPage() {
 
   useEffect(() => {
     const fetchInsights = async () => {
-      if (!service || !user) return
+      if (!user) return
       try {
-        const [customers, orders] = await Promise.all([
-          service.getCustomers(),
-          service.getOrders(),
-        ])
-
-        const scores = CRMAnalytics.calculateRFM(customers, orders)
-        setChurnRisk(CRMAnalytics.identifyChurnRisk(scores))
-        setHighValue(CRMAnalytics.identifyHighValue(scores))
-        setGrowth(CRMAnalytics.identifyGrowthOpportunities(scores))
-        setSegments(CRMAnalytics.segmentByBehavior(scores))
+        const res = await fetch('/api/crm/insights')
+        if (!res.ok) {
+          throw new Error('Failed to load insights')
+        }
+        const json: InsightsResponse = await res.json()
+        setData(json)
       } catch (error) {
         console.error('Error fetching insights:', error)
       } finally {
@@ -55,9 +65,9 @@ export default function InsightsPage() {
     }
 
     fetchInsights()
-  }, [service, user])
+  }, [user])
 
-  if (authLoading || loading) {
+  if (authLoading || loading || !data) {
     return (
       <div className="flex items-center justify-center h-96">
         <p className="text-muted-foreground">Loading insights...</p>
@@ -75,23 +85,25 @@ export default function InsightsPage() {
       description: 'Customers showing churn signals',
       icon: AlertCircle,
       color: 'text-destructive',
-      items: churnRisk.slice(0, 5),
+      items: data.churnRisk,
     },
     {
       title: 'High Value',
       description: 'Top spenders & loyal customers',
       icon: Heart,
       color: 'text-accent-olive',
-      items: highValue.slice(0, 5),
+      items: data.highValue,
     },
     {
       title: 'Growth Opportunities',
       description: 'High potential for upsell',
       icon: TrendingUp,
       color: 'text-accent-orange',
-      items: growth.slice(0, 5),
+      items: data.growth,
     },
   ]
+
+  const { segments } = data
 
   return (
     <DashboardLayout>
@@ -134,7 +146,7 @@ export default function InsightsPage() {
                 <div className="p-6 border-b border-border">
                   <div className="flex items-center gap-2 mb-2">
                     <Icon size={20} className={insight.color} />
-                    <h3 className="font-display tracking-luxury">{insight.title}</h3>
+                    <h2 className="font-display tracking-luxury">{insight.title}</h2>
                   </div>
                   <p className="text-xs text-muted-foreground">{insight.description}</p>
                 </div>
@@ -145,7 +157,7 @@ export default function InsightsPage() {
                     insight.items.map((item) => (
                       <div key={item.customerId} className="p-4 hover:bg-secondary/5 text-sm">
                         <div className="flex justify-between items-start mb-2">
-                          <p className="font-medium">{item.customerId.slice(0, 8)}</p>
+                          <p className="font-medium">{item.label}</p>
                           <span className={`text-xs px-2 py-1 rounded ${
                             item.tier === 'platinum' ? 'bg-accent-orange/10 text-accent-orange' :
                             item.tier === 'gold' ? 'bg-accent-olive/10 text-accent-olive' :

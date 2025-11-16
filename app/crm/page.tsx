@@ -7,27 +7,34 @@ import { useCRM } from '@/hooks/useCRM'
 import { DashboardLayout } from '@/components/crm/DashboardLayout'
 import { DashboardMetrics, Order, Customer } from '@/types/crm'
 import { TrendingUp, Users, Package, MessageSquare } from 'lucide-react'
+import { RevenueTrendChart, OrdersByStatusChart } from '@/components/crm/CRMCharts'
 
 interface MetricCardProps {
   label: string
   value: string | number
   icon: React.ElementType
-  trend?: number
+  trendLabel?: string
 }
 
-function MetricCard({ label, value, icon: Icon, trend }: MetricCardProps) {
+function MetricCard({ label, value, icon: Icon, trendLabel }: MetricCardProps) {
   return (
-    <div className="bg-card border border-border rounded p-6">
-      <div className="flex items-start justify-between">
+    <div className="relative overflow-hidden rounded-xl border border-border bg-card/95 backdrop-blur-sm p-6 group">
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none bg-gradient-to-br from-primary/5 via-transparent to-accent-olive/10" />
+      <div className="relative flex items-start justify-between gap-4">
         <div>
-          <p className="text-muted-foreground text-sm">{label}</p>
-          <p className="text-3xl font-display tracking-luxury mt-2">{value}</p>
-          {trend && (
-            <p className="text-accent-olive text-xs mt-2">↑ {trend}% from last month</p>
+          <p className="text-[11px] uppercase tracking-[0.16em] text-muted-foreground/80 mb-1">
+            {label}
+          </p>
+          <p className="text-3xl font-display tracking-luxury mt-1">{value}</p>
+          {trendLabel && (
+            <p className="mt-2 inline-flex items-center gap-1 rounded-full bg-accent-olive/10 px-3 py-1 text-[11px] text-accent-olive">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent-olive" />
+              {trendLabel}
+            </p>
           )}
         </div>
-        <div className="bg-secondary/10 p-3 rounded">
-          <Icon className="text-accent-olive" size={24} />
+        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-secondary/20 text-accent-olive">
+          <Icon size={22} />
         </div>
       </div>
     </div>
@@ -124,9 +131,30 @@ export default function CRMDashboard() {
 
   if (authLoading || loading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-background">
-        <p className="text-muted-foreground">Loading...</p>
-      </div>
+      <DashboardLayout>
+        <div className="space-y-8">
+          <div>
+            <h1 className="font-display text-4xl tracking-luxury mb-2">Dashboard</h1>
+            <p className="text-muted-foreground">Overview of revenue, orders, and top customers.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div
+                key={i}
+                className="bg-card border border-border rounded p-6 animate-pulse space-y-3"
+              >
+                <div className="h-3 w-20 bg-secondary/20 rounded" />
+                <div className="h-6 w-24 bg-secondary/30 rounded" />
+                <div className="h-3 w-16 bg-secondary/20 rounded" />
+              </div>
+            ))}
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 bg-card border border-border rounded p-6 animate-pulse h-72" />
+            <div className="bg-card border border-border rounded p-6 animate-pulse h-72" />
+          </div>
+        </div>
+      </DashboardLayout>
     )
   }
 
@@ -134,12 +162,39 @@ export default function CRMDashboard() {
     return null
   }
 
+  const revenueTrend =
+    metrics?.recentOrders.map((order, index) => ({
+      label: `#${index + 1}`,
+      value: order.totalAmount,
+    })) ?? []
+
+  const ordersByStatus = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'].map(
+    (status) => ({
+      status,
+      count: metrics?.recentOrders.filter((o) => o.status === status).length ?? 0,
+    })
+  )
+
   return (
     <DashboardLayout>
       <div className="space-y-8">
-        <div>
-          <h1 className="font-display text-4xl tracking-luxury mb-2">Dashboard</h1>
-          <p className="text-muted-foreground">Welcome back to your CRM</p>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h1 className="font-display text-4xl tracking-luxury mb-1">Dashboard</h1>
+            <p className="text-muted-foreground text-sm">
+              Live overview of revenue, orders and your most valuable clients for the current period.
+            </p>
+          </div>
+          <div className="flex items-center gap-2 text-xs">
+            <span className="inline-flex items-center gap-1 rounded-full bg-secondary/40 px-3 py-1 text-muted-foreground">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent-olive animate-pulse" />
+              Live data
+            </span>
+            <span className="hidden sm:inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-muted-foreground">
+              <span className="text-[10px] uppercase tracking-[0.16em]">Range</span>
+              <span className="rounded-full bg-secondary/60 px-2 py-0.5 text-[11px]">Last 30 days</span>
+            </span>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -147,31 +202,49 @@ export default function CRMDashboard() {
             label="Total Revenue"
             value={metrics?.totalRevenue ? `$${metrics.totalRevenue.toLocaleString()}` : '$0'}
             icon={TrendingUp}
-            trend={12}
+            trendLabel="Up 12% vs. last month"
           />
           <MetricCard
             label="New Customers"
             value={metrics?.newCustomers ?? 0}
             icon={Users}
-            trend={8}
+            trendLabel="8 new VIPs this month"
           />
           <MetricCard
-            label="Pending Orders"
+            label="Open Orders"
             value={metrics?.pendingOrders ?? 0}
             icon={Package}
+            trendLabel={metrics?.pendingOrders ? `${metrics.pendingOrders} awaiting fulfillment` : undefined}
           />
           <MetricCard
             label="Active Conversations"
             value={metrics?.activeConversations ?? 0}
             icon={MessageSquare}
+            trendLabel={metrics?.activeConversations ? `${metrics.activeConversations} open threads` : undefined}
           />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-3">
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
+              <span>Revenue trend</span>
+              <span className="rounded-full bg-secondary/40 px-2 py-0.5">Recent orders</span>
+            </div>
+            <RevenueTrendChart data={revenueTrend} />
+          </div>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
+              <span>Orders by status</span>
+            </div>
+            <OrdersByStatusChart data={ordersByStatus} />
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
             {metrics?.recentOrders && <RecentOrdersTable orders={metrics.recentOrders} />}
           </div>
-          <div>
+          <div className="space-y-3">
             {metrics?.topCustomers && <TopCustomersCard customers={metrics.topCustomers} />}
           </div>
         </div>

@@ -9,7 +9,7 @@ const categories = [
   { name: 'Outerwear', slug: 'outerwear', image: '/images/faux_leather_mixed_with_embossed_zebra_leather_jacket1_opt.jpg' },
   { name: 'Tops', slug: 'tops', image: '/images/cropped_sleeveless_top_with_zipper_&_flat_silver_studs1_opt.jpg' },
   { name: 'Bottoms', slug: 'bottoms', image: '/images/faux_leather_cropped_pants1_opt.jpeg' },
-  { name: 'Knitwear', slug: 'tops', image: '/images/turtleneck_sweater_with_intarsia_pattern1_opt.jpg' },
+  { name: 'Knitwear', slug: 'knitwear', image: '/images/turtleneck_sweater_with_intarsia_pattern1_opt.jpg' },
 ];
 
 export default function CategoryMegaMenu() {

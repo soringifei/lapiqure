@@ -1,0 +1,95 @@
+import { NextResponse } from 'next/server'
+import { getFirebaseFirestore } from '@/lib/firebase'
+import { OptimizedCRMService } from '@/lib/firebase-crm-optimized'
+import { CRMAnalytics, type CustomerScore } from '@/lib/crm-analytics'
+import type { Customer } from '@/types/crm'
+
+export const revalidate = 300
+
+interface InsightCustomerScore extends CustomerScore {
+  label: string
+}
+
+interface Segments {
+  champions: InsightCustomerScore[]
+  loyal: InsightCustomerScore[]
+  atrisk: InsightCustomerScore[]
+  dormant: InsightCustomerScore[]
+  newCustomers: InsightCustomerScore[]
+}
+
+function buildLabel(customer: Customer | undefined): string {
+  if (!customer) return 'Unknown customer'
+
+  const anyCustomer = customer as unknown as {
+    name?: string
+    firstName?: string
+    lastName?: string
+    email?: string
+    id: string
+  }
+
+  if (anyCustomer.name) return String(anyCustomer.name)
+  if (anyCustomer.firstName || anyCustomer.lastName) {
+    return `${anyCustomer.firstName || ''} ${anyCustomer.lastName || ''}`.trim() || anyCustomer.id
+  }
+  if (anyCustomer.email) return String(anyCustomer.email)
+  return anyCustomer.id
+}
+
+function attachLabels(scores: CustomerScore[], customers: Customer[]): InsightCustomerScore[] {
+  const map = new Map(customers.map((c) => [c.id, c]))
+  return scores.map((s) => ({
+    ...s,
+    label: buildLabel(map.get(s.customerId)),
+  }))
+}
+
+export async function GET() {
+  try {
+    const db = getFirebaseFirestore()
+    const service = new OptimizedCRMService(db)
+
+    const [customers, orders] = await Promise.all([
+      service.getCustomers(),
+      service.getOrders(),
+    ])
+
+    const limitedCustomers = customers.slice(0, 200)
+    const limitedOrders = orders.slice(0, 500)
+
+    const scores = CRMAnalytics.calculateRFM(limitedCustomers, limitedOrders)
+
+    const churnRiskBase = CRMAnalytics.identifyChurnRisk(scores).slice(0, 5)
+    const highValueBase = CRMAnalytics.identifyHighValue(scores).slice(0, 5)
+    const growthBase = CRMAnalytics.identifyGrowthOpportunities(scores).slice(0, 5)
+    const segmentsBase = CRMAnalytics.segmentByBehavior(scores)
+
+    const churnRisk = attachLabels(churnRiskBase, limitedCustomers)
+    const highValue = attachLabels(highValueBase, limitedCustomers)
+    const growth = attachLabels(growthBase, limitedCustomers)
+
+    const segments: Segments = {
+      champions: attachLabels(segmentsBase.champions, limitedCustomers),
+      loyal: attachLabels(segmentsBase.loyal, limitedCustomers),
+      atrisk: attachLabels(segmentsBase.atrisk, limitedCustomers),
+      dormant: attachLabels(segmentsBase.dormant, limitedCustomers),
+      newCustomers: attachLabels(segmentsBase.newCustomers, limitedCustomers),
+    }
+
+    return NextResponse.json({
+      churnRisk,
+      highValue,
+      growth,
+      segments,
+      totalCustomers: customers.length,
+      totalOrders: orders.length,
+    })
+  } catch (error) {
+    console.error('Error generating CRM insights:', error)
+    return NextResponse.json(
+      { error: 'Failed to generate CRM insights' },
+      { status: 500 },
+    )
+  }
+}

@@ -118,7 +118,7 @@ export default function StaffPage() {
       console.error('Error deleting staff:', error)
     }
   }
-
+ 
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -141,8 +141,9 @@ export default function StaffPage() {
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center h-96">
-            <p className="text-muted-foreground">Loading...</p>
+          <div className="space-y-4">
+            <div className="bg-card border border-border rounded p-6 animate-pulse h-24" />
+            <div className="bg-card border border-border rounded p-6 animate-pulse h-64" />
           </div>
         ) : staff.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-96 bg-card border border-border rounded">

@@ -56,6 +56,21 @@ export default function ContentPage() {
     }
   }, [user, authLoading, router])
 
+  useEffect(() => {
+    const loadContent = async () => {
+      try {
+        const response = await fetch(`/api/crm/content?id=${selectedPage}`)
+        if (!response.ok) return
+        const data = await response.json()
+        setContent(data)
+      } catch (error) {
+        console.error('Error loading content:', error)
+      }
+    }
+
+    loadContent()
+  }, [selectedPage])
+
   const handleSave = async () => {
     setSaving(true)
     try {

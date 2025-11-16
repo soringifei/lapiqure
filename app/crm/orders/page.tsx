@@ -84,7 +84,7 @@ export default function OrdersPage() {
   }, {} as Record<OrderStatus, Order[]>)
 
   const totalValue = orders.reduce((sum, order) => sum + order.totalAmount, 0)
-
+ 
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -98,10 +98,29 @@ export default function OrdersPage() {
             New Order
           </button>
         </div>
-
+ 
         {loading ? (
-          <div className="flex items-center justify-center h-96">
-            <p className="text-muted-foreground">Loading...</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 pb-8">
+            {STATUSES.map((status) => (
+              <div key={status} className="flex flex-col bg-secondary/5 rounded p-4 min-h-96 animate-pulse">
+                <div className="mb-4 space-y-2">
+                  <div className="h-4 w-24 bg-secondary/30 rounded" />
+                  <div className="h-3 w-16 bg-secondary/20 rounded" />
+                </div>
+                <div className="space-y-3 flex-1">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <div key={i} className="bg-card border border-border rounded p-4 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div className="h-3 w-20 bg-secondary/20 rounded" />
+                        <div className="h-3 w-12 bg-secondary/20 rounded" />
+                      </div>
+                      <div className="h-3 w-24 bg-secondary/10 rounded" />
+                      <div className="h-3 w-16 bg-secondary/10 rounded" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 pb-8">

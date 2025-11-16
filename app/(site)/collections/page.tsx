@@ -5,14 +5,14 @@ import { sampleCollections } from '@/lib/sample-data';
 export default function CollectionsPage() {
   return (
     <div className="min-h-screen">
-      <section className="relative h-[75vh] overflow-hidden">
+      <section className="relative h-[65vh] overflow-hidden">
         <Image
           src="/images/faux_leather_mixed_with_embossed_zebra_leather_jacket1_optimized.jpg"
           alt="LA PIQÛRE Collections"
           fill
           sizes="100vw"
           className="object-cover"
-          quality={90}
+          quality={80}
           priority
         />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/80" />
@@ -49,7 +49,8 @@ export default function CollectionsPage() {
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover group-hover:scale-103 transition-transform duration-1000 ease-in-out"
-                  quality={90}
+                  quality={80}
+                  loading="lazy"
                 />
               </div>
               

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { Upload, X } from 'lucide-react'
 import { optimizeImage, getImageSize } from '@/lib/image-optimization'
 
@@ -87,11 +88,15 @@ export function ImageUploader({ onImagesChange, maxImages = 5 }: ImageUploaderPr
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {images.map((image, index) => (
               <div key={index} className="relative group">
-                <img
-                  src={image.url}
-                  alt={`Upload ${index}`}
-                  className="w-full h-32 object-cover rounded border border-border"
-                />
+                <div className="relative w-full h-32">
+                  <Image
+                    src={image.url}
+                    alt={`Upload ${index}`}
+                    fill
+                    sizes="150px"
+                    className="object-cover rounded border border-border"
+                  />
+                </div>
                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded flex items-center justify-center">
                   <button
                     onClick={() => removeImage(index)}

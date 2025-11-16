@@ -15,7 +15,9 @@ export default function AccountPage() {
   const [activeTab, setActiveTab] = useState<TabType>('orders');
 
   if (!user) {
-    router.push('/auth');
+    if (typeof window !== 'undefined') {
+      router.push('/auth');
+    }
     return null;
   }
 

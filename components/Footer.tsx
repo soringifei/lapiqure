@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 export default function Footer() {
   return (
-    <footer className="bg-paper mt-40">
+    <footer className="bg-paper mt-24">
       <div className="border-t border-ink/10">
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
           <div className="py-20 lg:py-28">

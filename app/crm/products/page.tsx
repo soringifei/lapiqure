@@ -142,24 +142,34 @@ export default function ProductsPage() {
       console.error('Error deleting product:', error)
     }
   }
-
+ 
   if (authLoading || loading) {
     return (
-      <div className="flex items-center justify-center h-96">
-        <p className="text-muted-foreground">Loading...</p>
-      </div>
+      <DashboardLayout>
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="h-6 w-40 bg-secondary/20 rounded mb-2 animate-pulse" />
+              <div className="h-4 w-64 bg-secondary/10 rounded animate-pulse" />
+            </div>
+            <div className="h-9 w-32 bg-secondary/20 rounded animate-pulse" />
+          </div>
+          <div className="bg-card border border-border rounded p-6 animate-pulse h-40" />
+          <div className="bg-card border border-border rounded p-6 animate-pulse h-64" />
+        </div>
+      </DashboardLayout>
     )
   }
-
+ 
   if (!user) return null
-
+ 
   return (
     <DashboardLayout>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="font-display text-4xl tracking-luxury mb-2">Products</h1>
-            <p className="text-muted-foreground">{filteredProducts.length} products</p>
+            <p className="text-muted-foreground">Inventory and tier-exclusive pieces. Showing {filteredProducts.length} products.</p>
           </div>
           <button
             onClick={() => setShowForm(!showForm)}
@@ -288,8 +298,17 @@ export default function ProductsPage() {
         </div>
 
         {filteredProducts.length === 0 ? (
-          <div className="flex items-center justify-center h-64 bg-card border border-border rounded">
-            <p className="text-muted-foreground">No products found</p>
+          <div className="flex flex-col items-center justify-center h-64 bg-card border border-border rounded text-center">
+            <p className="font-display tracking-luxury mb-2">No products yet</p>
+            <p className="text-sm text-muted-foreground mb-4">
+              Add your first product with images, stock, and tier exclusivity.
+            </p>
+            <button
+              onClick={() => setShowForm(true)}
+              className="px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors text-sm"
+            >
+              Add Product
+            </button>
           </div>
         ) : (
           <div className="bg-card border border-border rounded overflow-hidden">
