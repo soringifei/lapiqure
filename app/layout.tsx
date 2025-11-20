@@ -1,17 +1,11 @@
 import type { Metadata } from 'next';
 import { Courier_Prime, Forum } from 'next/font/google';
 import './globals.css';
-import Navbar from '@/components/navbar';
-import Footer from '@/components/Footer';
 import { AuthProvider } from '@/lib/auth-context';
 import { CartProvider } from '@/lib/cart-context';
 import { WishlistProvider } from '@/lib/wishlist-context';
 import { WaitlistProvider } from '@/lib/waitlist-context';
 import { RecentlyViewedProvider } from '@/lib/recently-viewed-context';
-import RecentlyViewedSidebar from '@/components/recently-viewed-sidebar';
-import { Toaster } from '@/components/ui/toaster';
-import BackToTop from '@/components/back-to-top';
-import { NewsletterShell } from '@/components/NewsletterShell';
 
 const courierPrime = Courier_Prime({
   weight: ['400', '700'],
@@ -59,15 +53,7 @@ export default function RootLayout({
             <WishlistProvider>
               <WaitlistProvider>
                 <RecentlyViewedProvider>
-              <Navbar />
-              <main className="flex-1 pt-24">
-                {children}
-              </main>
-              <Footer />
-              <Toaster />
-              <BackToTop />
-              <RecentlyViewedSidebar />
-              <NewsletterShell />
+                  {children}
                 </RecentlyViewedProvider>
               </WaitlistProvider>
             </WishlistProvider>

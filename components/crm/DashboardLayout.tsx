@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { BarChart3, Users, Package, Mail, Settings, LogOut, Menu, X, Zap, Layers, FileText, Palette } from 'lucide-react'
+import './animations.css'
 
 const NAVIGATION = [
   { href: '/crm', label: 'Dashboard', icon: BarChart3 },

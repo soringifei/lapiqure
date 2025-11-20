@@ -5,8 +5,12 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
 import { useCRM } from '@/hooks/useCRM'
 import { DashboardLayout } from '@/components/crm/DashboardLayout'
+import { PageHeader } from '@/components/crm/PageHeader'
+import { EmptyState } from '@/components/crm/EmptyState'
+import { SkeletonLoader } from '@/components/crm/SkeletonLoader'
 import { Customer, CustomerTier } from '@/types/crm'
 import { Search, Plus, Edit, Trash2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 const TIERS: CustomerTier[] = ['platinum', 'gold', 'silver', 'prospect']
 
@@ -99,16 +103,17 @@ export default function CustomersPage() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="font-display text-4xl tracking-luxury mb-2">Customers</h1>
-            <p className="text-muted-foreground">Manage tiers, tags, and assignments for your VIP clients. Showing {filteredCustomers.length} customers.</p>
-          </div>
-          <button onClick={handleAddCustomer} className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors">
-            <Plus size={20} />
-            Add Customer
-          </button>
-        </div>
+        <PageHeader
+          title="Customers"
+          description="Manage tiers, tags, and assignments for your VIP clients."
+          subtitle={filteredCustomers.length > 0 ? `Showing ${filteredCustomers.length} customers` : undefined}
+          actions={
+            <Button onClick={handleAddCustomer} className="flex items-center gap-2 bg-primary hover:bg-primary/90">
+              <Plus size={20} />
+              Add Customer
+            </Button>
+          }
+        />
 
         <div className="bg-card border border-border rounded p-4 space-y-4">
           <div className="relative">
@@ -156,22 +161,18 @@ export default function CustomersPage() {
         </div>
 
         {loading ? (
-          <div className="flex flex-col gap-4">
-            <div className="bg-card border border-border rounded p-6 animate-pulse h-20" />
-            <div className="bg-card border border-border rounded p-6 animate-pulse h-64" />
-          </div>
+          <SkeletonLoader variant="table" rows={5} columns={6} />
         ) : filteredCustomers.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-96 bg-card border border-border rounded text-center">
-            <p className="font-display tracking-luxury mb-2">No customers yet</p>
-            <p className="text-sm text-muted-foreground mb-4">
-              Start by adding your first client. You can import historical data later.
-            </p>
-            <button
-              onClick={handleAddCustomer}
-              className="px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors text-sm"
-            >
-              Add Customer
-            </button>
+          <div className="bg-card border border-border rounded">
+            <EmptyState
+              icon="👥"
+              title="No customers yet"
+              description="Start by adding your first client. You can import historical data later."
+              primaryAction={{
+                label: 'Add Customer',
+                onClick: handleAddCustomer,
+              }}
+            />
           </div>
         ) : (
           <div className="bg-card border border-border rounded overflow-hidden">

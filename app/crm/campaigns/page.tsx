@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
 import { useCRM } from '@/hooks/useCRM'
 import { DashboardLayout } from '@/components/crm/DashboardLayout'
+import { PageHeader } from '@/components/crm/PageHeader'
+import { EmptyState } from '@/components/crm/EmptyState'
+import { SkeletonLoader } from '@/components/crm/SkeletonLoader'
 import { Campaign, CampaignStatus } from '@/types/crm'
 import { Plus, BarChart2, Mail, Pause } from 'lucide-react'
 
@@ -115,16 +118,16 @@ export default function CampaignsPage() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="font-display text-4xl tracking-luxury mb-2">Campaigns</h1>
-            <p className="text-muted-foreground">{activeCampaigns} active • {totalRecipients} total recipients</p>
-          </div>
-          <button onClick={() => setShowForm(!showForm)} className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors">
-            <Plus size={20} />
-            New Campaign
-          </button>
-        </div>
+        <PageHeader
+          title="Campaigns"
+          subtitle={`${activeCampaigns} active • ${totalRecipients} total recipients`}
+          actions={
+            <button onClick={() => setShowForm(!showForm)} className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors">
+              <Plus size={20} />
+              New Campaign
+            </button>
+          }
+        />
 
         {showForm && (
           <div className="bg-card border border-border rounded p-6">
@@ -144,12 +147,18 @@ export default function CampaignsPage() {
         )}
 
         {loading ? (
-          <div className="flex items-center justify-center h-96">
-            <p className="text-muted-foreground">Loading...</p>
-          </div>
+          <SkeletonLoader variant="list" rows={5} />
         ) : campaigns.length === 0 ? (
-          <div className="flex items-center justify-center h-96 bg-card border border-border rounded">
-            <p className="text-muted-foreground">No campaigns yet</p>
+          <div className="bg-card border border-border rounded">
+            <EmptyState
+              icon="📧"
+              title="No campaigns yet"
+              description="Create your first campaign to reach customers with targeted email marketing."
+              primaryAction={{
+                label: 'New Campaign',
+                onClick: () => setShowForm(true),
+              }}
+            />
           </div>
         ) : (
           <div className="space-y-3">

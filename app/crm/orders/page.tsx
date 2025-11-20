@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
 import { useCRM } from '@/hooks/useCRM'
 import { DashboardLayout } from '@/components/crm/DashboardLayout'
+import { PageHeader } from '@/components/crm/PageHeader'
 import { Order, OrderStatus } from '@/types/crm'
 import { Plus } from 'lucide-react'
 
@@ -88,16 +89,16 @@ export default function OrdersPage() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="font-display text-4xl tracking-luxury mb-2">Orders</h1>
-            <p className="text-muted-foreground">Total value: ${totalValue.toLocaleString()}</p>
-          </div>
-          <button className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors">
-            <Plus size={20} />
-            New Order
-          </button>
-        </div>
+        <PageHeader
+          title="Orders"
+          subtitle={`Total value: $${totalValue.toLocaleString()}`}
+          actions={
+            <button className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors">
+              <Plus size={20} />
+              New Order
+            </button>
+          }
+        />
  
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 pb-8">

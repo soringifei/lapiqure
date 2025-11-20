@@ -175,6 +175,8 @@ export default function CRMDashboard() {
     })
   )
 
+  const hasRecentOrders = (metrics?.recentOrders?.length ?? 0) > 0
+
   return (
     <DashboardLayout>
       <div className="space-y-8">
@@ -224,30 +226,49 @@ export default function CRMDashboard() {
           />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-3">
-            <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span>Revenue trend</span>
-              <span className="rounded-full bg-secondary/40 px-2 py-0.5">Recent orders</span>
+        {hasRecentOrders ? (
+          <>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 space-y-3">
+                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                  <span>Revenue trend</span>
+                  <span className="rounded-full bg-secondary/40 px-2 py-0.5">Recent orders</span>
+                </div>
+                <RevenueTrendChart data={revenueTrend} />
+              </div>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                  <span>Orders by status</span>
+                </div>
+                <OrdersByStatusChart data={ordersByStatus} />
+              </div>
             </div>
-            <RevenueTrendChart data={revenueTrend} />
-          </div>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span>Orders by status</span>
-            </div>
-            <OrdersByStatusChart data={ordersByStatus} />
-          </div>
-        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
-            {metrics?.recentOrders && <RecentOrdersTable orders={metrics.recentOrders} />}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                {metrics?.recentOrders && <RecentOrdersTable orders={metrics.recentOrders} />}
+              </div>
+              <div className="space-y-3">
+                {metrics?.topCustomers && <TopCustomersCard customers={metrics.topCustomers} />}
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 bg-card border border-border rounded p-8 flex flex-col justify-center">
+              <p className="font-display tracking-luxury mb-2">No orders yet</p>
+              <p className="text-sm text-muted-foreground max-w-md">
+                Once orders start flowing in, you9ll see revenue trends and status breakdowns here.
+              </p>
+            </div>
+            <div className="bg-card border border-border rounded p-8 flex flex-col justify-center">
+              <p className="font-display tracking-luxury mb-2">Empty pipeline</p>
+              <p className="text-sm text-muted-foreground">
+                Create a few orders to populate the pipeline view.
+              </p>
+            </div>
           </div>
-          <div className="space-y-3">
-            {metrics?.topCustomers && <TopCustomersCard customers={metrics.topCustomers} />}
-          </div>
-        </div>
+        )}
       </div>
     </DashboardLayout>
   )

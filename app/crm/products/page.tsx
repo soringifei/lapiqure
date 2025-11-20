@@ -5,9 +5,13 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
 import { useCRM } from '@/hooks/useCRM'
 import { DashboardLayout } from '@/components/crm/DashboardLayout'
+import { PageHeader } from '@/components/crm/PageHeader'
+import { EmptyState } from '@/components/crm/EmptyState'
+import { SkeletonLoader } from '@/components/crm/SkeletonLoader'
 import { ImageUploader } from '@/components/crm/ImageUploader'
 import { Product, CustomerTier } from '@/types/crm'
 import { Plus, Edit, Trash2, Search } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 export default function ProductsPage() {
   const router = useRouter()
@@ -147,15 +151,9 @@ export default function ProductsPage() {
     return (
       <DashboardLayout>
         <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="h-6 w-40 bg-secondary/20 rounded mb-2 animate-pulse" />
-              <div className="h-4 w-64 bg-secondary/10 rounded animate-pulse" />
-            </div>
-            <div className="h-9 w-32 bg-secondary/20 rounded animate-pulse" />
-          </div>
-          <div className="bg-card border border-border rounded p-6 animate-pulse h-40" />
-          <div className="bg-card border border-border rounded p-6 animate-pulse h-64" />
+          <div className="h-24 bg-secondary/5 rounded animate-shimmer" />
+          <SkeletonLoader variant="form" rows={3} />
+          <SkeletonLoader variant="table" rows={5} columns={6} />
         </div>
       </DashboardLayout>
     )
@@ -166,19 +164,17 @@ export default function ProductsPage() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="font-display text-4xl tracking-luxury mb-2">Products</h1>
-            <p className="text-muted-foreground">Inventory and tier-exclusive pieces. Showing {filteredProducts.length} products.</p>
-          </div>
-          <button
-            onClick={() => setShowForm(!showForm)}
-            className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors"
-          >
-            <Plus size={20} />
-            Add Product
-          </button>
-        </div>
+        <PageHeader
+          title="Products"
+          description="Inventory and tier-exclusive pieces."
+          subtitle={filteredProducts.length > 0 ? `Showing ${filteredProducts.length} products` : undefined}
+          actions={
+            <Button onClick={() => setShowForm(!showForm)} className="flex items-center gap-2 bg-primary hover:bg-primary/90">
+              <Plus size={20} />
+              Add Product
+            </Button>
+          }
+        />
 
         {showForm && (
           <div className="bg-card border border-border rounded p-6">
@@ -298,17 +294,16 @@ export default function ProductsPage() {
         </div>
 
         {filteredProducts.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-64 bg-card border border-border rounded text-center">
-            <p className="font-display tracking-luxury mb-2">No products yet</p>
-            <p className="text-sm text-muted-foreground mb-4">
-              Add your first product with images, stock, and tier exclusivity.
-            </p>
-            <button
-              onClick={() => setShowForm(true)}
-              className="px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors text-sm"
-            >
-              Add Product
-            </button>
+          <div className="bg-card border border-border rounded">
+            <EmptyState
+              icon="📦"
+              title="No products yet"
+              description="Add your first product with images, stock, and tier exclusivity."
+              primaryAction={{
+                label: 'Add Product',
+                onClick: () => setShowForm(true),
+              }}
+            />
           </div>
         ) : (
           <div className="bg-card border border-border rounded overflow-hidden">

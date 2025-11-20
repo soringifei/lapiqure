@@ -5,10 +5,15 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
 import { useCRM } from '@/hooks/useCRM'
 import { DashboardLayout } from '@/components/crm/DashboardLayout'
+import { PageHeader } from '@/components/crm/PageHeader'
+import { EmptyState } from '@/components/crm/EmptyState'
+import { SkeletonLoader } from '@/components/crm/SkeletonLoader'
+import { StatusBadge } from '@/components/crm/StatusBadge'
 import { ImageUploader } from '@/components/crm/ImageUploader'
 import Image from 'next/image'
 import { Collection } from '@/types/collection'
 import { Plus, Edit, Trash2, Search, Star } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 export default function CollectionsPage() {
   const router = useRouter()
@@ -140,9 +145,9 @@ export default function CollectionsPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="flex items-center justify-center h-96">
-        <p className="text-muted-foreground">Loading...</p>
-      </div>
+      <DashboardLayout>
+        <SkeletonLoader variant="card" rows={3} />
+      </DashboardLayout>
     )
   }
 
@@ -151,19 +156,16 @@ export default function CollectionsPage() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="font-display text-4xl tracking-luxury mb-2">Collections</h1>
-            <p className="text-muted-foreground">{filteredCollections.length} collections</p>
-          </div>
-          <button
-            onClick={() => setShowForm(!showForm)}
-            className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors"
-          >
-            <Plus size={20} />
-            New Collection
-          </button>
-        </div>
+        <PageHeader
+          title="Collections"
+          subtitle={filteredCollections.length > 0 ? `${filteredCollections.length} collections` : undefined}
+          actions={
+            <Button onClick={() => setShowForm(!showForm)} className="flex items-center gap-2 bg-primary hover:bg-primary/90">
+              <Plus size={20} />
+              New Collection
+            </Button>
+          }
+        />
 
         {showForm && (
           <div className="bg-card border border-border rounded p-6">
@@ -270,8 +272,16 @@ export default function CollectionsPage() {
         </div>
 
         {filteredCollections.length === 0 ? (
-          <div className="flex items-center justify-center h-64 bg-card border border-border rounded">
-            <p className="text-muted-foreground">No collections found</p>
+          <div className="bg-card border border-border rounded">
+            <EmptyState
+              icon="🎨"
+              title="No collections yet"
+              description="Create your first collection to organize seasonal pieces and exclusive releases."
+              primaryAction={{
+                label: 'New Collection',
+                onClick: () => setShowForm(true),
+              }}
+            />
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -302,9 +312,7 @@ export default function CollectionsPage() {
                   <p className="text-sm text-muted-foreground line-clamp-2">{col.description}</p>
 
                   <div className="flex items-center justify-between pt-2 border-t border-border">
-                    <span className="text-xs text-muted-foreground">
-                      {col.isActive ? '✓ Active' : 'Inactive'}
-                    </span>
+                    <StatusBadge status={col.isActive ? 'active' : 'inactive'} />
                     <div className="flex gap-2">
                       <button onClick={() => handleEditCollection(col)} className="p-2 hover:bg-secondary/10 rounded transition-colors">
                         <Edit size={16} />

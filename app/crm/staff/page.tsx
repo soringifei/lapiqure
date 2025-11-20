@@ -5,8 +5,11 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
 import { useCRM } from '@/hooks/useCRM'
 import { DashboardLayout } from '@/components/crm/DashboardLayout'
+import { PageHeader } from '@/components/crm/PageHeader'
+import { EmptyState } from '@/components/crm/EmptyState'
+import { SkeletonLoader } from '@/components/crm/SkeletonLoader'
 import { StaffMember, UserRole } from '@/types/crm'
-import { Plus, Edit, Trash2, AlertCircle } from 'lucide-react'
+import { Plus, Edit, Trash2 } from 'lucide-react'
 
 function RoleBadge({ role }: { role: UserRole }) {
   const styles: Record<UserRole, string> = {
@@ -122,33 +125,41 @@ export default function StaffPage() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="font-display text-4xl tracking-luxury mb-2">Staff</h1>
-            <p className="text-muted-foreground">{activeStaff} active members</p>
-          </div>
-          <button
-            onClick={() => {
-              setEditingId(null)
-              setFormData({ firstName: '', lastName: '', email: '', phone: '', role: 'staff', isActive: true })
-              setShowForm(true)
-            }}
-            className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors"
-          >
-            <Plus size={20} />
-            Add Staff
-          </button>
-        </div>
+        <PageHeader
+          title="Staff"
+          subtitle={`${activeStaff} active members`}
+          actions={
+            <button
+              onClick={() => {
+                setEditingId(null)
+                setFormData({ firstName: '', lastName: '', email: '', phone: '', role: 'staff', isActive: true })
+                setShowForm(true)
+              }}
+              className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors"
+            >
+              <Plus size={20} />
+              Add Staff
+            </button>
+          }
+        />
 
         {loading ? (
-          <div className="space-y-4">
-            <div className="bg-card border border-border rounded p-6 animate-pulse h-24" />
-            <div className="bg-card border border-border rounded p-6 animate-pulse h-64" />
-          </div>
+          <SkeletonLoader variant="table" rows={5} columns={6} />
         ) : staff.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-96 bg-card border border-border rounded">
-            <AlertCircle size={40} className="text-muted-foreground mb-3" />
-            <p className="text-muted-foreground">No staff members yet</p>
+          <div className="bg-card border border-border rounded">
+            <EmptyState
+              icon="👤"
+              title="No staff members yet"
+              description="Add your team members to manage customers and handle orders."
+              primaryAction={{
+                label: 'Add Staff',
+                onClick: () => {
+                  setEditingId(null)
+                  setFormData({ firstName: '', lastName: '', email: '', phone: '', role: 'staff', isActive: true })
+                  setShowForm(true)
+                },
+              }}
+            />
           </div>
         ) : (
           <>
