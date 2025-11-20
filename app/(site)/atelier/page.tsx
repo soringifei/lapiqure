@@ -3,33 +3,28 @@
 import Image from 'next/image';
 import SectionHeading from '@/components/section-heading';
 import FadeIn from '@/components/fade-in';
-import AppointmentForm from '@/components/appointment-form';
-import { MapPin, Clock, Phone, Mail, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
-const locations = [
+const consultationServices = [
   {
-    city: 'Paris',
-    address: '12 Rue de la Paix, 75002',
-    hours: 'Mon-Sat: 11:00-19:00',
-    phone: '+33 1 42 60 38 14',
-    email: 'paris@lapiqure.com',
-    type: 'Flagship Atelier'
+    title: 'Private Collection Viewing',
+    description: 'Browse our full collection in an intimate, personalized setting.',
+    icon: '✨'
   },
   {
-    city: 'New York',
-    address: '125 Greene Street, SoHo',
-    hours: 'Mon-Sun: 11:00-20:00',
-    phone: '+1 212 925 8437',
-    email: 'ny@lapiqure.com',
-    type: 'Showroom'
+    title: 'Bespoke Customization',
+    description: 'Create pieces tailored to your specifications and vision.',
+    icon: '🎨'
   },
   {
-    city: 'Tokyo',
-    address: '3-12-15 Minami-Aoyama, Minato-ku',
-    hours: 'Tue-Sun: 12:00-19:00',
-    phone: '+81 3 5468 5424',
-    email: 'tokyo@lapiqure.com',
-    type: 'Boutique'
+    title: 'Personalized Styling',
+    description: 'Receive expert guidance on pieces that match your aesthetic.',
+    icon: '👗'
+  },
+  {
+    title: 'Archive Access',
+    description: 'Explore past collections and discover rare, limited pieces.',
+    icon: '📚'
   }
 ];
 
@@ -67,73 +62,32 @@ export default function AtelierPage() {
       </section>
 
       <section className="max-w-7xl mx-auto px-8 lg:px-12 py-32">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
-          {locations.map((location, index) => (
-            <FadeIn key={location.city} delay={index * 100}>
-              <div className="group border border-ink/10 hover:border-ink bg-paper hover:shadow-xl transition-all duration-500">
-                <div className="p-8 pb-6">
-                  <div className="flex items-start justify-between mb-6">
-                    <div>
-                      <span className="font-display text-xs uppercase tracking-[0.2em] text-ink-700 block mb-3">
-                        {location.type}
-                      </span>
-                      <h2 className="font-display text-3xl tracking-[0.15em] uppercase text-ink">
-                        {location.city}
-                      </h2>
-                    </div>
-                    <ArrowRight className="h-4 w-4 text-ink-700 group-hover:text-ink group-hover:translate-x-1 transition-all" />
-                  </div>
-                  
-                  <div className="w-24 h-px bg-ink/20 mb-6" />
-                </div>
+        <div className="text-center mb-20">
+          <FadeIn>
+            <p className="font-display text-xs tracking-[0.3em] uppercase text-ink-700 mb-4">Our Approach</p>
+            <h2 className="font-display text-4xl md:text-5xl tracking-[0.15em] uppercase text-ink mb-6">
+              Consultation Experience
+            </h2>
+            <div className="w-24 h-px bg-ink/20 mx-auto mb-6" />
+            <p className="font-sans text-base text-ink-700 max-w-2xl mx-auto leading-relaxed">
+              By appointment only. We believe in creating meaningful connections with each client, 
+              offering a curated experience tailored to your unique style and vision.
+            </p>
+          </FadeIn>
+        </div>
 
-                <div className="px-8 space-y-4">
-                  <div className="flex items-start gap-3">
-                    <MapPin className="h-4 w-4 text-ink-700 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
-                    <div>
-                      <p className="font-sans text-sm text-ink leading-relaxed">
-                        {location.address}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <Clock className="h-4 w-4 text-ink-700 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
-                    <div>
-                      <p className="font-display text-xs uppercase tracking-[0.15em] text-ink-700">
-                        {location.hours}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <Phone className="h-4 w-4 text-ink-700 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
-                    <div>
-                      <a 
-                        href={`tel:${location.phone}`}
-                        className="font-sans text-sm text-ink-700 hover:text-ink transition-colors"
-                      >
-                        {location.phone}
-                      </a>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <Mail className="h-4 w-4 text-ink-700 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
-                    <div>
-                      <a 
-                        href={`mailto:${location.email}`}
-                        className="font-sans text-sm text-ink-700 hover:text-ink transition-colors"
-                      >
-                        {location.email}
-                      </a>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-8 pt-8">
-                  <AppointmentForm location={location.city} />
-                </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
+          {consultationServices.map((service, index) => (
+            <FadeIn key={service.title} delay={index * 100}>
+              <div className="group border border-ink/10 hover:border-ink/30 bg-paper hover:bg-paper/50 transition-all duration-500 p-8">
+                <div className="text-5xl mb-6">{service.icon}</div>
+                <h3 className="font-display text-xl tracking-[0.1em] uppercase text-ink mb-3">
+                  {service.title}
+                </h3>
+                <div className="w-12 h-px bg-ink/20 mb-4" />
+                <p className="font-sans text-sm text-ink-700 leading-relaxed">
+                  {service.description}
+                </p>
               </div>
             </FadeIn>
           ))}
@@ -145,39 +99,41 @@ export default function AtelierPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <FadeIn>
               <div>
-                <p className="font-display text-xs tracking-[0.3em] uppercase text-paper/60 mb-6">Services</p>
+                <p className="font-display text-xs tracking-[0.3em] uppercase text-paper/60 mb-6">How It Works</p>
                 <h2 className="font-display text-4xl md:text-5xl tracking-[0.15em] uppercase text-paper mb-8">
-                  Private Consultations
+                  Schedule Your Appointment
                 </h2>
                 <div className="w-24 h-px bg-paper/20 mb-8" />
-                <p className="font-sans text-base leading-relaxed text-paper/70 mb-12">
-                  By appointment only. Experience the full collection in an intimate setting, 
-                  discuss bespoke customization, and receive personalized styling guidance.
+                <p className="font-sans text-base leading-relaxed text-paper/70 mb-8">
+                  We offer private consultations by appointment. Our team is dedicated to creating a personalized experience tailored to your needs.
                 </p>
                 <div className="space-y-4 mb-12">
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 border border-paper/20 flex items-center justify-center">
-                      <div className="w-1 h-1 bg-paper" />
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0">
+                      <div className="font-display text-xs uppercase tracking-[0.15em] text-paper/80 w-6 h-6 flex items-center justify-center border border-paper/20">1</div>
                     </div>
-                    <p className="font-display text-xs uppercase tracking-[0.15em] text-paper/80">Private Collection Viewing</p>
+                    <div>
+                      <p className="font-display text-xs uppercase tracking-[0.15em] text-paper/80">Request a consultation</p>
+                      <p className="font-sans text-xs text-paper/60 mt-1">Tell us about your vision and preferences</p>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 border border-paper/20 flex items-center justify-center">
-                      <div className="w-1 h-1 bg-paper" />
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0">
+                      <div className="font-display text-xs uppercase tracking-[0.15em] text-paper/80 w-6 h-6 flex items-center justify-center border border-paper/20">2</div>
                     </div>
-                    <p className="font-display text-xs uppercase tracking-[0.15em] text-paper/80">Bespoke Customization</p>
+                    <div>
+                      <p className="font-display text-xs uppercase tracking-[0.15em] text-paper/80">Confirm your appointment</p>
+                      <p className="font-sans text-xs text-paper/60 mt-1">We&rsquo;ll coordinate the perfect time for you</p>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 border border-paper/20 flex items-center justify-center">
-                      <div className="w-1 h-1 bg-paper" />
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0">
+                      <div className="font-display text-xs uppercase tracking-[0.15em] text-paper/80 w-6 h-6 flex items-center justify-center border border-paper/20">3</div>
                     </div>
-                    <p className="font-display text-xs uppercase tracking-[0.15em] text-paper/80">Personalized Styling</p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-6 h-6 border border-paper/20 flex items-center justify-center">
-                      <div className="w-1 h-1 bg-paper" />
+                    <div>
+                      <p className="font-display text-xs uppercase tracking-[0.15em] text-paper/80">Experience personalized service</p>
+                      <p className="font-sans text-xs text-paper/60 mt-1">Enjoy a curated selection and expert guidance</p>
                     </div>
-                    <p className="font-display text-xs uppercase tracking-[0.15em] text-paper/80">Archive Access</p>
                   </div>
                 </div>
                 <a
@@ -204,24 +160,28 @@ export default function AtelierPage() {
             </FadeIn>
           </div>
         </div>
-      </section><section className="py-24">
+      </section>
+
+      <section className="py-24">
         <div className="max-w-4xl mx-auto px-8 lg:px-12 text-center">
           <FadeIn>
-            <SectionHeading className="mb-6">Visit Us</SectionHeading>
+            <SectionHeading className="mb-6">Direct Contact</SectionHeading>
             <h3 className="font-display text-2xl md:text-3xl tracking-luxury text-ink mb-6">
-              Experience LA PIQÛRE
+              Get in Touch
             </h3>
             <p className="font-sans text-base text-ink-700 mb-8 leading-relaxed max-w-2xl mx-auto">
-              Each atelier reflects our commitment to craft and attention to detail. 
-              Visit us to discover pieces that speak to your individual style.
+              Have questions about our consultation services? We&rsquo;d love to hear from you.
+              Reach out to schedule an appointment or inquire about bespoke customization.
             </p>
-            <a
-              href="mailto:contact@lapiqure.com"
-              className="inline-flex items-center gap-2 px-8 py-3 border border-ink text-ink font-display text-xs uppercase tracking-wide hover:bg-ink hover:text-paper transition-all"
-            >
-              General Inquiries
-              <ArrowRight className="h-3 w-3" strokeWidth={2} />
-            </a>
+            <div className="space-y-4">
+              <a
+                href="mailto:appointments@lapiqure.com"
+                className="inline-flex items-center gap-2 px-8 py-3 border border-ink text-ink font-display text-xs uppercase tracking-wide hover:bg-ink hover:text-paper transition-all"
+              >
+                appointments@lapiqure.com
+                <ArrowRight className="h-3 w-3" strokeWidth={2} />
+              </a>
+            </div>
           </FadeIn>
         </div>
       </section>
