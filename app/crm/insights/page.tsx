@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
 import { DashboardLayout } from '@/components/crm/DashboardLayout'
+import { PageHeader } from '@/components/crm/PageHeader'
+import { SkeletonLoader } from '@/components/crm/SkeletonLoader'
 import { CustomerScore } from '@/lib/crm-analytics'
 import { AlertCircle, TrendingUp, Heart } from 'lucide-react'
 
@@ -69,9 +71,13 @@ export default function InsightsPage() {
 
   if (authLoading || loading || !data) {
     return (
-      <div className="flex items-center justify-center h-96">
-        <p className="text-muted-foreground">Loading insights...</p>
-      </div>
+      <DashboardLayout>
+        <div className="space-y-6">
+          <div className="h-20 bg-secondary/5 rounded animate-shimmer" />
+          <SkeletonLoader variant="table" rows={3} columns={5} />
+          <SkeletonLoader variant="card" rows={3} />
+        </div>
+      </DashboardLayout>
     )
   }
 
@@ -108,10 +114,10 @@ export default function InsightsPage() {
   return (
     <DashboardLayout>
       <div className="space-y-8">
-        <div>
-          <h1 className="font-display text-4xl tracking-luxury mb-2">Customer Insights</h1>
-          <p className="text-muted-foreground">RFM analysis, churn prediction & growth opportunities</p>
-        </div>
+        <PageHeader
+          title="Customer Insights"
+          description="RFM analysis, churn prediction & growth opportunities"
+        />
 
         {segments && (
           <div className="grid grid-cols-1 md:grid-cols-5 gap-3">

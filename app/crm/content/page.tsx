@@ -4,8 +4,11 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
 import { DashboardLayout } from '@/components/crm/DashboardLayout'
+import { PageHeader } from '@/components/crm/PageHeader'
+import { SkeletonLoader } from '@/components/crm/SkeletonLoader'
 import { ImageUploader } from '@/components/crm/ImageUploader'
 import { Save, FileText } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 interface PageContent {
   id: string
@@ -93,9 +96,9 @@ export default function ContentPage() {
 
   if (authLoading) {
     return (
-      <div className="flex items-center justify-center h-96">
-        <p className="text-muted-foreground">Loading...</p>
-      </div>
+      <DashboardLayout>
+        <SkeletonLoader variant="form" rows={5} />
+      </DashboardLayout>
     )
   }
 
@@ -104,20 +107,20 @@ export default function ContentPage() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="font-display text-4xl tracking-luxury mb-2">Content Manager</h1>
-            <p className="text-muted-foreground">Edit all website pages and content</p>
-          </div>
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 disabled:opacity-50 transition-colors"
-          >
-            <Save size={20} />
-            {saving ? 'Saving...' : 'Save Changes'}
-          </button>
-        </div>
+        <PageHeader
+          title="Content Manager"
+          description="Edit all website pages and content"
+          actions={
+            <Button
+              onClick={handleSave}
+              disabled={saving}
+              className="flex items-center gap-2 bg-primary hover:bg-primary/90 disabled:opacity-50"
+            >
+              <Save size={20} />
+              {saving ? 'Saving...' : 'Save Changes'}
+            </Button>
+          }
+        />
 
         {saved && (
           <div className="p-3 bg-accent-olive/10 text-accent-olive rounded">
