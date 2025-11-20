@@ -8,23 +8,19 @@ import { ArrowRight } from 'lucide-react';
 const consultationServices = [
   {
     title: 'Private Collection Viewing',
-    description: 'Browse our full collection in an intimate, personalized setting.',
-    icon: '✨'
+    description: 'Browse our full collection in an intimate, personalized setting.'
   },
   {
     title: 'Bespoke Customization',
-    description: 'Create pieces tailored to your specifications and vision.',
-    icon: '🎨'
+    description: 'Create pieces tailored to your specifications and vision.'
   },
   {
     title: 'Personalized Styling',
-    description: 'Receive expert guidance on pieces that match your aesthetic.',
-    icon: '👗'
+    description: 'Receive expert guidance on pieces that match your aesthetic.'
   },
   {
     title: 'Archive Access',
-    description: 'Explore past collections and discover rare, limited pieces.',
-    icon: '📚'
+    description: 'Explore past collections and discover rare, limited pieces.'
   }
 ];
 
@@ -80,7 +76,9 @@ export default function AtelierPage() {
           {consultationServices.map((service, index) => (
             <FadeIn key={service.title} delay={index * 100}>
               <div className="group border border-ink/10 hover:border-ink/30 bg-paper hover:bg-paper/50 transition-all duration-500 p-8">
-                <div className="text-5xl mb-6">{service.icon}</div>
+                <div className="w-12 h-12 border border-ink/20 mb-6 flex items-center justify-center group-hover:border-ink/40 transition-colors">
+                  <div className="w-2 h-2 bg-ink" />
+                </div>
                 <h3 className="font-display text-xl tracking-[0.1em] uppercase text-ink mb-3">
                   {service.title}
                 </h3>
