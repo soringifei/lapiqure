@@ -1,13 +1,12 @@
 'use client';
 
-import { Piece } from '@/lib/types';
+import { Product } from '@/types/crm';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
-import ProductBadge from './product-badge';
 
 interface RelatedProductsProps {
-  products: Piece[];
+  products: Product[];
   currentProductId: string;
 }
 
@@ -32,12 +31,12 @@ export default function RelatedProducts({ products, currentProductId }: RelatedP
   );
 }
 
-function RelatedProductCard({ product }: { product: Piece }) {
+function RelatedProductCard({ product }: { product: Product }) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
     <Link 
-      href={`/pieces/${product.slug}`}
+      href={`/pieces/${product.id}`}
       className="flex-shrink-0 w-[280px] group"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -67,20 +66,12 @@ function RelatedProductCard({ product }: { product: Piece }) {
             quality={85}
           />
         )}
-        
-        {product.badges && product.badges.length > 0 && (
-          <div className="absolute top-4 left-4 flex flex-col gap-2">
-            {product.badges.map((badge) => (
-              <ProductBadge key={badge} type={badge} className="backdrop-blur-sm" />
-            ))}
-          </div>
-        )}
       </div>
       
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <p className="font-display text-xs tracking-editorial uppercase text-ink-700">
-            {product.designer}
+            LA PIQÛRE
           </p>
           <p className="font-display text-sm text-ink">
             ${product.price.toLocaleString()}

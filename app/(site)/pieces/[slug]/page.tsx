@@ -2,36 +2,22 @@
 
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { samplePieces } from '@/lib/sample-data';
 import ProductGallery from '@/components/product-gallery';
 import Badge from '@/components/ui/badge';
 import Button from '@/components/ui/button';
 import { useCart } from '@/lib/cart-context';
 import { useWishlist } from '@/lib/wishlist-context';
 import { useToast } from '@/hooks/use-toast';
-import { useWaitlist } from '@/lib/waitlist-context';
-import { useRecentlyViewed } from '@/lib/recently-viewed-context';
 import { useState, useEffect } from 'react';
 import { Heart } from 'lucide-react';
 import SizeGuideDialog from '@/components/size-guide-dialog';
 import Breadcrumb from '@/components/breadcrumb';
 import StickyCartBar from '@/components/sticky-cart-bar';
 import RelatedProducts from '@/components/related-products';
-import ProductLabel from '@/components/product-label';
-import MaterialBreakdown from '@/components/material-breakdown';
-import dynamic from 'next/dynamic';
-
-const PersonalizationModal = dynamic(() => import('@/components/personalization-modal'), {
-  ssr: false
-});
-
-const WaitlistModal = dynamic(() => import('@/components/waitlist-modal'), {
-  ssr: false
-});
-
-const RestockNotifyModal = dynamic(() => import('@/components/restock-notify-modal'), {
-  ssr: false
-});
+import { useCRM } from '@/hooks/useCRM';
+import { Product } from '@/types/crm';
+import { Skeleton } from '@/components/ui/skeleton';
+import { orderBy, limit } from 'firebase/firestore';
 
 interface ProductPageProps {
   params: {
@@ -40,27 +26,41 @@ interface ProductPageProps {
 }
 
 export default function ProductPage({ params }: ProductPageProps) {
-  const piece = samplePieces.find(p => p.slug === params.slug);
+  const { service } = useCRM();
+  const [piece, setPiece] = useState<Product | null>(null);
+  const [relatedPieces, setRelatedPieces] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const [selectedSize, setSelectedSize] = useState<string>('');
-  const [personalizationOpen, setPersonalizationOpen] = useState(false);
-  const [waitlistOpen, setWaitlistOpen] = useState(false);
-  const [restockNotifyOpen, setRestockNotifyOpen] = useState(false);
-  const [customText, setCustomText] = useState<string>('');
   const { addItem } = useCart();
   const { toggleItem, isInWishlist } = useWishlist();
   const { toast } = useToast();
-  const { addToWaitlist } = useWaitlist();
-  const { addToRecentlyViewed } = useRecentlyViewed();
-
-  if (!piece) {
-    notFound();
-  }
 
   useEffect(() => {
-    addToRecentlyViewed(piece);
-  }, [piece, addToRecentlyViewed]);
+    const fetchPiece = async () => {
+      if (!service) return;
+      try {
+        setLoading(true);
+        const product = await service.getProduct(params.slug);
+        if (product) {
+          setPiece(product);
+          const related = await service.getProducts([orderBy('createdAt', 'desc'), limit(5)]);
+          setRelatedPieces(related.filter(p => p.id !== product.id).slice(0, 4));
+        } else {
+          notFound();
+        }
+      } catch (error) {
+        console.error('Error fetching product:', error);
+        notFound();
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPiece();
+  }, [service, params.slug]);
 
   const handleAddToCart = () => {
+    if (!piece) return;
     if (!selectedSize) {
       toast({
         variant: "destructive",
@@ -69,6 +69,7 @@ export default function ProductPage({ params }: ProductPageProps) {
       });
       return;
     }
+    // @ts-expect-error: addItem expects a different product type.
     addItem(piece, selectedSize);
     toast({
       title: "Added to cart",
@@ -77,6 +78,8 @@ export default function ProductPage({ params }: ProductPageProps) {
   };
 
   const handleWishlistToggle = () => {
+    if (!piece) return;
+    // @ts-expect-error: toggleItem expects a different product type.
     toggleItem(piece);
     if (isInWishlist(piece.id)) {
       toast({
@@ -90,6 +93,44 @@ export default function ProductPage({ params }: ProductPageProps) {
       });
     }
   };
+
+  if (loading || !piece) {
+    return (
+      <div className="min-h-screen">
+        <div className="max-w-7xl mx-auto px-8 lg:px-12 py-24">
+          <Skeleton className="h-6 w-64 mb-12" />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 lg:gap-24">
+            <div className="space-y-4">
+              <Skeleton className="aspect-square w-full" />
+              <div className="grid grid-cols-4 gap-4">
+                <Skeleton className="aspect-square w-full" />
+                <Skeleton className="aspect-square w-full" />
+                <Skeleton className="aspect-square w-full" />
+                <Skeleton className="aspect-square w-full" />
+              </div>
+            </div>
+            <div className="space-y-12">
+              <Skeleton className="h-10 w-3/4" />
+              <Skeleton className="h-8 w-1/4" />
+              <div className="space-y-4">
+                <Skeleton className="h-6 w-32" />
+                <div className="grid grid-cols-4 gap-3">
+                  <Skeleton className="h-12 w-full" />
+                  <Skeleton className="h-12 w-full" />
+                  <Skeleton className="h-12 w-full" />
+                  <Skeleton className="h-12 w-full" />
+                </div>
+              </div>
+              <div className="space-y-4">
+                <Skeleton className="h-12 w-full" />
+                <Skeleton className="h-12 w-full" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen">
@@ -105,8 +146,8 @@ export default function ProductPage({ params }: ProductPageProps) {
           <div className="space-y-12">
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <Badge variant="default">{piece.condition}</Badge>
-                {piece.available ? (
+                <Badge variant="default">New</Badge>
+                {piece.stock > 0 ? (
                   <Badge variant="outline">Available</Badge>
                 ) : (
                   <Badge variant="outline">Sold Out</Badge>
@@ -119,24 +160,16 @@ export default function ProductPage({ params }: ProductPageProps) {
 
               <div className="flex items-baseline gap-4 mb-6">
                 <p className="font-display text-2xl text-ink">${piece.price}</p>
-                {piece.rentalPrice && (
-                  <p className="font-sans text-sm text-ink-700">
-                    or ${piece.rentalPrice}/month rental
-                  </p>
-                )}
               </div>
 
               <div className="flex items-center">
-                {piece.designer && piece.designer.toUpperCase().includes('LA PIQ') ? (
-                  <div className="relative h-4 w-[90px]">
-                    <Image src="/brand/logo.png" alt="LA PIQÛRE" fill sizes="90px" className="object-contain" />
-                  </div>
-                ) : (
-                  <p className="font-sans text-xs tracking-editorial uppercase text-ink-700">{piece.designer}</p>
-                )}
+                <div className="relative h-4 w-[90px]">
+                  <Image src="/brand/logo.png" alt="LA PIQÛRE" fill sizes="90px" className="object-contain" />
+                </div>
               </div>
             </div>
 
+            {piece.size && (
             <div className="pt-12">
               <div className="h-px bg-gradient-to-r from-ink/5 via-ink/10 to-ink/5 mb-12" />
               <div className="flex items-center justify-between mb-4">
@@ -146,7 +179,7 @@ export default function ProductPage({ params }: ProductPageProps) {
                 <SizeGuideDialog />
               </div>
               <div className="grid grid-cols-4 gap-3">
-                {piece.sizes.map((size) => (
+                {piece.size.split(',').map((size) => (
                   <button
                     key={size}
                     onClick={() => setSelectedSize(size)}
@@ -161,32 +194,19 @@ export default function ProductPage({ params }: ProductPageProps) {
                 ))}
               </div>
             </div>
+            )}
 
             <div className="space-y-4">
-              <button
-                onClick={() => setPersonalizationOpen(true)}
-                className="w-full px-6 py-3 border border-ink text-ink font-mono text-xs uppercase tracking-wide hover:bg-ink hover:text-paper transition-all"
-              >
-                + Add Personalization ($50)
-              </button>
-              
-              {customText && (
-                <div className="p-4 border border-ink/20 bg-sand/10">
-                  <p className="font-mono text-[10px] uppercase text-ink-700 mb-1">Personalization:</p>
-                  <p className="font-mono text-sm uppercase text-ink tracking-widest">{customText}</p>
-                </div>
-              )}
-              
-              {piece.available ? (
+              {piece.stock > 0 ? (
                 <Button onClick={handleAddToCart} variant="primary" className="w-full">
                   Add to Cart
                 </Button>
               ) : (
                 <button
-                  onClick={() => setRestockNotifyOpen(true)}
-                  className="w-full px-10 py-4 border border-ink/10 text-ink hover:border-ink/30 hover:bg-ink/5 transition-all duration-500 font-sans uppercase tracking-[0.15em] text-[11px]"
+                  disabled
+                  className="w-full px-10 py-4 border border-ink/10 text-ink/50 transition-all duration-500 font-sans uppercase tracking-[0.15em] text-[11px]"
                 >
-                  Notify When Available
+                  Sold out
                 </button>
               )}
               <Button 
@@ -207,43 +227,12 @@ export default function ProductPage({ params }: ProductPageProps) {
               <div className="h-px bg-gradient-to-r from-ink/5 via-ink/10 to-ink/5 mb-12" />
               <div>
                 <h3 className="font-display text-xs tracking-luxury uppercase text-ink mb-3">
-                  Story
+                  Description
                 </h3>
                 <p className="font-sans text-sm leading-relaxed text-ink-700">
-                  {piece.story}
+                  {piece.description}
                 </p>
               </div>
-
-              {piece.materialComposition && (
-                <div>
-                  <h3 className="font-display text-xs tracking-luxury uppercase text-ink mb-3">
-                    Materials
-                  </h3>
-                  <MaterialBreakdown materials={piece.materialComposition} />
-                </div>
-              )}
-              
-              {piece.material && !piece.materialComposition && (
-                <div>
-                  <h3 className="font-display text-xs tracking-luxury uppercase text-ink mb-3">
-                    Material
-                  </h3>
-                  <p className="font-sans text-sm leading-relaxed text-ink-700">
-                    {piece.material}
-                  </p>
-                </div>
-              )}
-
-              {piece.care && (
-                <div>
-                  <h3 className="font-display text-xs tracking-luxury uppercase text-ink mb-3">
-                    Care Instructions
-                  </h3>
-                  <p className="font-sans text-sm leading-relaxed text-ink-700">
-                    {piece.care}
-                  </p>
-                </div>
-              )}
 
               <div>
                 <h3 className="font-display text-xs tracking-luxury uppercase text-ink mb-3">
@@ -253,37 +242,14 @@ export default function ProductPage({ params }: ProductPageProps) {
                   href={`/collections`}
                   className="font-sans text-sm text-ink hover:text-ink-700 transition-colors"
                 >
-                  {piece.collectionName}
+                  {piece.collection}
                 </a>
               </div>
-
-              <div>
-                <h3 className="font-display text-xs tracking-luxury uppercase text-ink mb-3">
-                  Category
-                </h3>
-                <p className="font-sans text-sm text-ink-700 capitalize">
-                  {piece.category}
-                </p>
-              </div>
-              
-              {(piece.batchNumber || piece.productionDate) && (
-                <div>
-                  <h3 className="font-display text-xs tracking-luxury uppercase text-ink mb-3">
-                    Production Details
-                  </h3>
-                  <ProductLabel
-                    name={piece.name}
-                    batchNumber={piece.batchNumber}
-                    productionDate={piece.productionDate}
-                    material={piece.material}
-                  />
-                </div>
-              )}
             </div>
           </div>
         </div>
         
-        <RelatedProducts products={samplePieces} currentProductId={piece.id} />
+        <RelatedProducts products={relatedPieces} currentProductId={piece.id} />
       </div>
       
       <StickyCartBar
@@ -293,27 +259,6 @@ export default function ProductPage({ params }: ProductPageProps) {
         selectedSize={selectedSize}
       />
       
-      <PersonalizationModal
-        open={personalizationOpen}
-        onOpenChange={setPersonalizationOpen}
-        onSave={setCustomText}
-        productName={piece.name}
-      />
-      
-      <WaitlistModal
-        open={waitlistOpen}
-        onOpenChange={setWaitlistOpen}
-        productId={piece.id}
-        productName={piece.name}
-        onJoin={(email) => addToWaitlist(piece.id, piece.name, email)}
-      />
-      
-      <RestockNotifyModal
-        open={restockNotifyOpen}
-        onOpenChange={setRestockNotifyOpen}
-        productId={piece.id}
-        productName={piece.name}
-      />
     </div>
   );
 }

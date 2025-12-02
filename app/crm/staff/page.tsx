@@ -148,7 +148,6 @@ export default function StaffPage() {
         ) : staff.length === 0 ? (
           <div className="bg-card border border-border rounded">
             <EmptyState
-              icon="👤"
               title="No staff members yet"
               description="Add your team members to manage customers and handle orders."
               primaryAction={{

@@ -31,6 +31,9 @@ export default function CollectionsPage() {
     slug: '',
     description: '',
     image: '',
+    heroImage: '',
+    story: '',
+    images: [] as string[],
     season: '',
     featured: false,
     isActive: true,
@@ -74,6 +77,9 @@ export default function CollectionsPage() {
       slug: collection.slug,
       description: collection.description,
       image: collection.image,
+      heroImage: collection.heroImage,
+      story: collection.story,
+      images: collection.images,
       season: collection.season || '',
       featured: collection.featured,
       isActive: collection.isActive,
@@ -91,9 +97,12 @@ export default function CollectionsPage() {
       if (editingId) {
         await service.updateCollection(editingId, {
           name: formData.name,
-          slug: formData.slug || formData.name.toLowerCase().replace(/\s+/g, '-'),
+          slug: formData.slug || formData.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''),
           description: formData.description,
           image: formData.image,
+          heroImage: formData.heroImage,
+          story: formData.story,
+          images: formData.images,
           season: formData.season || undefined,
           featured: formData.featured,
           isActive: formData.isActive,
@@ -101,9 +110,12 @@ export default function CollectionsPage() {
       } else {
         await service.addCollection({
           name: formData.name,
-          slug: formData.slug || formData.name.toLowerCase().replace(/\s+/g, '-'),
+          slug: formData.slug || formData.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''),
           description: formData.description,
           image: formData.image,
+          heroImage: formData.heroImage,
+          story: formData.story,
+          images: formData.images,
           season: formData.season || undefined,
           featured: formData.featured,
           isActive: formData.isActive,
@@ -116,6 +128,9 @@ export default function CollectionsPage() {
         slug: '',
         description: '',
         image: '',
+        heroImage: '',
+        story: '',
+        images: [],
         season: '',
         featured: false,
         isActive: true,
@@ -186,10 +201,22 @@ export default function CollectionsPage() {
                 onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
                 className="px-4 py-2 border border-border rounded bg-background"
               />
+              <div className="flex items-center gap-2 text-xs text-muted-foreground px-1">
+                <span>Example:</span>
+                <code className="bg-secondary/10 px-1 py-0.5 rounded">terre-calme</code>
+              </div>
               <textarea
                 placeholder="Description"
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                className="px-4 py-2 border border-border rounded bg-background col-span-2"
+                rows={3}
+                required
+              />
+              <textarea
+                placeholder="Story"
+                value={formData.story}
+                onChange={(e) => setFormData({ ...formData, story: e.target.value })}
                 className="px-4 py-2 border border-border rounded bg-background col-span-2"
                 rows={3}
                 required
@@ -225,6 +252,25 @@ export default function CollectionsPage() {
                 <ImageUploader
                   onImagesChange={(urls) => setFormData({ ...formData, image: urls[0] || '' })}
                   maxImages={1}
+                  initialImages={formData.image ? [formData.image] : []}
+                />
+              </div>
+
+              <div className="col-span-2">
+                <label className="block text-sm font-medium mb-2">Hero Image</label>
+                <ImageUploader
+                  onImagesChange={(urls) => setFormData({ ...formData, heroImage: urls[0] || '' })}
+                  maxImages={1}
+                  initialImages={formData.heroImage ? [formData.heroImage] : []}
+                />
+              </div>
+
+              <div className="col-span-2">
+                <label className="block text-sm font-medium mb-2">Detail Images</label>
+                <ImageUploader
+                  onImagesChange={(urls) => setFormData({ ...formData, images: urls })}
+                  maxImages={5}
+                  initialImages={formData.images}
                 />
               </div>
 
@@ -245,6 +291,9 @@ export default function CollectionsPage() {
                       slug: '',
                       description: '',
                       image: '',
+                      heroImage: '',
+                      story: '',
+                      images: [],
                       season: '',
                       featured: false,
                       isActive: true,
@@ -274,7 +323,6 @@ export default function CollectionsPage() {
         {filteredCollections.length === 0 ? (
           <div className="bg-card border border-border rounded">
             <EmptyState
-              icon="🎨"
               title="No collections yet"
               description="Create your first collection to organize seasonal pieces and exclusive releases."
               primaryAction={{

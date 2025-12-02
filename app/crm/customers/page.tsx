@@ -165,7 +165,6 @@ export default function CustomersPage() {
         ) : filteredCustomers.length === 0 ? (
           <div className="bg-card border border-border rounded">
             <EmptyState
-              icon="👥"
               title="No customers yet"
               description="Start by adding your first client. You can import historical data later."
               primaryAction={{

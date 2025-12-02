@@ -119,6 +119,7 @@ export interface Product {
   size?: string;
   color?: string;
   tierExclusive?: CustomerTier;
+  featured?: boolean;
   createdAt: Date;
   updatedAt: Date;
 }

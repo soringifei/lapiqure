@@ -6,6 +6,7 @@ import { CartProvider } from '@/lib/cart-context';
 import { WishlistProvider } from '@/lib/wishlist-context';
 import { WaitlistProvider } from '@/lib/waitlist-context';
 import { RecentlyViewedProvider } from '@/lib/recently-viewed-context';
+import { CRMProvider } from '@/hooks/useCRM';
 
 const courierPrime = Courier_Prime({
   weight: ['400', '700'],
@@ -48,17 +49,19 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen flex flex-col">
-        <AuthProvider>
-          <CartProvider>
-            <WishlistProvider>
-              <WaitlistProvider>
-                <RecentlyViewedProvider>
-                  {children}
-                </RecentlyViewedProvider>
-              </WaitlistProvider>
-            </WishlistProvider>
-          </CartProvider>
-        </AuthProvider>
+        <CRMProvider>
+          <AuthProvider>
+            <CartProvider>
+              <WishlistProvider>
+                <WaitlistProvider>
+                  <RecentlyViewedProvider>
+                    {children}
+                  </RecentlyViewedProvider>
+                </WaitlistProvider>
+              </WishlistProvider>
+            </CartProvider>
+          </AuthProvider>
+        </CRMProvider>
       </body>
     </html>
   );

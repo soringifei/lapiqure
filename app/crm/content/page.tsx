@@ -39,6 +39,12 @@ export default function ContentPage() {
   const router = useRouter()
   const { user, loading: authLoading } = useAuth()
 
+  const [pages, setPages] = useState<{ id: string; title: string; slug: string }[]>([
+    { id: 'home', title: 'Home', slug: 'home' },
+    { id: 'about', title: 'About', slug: 'about' },
+    { id: 'collections', title: 'Collections', slug: 'collections' },
+    { id: 'contact', title: 'Contact', slug: 'contact' },
+  ])
   const [selectedPage, setSelectedPage] = useState('home')
   const [content, setContent] = useState<PageContent>({
     id: 'home',
@@ -58,6 +64,31 @@ export default function ContentPage() {
       router.push('/crm/login')
     }
   }, [user, authLoading, router])
+
+  useEffect(() => {
+    const fetchPages = async () => {
+      try {
+        const response = await fetch('/api/crm/content')
+        if (response.ok) {
+          const data = await response.json()
+          if (data.length > 0) {
+            // Merge with default pages to ensure they exist, but prefer DB data
+            const defaultIds = ['home', 'about', 'collections', 'contact']
+            const merged = [...data]
+            defaultIds.forEach(id => {
+              if (!merged.find(p => p.id === id)) {
+                merged.push({ id, title: id.charAt(0).toUpperCase() + id.slice(1), slug: id })
+              }
+            })
+            setPages(merged)
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching pages:', error)
+      }
+    }
+    fetchPages()
+  }, [])
 
   useEffect(() => {
     const loadContent = async () => {
@@ -92,6 +123,25 @@ export default function ContentPage() {
     } finally {
       setSaving(false)
     }
+  }
+
+  const handleAddPage = () => {
+    const title = prompt('Enter page title:')
+    if (!title) return
+    const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+    const newPage = { id: slug, title, slug }
+    setPages([...pages, newPage])
+    setSelectedPage(slug)
+    setContent({
+      id: slug,
+      title,
+      slug,
+      heroTitle: title,
+      heroDescription: '',
+      heroImage: '',
+      sections: [],
+      cta: { text: '', href: '' },
+    })
   }
 
   if (authLoading) {
@@ -130,9 +180,14 @@ export default function ContentPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <div className="bg-card border border-border rounded p-4 h-fit">
-            <p className="text-sm font-medium mb-3 text-muted-foreground">Pages</p>
+            <p className="text-sm font-medium mb-3 text-muted-foreground flex justify-between items-center">
+              Pages
+              <button onClick={handleAddPage} className="text-primary hover:text-primary/80 text-xs">
+                + Add
+              </button>
+            </p>
             <div className="space-y-2">
-              {PAGES.map((page) => (
+              {pages.map((page) => (
                 <button
                   key={page.id}
                   onClick={() => setSelectedPage(page.id)}
@@ -179,6 +234,7 @@ export default function ContentPage() {
               <ImageUploader
                 onImagesChange={(urls) => setContent({ ...content, heroImage: urls[0] || '' })}
                 maxImages={1}
+                initialImages={content.heroImage ? [content.heroImage] : []}
               />
             </div>
 

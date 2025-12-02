@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo, memo } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
 import { DashboardLayout } from '@/components/crm/DashboardLayout'
@@ -69,6 +69,33 @@ export default function InsightsPage() {
     fetchInsights()
   }, [user])
 
+  const insights: InsightSection[] = useMemo(() => {
+    if (!data) return []
+    return [
+      {
+        title: 'At Risk',
+        description: 'Customers showing churn signals',
+        icon: AlertCircle,
+        color: 'text-destructive',
+        items: data.churnRisk,
+      },
+      {
+        title: 'High Value',
+        description: 'Top spenders & loyal customers',
+        icon: Heart,
+        color: 'text-accent-olive',
+        items: data.highValue,
+      },
+      {
+        title: 'Growth Opportunities',
+        description: 'High potential for upsell',
+        icon: TrendingUp,
+        color: 'text-accent-orange',
+        items: data.growth,
+      },
+    ]
+  }, [data])
+
   if (authLoading || loading || !data) {
     return (
       <DashboardLayout>
@@ -84,30 +111,6 @@ export default function InsightsPage() {
   if (!user) {
     return null
   }
-
-  const insights: InsightSection[] = [
-    {
-      title: 'At Risk',
-      description: 'Customers showing churn signals',
-      icon: AlertCircle,
-      color: 'text-destructive',
-      items: data.churnRisk,
-    },
-    {
-      title: 'High Value',
-      description: 'Top spenders & loyal customers',
-      icon: Heart,
-      color: 'text-accent-olive',
-      items: data.highValue,
-    },
-    {
-      title: 'Growth Opportunities',
-      description: 'High potential for upsell',
-      icon: TrendingUp,
-      color: 'text-accent-orange',
-      items: data.growth,
-    },
-  ]
 
   const { segments } = data
 

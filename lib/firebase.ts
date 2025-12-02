@@ -22,7 +22,7 @@ export function initFirebase() {
   if (!getApps().length) {
     app = initializeApp(firebaseConfig);
     auth = getAuth(app);
-    db = getFirestore(app);
+    db = getFirestore(app, 'lapiqure');
     
     if (typeof window !== 'undefined') {
       isSupported().then((supported) => {

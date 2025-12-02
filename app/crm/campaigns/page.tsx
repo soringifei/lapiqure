@@ -93,7 +93,10 @@ export default function CampaignsPage() {
 
   const handleCreateCampaign = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!service || !user) return
+    if (!service || !user) {
+      console.error('Missing service or user', { service: !!service, user: !!user })
+      return
+    }
     try {
       await service.addCampaign({
         name: formData.name,
@@ -113,6 +116,22 @@ export default function CampaignsPage() {
     } catch (error) {
       console.error('Error creating campaign:', error)
     }
+  }
+
+  const handleTogglePause = async (campaignId: string, currentStatus: CampaignStatus) => {
+    if (!service) return
+    try {
+      const newStatus: CampaignStatus = currentStatus === 'running' ? 'paused' : 'running'
+      await service.updateCampaign(campaignId, { status: newStatus })
+      const updatedCampaigns = await service.getCampaigns()
+      setCampaigns(updatedCampaigns)
+    } catch (error) {
+      console.error('Error updating campaign status:', error)
+    }
+  }
+
+  const handleViewStats = (campaign: Campaign) => {
+    alert(`Campaign: ${campaign.name}\n\nSent: ${campaign.metrics.sent}\nOpened: ${campaign.metrics.opened}\nClicked: ${campaign.metrics.clicked}\nBounced: ${campaign.metrics.bounced}\n\nOpen Rate: ${campaign.metrics.sent > 0 ? ((campaign.metrics.opened / campaign.metrics.sent) * 100).toFixed(1) : 0}%\nClick Rate: ${campaign.metrics.sent > 0 ? ((campaign.metrics.clicked / campaign.metrics.sent) * 100).toFixed(1) : 0}%`)
   }
 
   return (
@@ -151,7 +170,6 @@ export default function CampaignsPage() {
         ) : campaigns.length === 0 ? (
           <div className="bg-card border border-border rounded">
             <EmptyState
-              icon="📧"
               title="No campaigns yet"
               description="Create your first campaign to reach customers with targeted email marketing."
               primaryAction={{
@@ -174,10 +192,18 @@ export default function CampaignsPage() {
                     <p className="text-sm text-muted-foreground">{campaign.description}</p>
                   </div>
                   <div className="flex gap-2">
-                    <button className="p-2 hover:bg-secondary/10 rounded transition-colors">
+                    <button 
+                      onClick={() => handleViewStats(campaign)}
+                      className="p-2 hover:bg-secondary/10 rounded transition-colors"
+                      title="View Stats"
+                    >
                       <BarChart2 size={18} />
                     </button>
-                    <button className="p-2 hover:bg-secondary/10 rounded transition-colors">
+                    <button 
+                      onClick={() => handleTogglePause(campaign.id, campaign.status)}
+                      className="p-2 hover:bg-secondary/10 rounded transition-colors"
+                      title={campaign.status === 'running' ? 'Pause Campaign' : 'Resume Campaign'}
+                    >
                       <Pause size={18} />
                     </button>
                   </div>

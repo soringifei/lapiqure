@@ -272,6 +272,15 @@ export class OptimizedCRMService {
     })
   }
 
+  async getProduct(id: string): Promise<Product | null> {
+    const key = this.getCacheKey('product', id)
+    return this.getCached(key, async () => {
+      const docRef = doc(this.db, 'crm_products', id)
+      const docSnap = await getDoc(docRef)
+      return docSnap.exists() ? ({ ...docSnap.data(), id: docSnap.id } as Product) : null
+    })
+  }
+
   async addProduct(product: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
     const docRef = doc(collection(this.db, 'crm_products'))
     const now = Timestamp.now()
@@ -406,5 +415,20 @@ export class OptimizedCRMService {
         recentOrders,
       }
     })
+  }
+
+  async getContent(id: string): Promise<any> {
+    const key = this.getCacheKey('content', id)
+    return this.getCached(key, async () => {
+      const docRef = doc(this.db, 'crm_content', id)
+      const docSnap = await getDoc(docRef)
+      return docSnap.exists() ? docSnap.data() : null
+    })
+  }
+
+  async updateContent(id: string, data: any): Promise<void> {
+    const docRef = doc(this.db, 'crm_content', id)
+    await setDoc(docRef, { ...data, updatedAt: Timestamp.now() }, { merge: true })
+    this.cache.delete(this.getCacheKey('content', id))
   }
 }

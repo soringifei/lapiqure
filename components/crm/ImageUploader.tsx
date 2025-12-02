@@ -8,10 +8,13 @@ import { optimizeImage, getImageSize } from '@/lib/image-optimization'
 interface ImageUploaderProps {
   onImagesChange: (urls: string[]) => void
   maxImages?: number
+  initialImages?: string[]
 }
 
-export function ImageUploader({ onImagesChange, maxImages = 5 }: ImageUploaderProps) {
-  const [images, setImages] = useState<{ url: string; size: number }[]>([])
+export function ImageUploader({ onImagesChange, maxImages = 5, initialImages = [] }: ImageUploaderProps) {
+  const [images, setImages] = useState<{ url: string; size: number }[]>(
+    initialImages.map(url => ({ url, size: 0 }))
+  )
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
 
@@ -49,7 +52,9 @@ export function ImageUploader({ onImagesChange, maxImages = 5 }: ImageUploaderPr
       setError(err instanceof Error ? err.message : 'Error uploading image')
     } finally {
       setUploading(false)
-      e.currentTarget.value = ''
+      if (e.currentTarget) {
+        e.currentTarget.value = ''
+      }
     }
   }
 
@@ -105,7 +110,9 @@ export function ImageUploader({ onImagesChange, maxImages = 5 }: ImageUploaderPr
                     <X size={20} />
                   </button>
                 </div>
-                <p className="text-xs text-muted-foreground mt-1">{getImageSize(image.size)}</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {image.size > 0 ? getImageSize(image.size) : 'Existing image'}
+                </p>
               </div>
             ))}
           </div>

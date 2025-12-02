@@ -10,7 +10,7 @@ import { EmptyState } from '@/components/crm/EmptyState'
 import { SkeletonLoader } from '@/components/crm/SkeletonLoader'
 import { ImageUploader } from '@/components/crm/ImageUploader'
 import { Product, CustomerTier } from '@/types/crm'
-import { Plus, Edit, Trash2, Search } from 'lucide-react'
+import { Plus, Edit, Trash2, Search, Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 export default function ProductsPage() {
@@ -34,6 +34,7 @@ export default function ProductsPage() {
     color: '',
     tierExclusive: 'prospect' as CustomerTier,
     images: [] as string[],
+    featured: false,
   })
 
   useEffect(() => {
@@ -78,6 +79,7 @@ export default function ProductsPage() {
       color: product.color || '',
       tierExclusive: product.tierExclusive || 'prospect',
       images: product.images,
+      featured: product.featured || false,
     })
     setEditingId(product.id)
     setShowForm(true)
@@ -99,6 +101,7 @@ export default function ProductsPage() {
           size: formData.size || undefined,
           color: formData.color || undefined,
           tierExclusive: formData.tierExclusive,
+          featured: formData.featured,
         })
       } else {
         await service.addProduct({
@@ -111,6 +114,7 @@ export default function ProductsPage() {
           size: formData.size || undefined,
           color: formData.color || undefined,
           tierExclusive: formData.tierExclusive,
+          featured: formData.featured,
         })
       }
 
@@ -124,6 +128,7 @@ export default function ProductsPage() {
         color: '',
         tierExclusive: 'prospect',
         images: [],
+        featured: false,
       })
       setEditingId(null)
       setShowForm(false)
@@ -243,6 +248,16 @@ export default function ProductsPage() {
                 <option value="gold">Gold Only</option>
                 <option value="platinum">Platinum Only</option>
               </select>
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="featured"
+                  checked={formData.featured}
+                  onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
+                  className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                />
+                <label htmlFor="featured">Featured Product</label>
+              </div>
 
               <div className="col-span-2">
                 <label className="block text-sm font-medium mb-2">Product Images</label>
@@ -271,6 +286,7 @@ export default function ProductsPage() {
                       color: '',
                       tierExclusive: 'prospect',
                       images: [],
+                      featured: false,
                     })
                   }}
                   className="flex-1 px-4 py-2 bg-secondary/20 rounded hover:bg-secondary/30"
@@ -296,7 +312,6 @@ export default function ProductsPage() {
         {filteredProducts.length === 0 ? (
           <div className="bg-card border border-border rounded">
             <EmptyState
-              icon="📦"
               title="No products yet"
               description="Add your first product with images, stock, and tier exclusivity."
               primaryAction={{
@@ -310,6 +325,7 @@ export default function ProductsPage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-border bg-secondary/5">
+                  <th className="px-6 py-3 text-left text-muted-foreground font-medium"></th>
                   <th className="px-6 py-3 text-left text-muted-foreground font-medium">Name</th>
                   <th className="px-6 py-3 text-left text-muted-foreground font-medium">Collection</th>
                   <th className="px-6 py-3 text-left text-muted-foreground font-medium">Price</th>
@@ -321,6 +337,9 @@ export default function ProductsPage() {
               <tbody>
                 {filteredProducts.map((product) => (
                   <tr key={product.id} className="border-b border-border hover:bg-secondary/5">
+                    <td className="px-6 py-3 text-center">
+                      {product.featured && <Star size={16} className="text-yellow-400" />}
+                    </td>
                     <td className="px-6 py-3">{product.name}</td>
                     <td className="px-6 py-3 text-sm text-muted-foreground">{product.collection}</td>
                     <td className="px-6 py-3">${product.price.toLocaleString()}</td>

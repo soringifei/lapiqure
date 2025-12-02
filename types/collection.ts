@@ -4,6 +4,9 @@ export interface Collection {
   slug: string
   description: string
   image: string
+  heroImage: string
+  story: string
+  images: string[]
   season?: string
   startDate?: Date
   endDate?: Date

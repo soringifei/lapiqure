@@ -27,9 +27,9 @@ const nextConfig = {
       : "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com;"
 
     const csp =
-      "default-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com https://firebase.googleapis.com https://firestore.googleapis.com; " +
+      "default-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com https://firebase.googleapis.com https://firestore.googleapis.com https://securetoken.googleapis.com; " +
       scriptSrc +
-      " connect-src 'self' https://firestore.googleapis.com https://firebase.googleapis.com https://firebaseinstallations.googleapis.com https://identitytoolkit.googleapis.com https://region1.google-analytics.com https://www.google-analytics.com; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; frame-ancestors 'self'; require-trusted-types-for 'script';"
+      " connect-src 'self' https://firestore.googleapis.com https://firebase.googleapis.com https://firebaseinstallations.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://region1.google-analytics.com https://www.google-analytics.com; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; frame-ancestors 'self';"
 
     return [
       {

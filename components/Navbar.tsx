@@ -22,6 +22,8 @@ export default function Navbar() {
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="lg:hidden p-2 -ml-2 text-ink hover:text-ink-700 transition-colors z-10"
+            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileMenuOpen}
           >
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -66,11 +68,11 @@ export default function Navbar() {
             <Link
               href="/wishlist" 
               className="hidden sm:block relative p-2 text-ink-700 hover:text-ink transition-colors group"
-              title="Wishlist"
+              aria-label={`Wishlist${items.length > 0 ? ` (${items.length} items)` : ''}`}
             >
               <Heart className="h-4 w-4 group-hover:scale-110 transition-transform" />
               {items.length > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 bg-ink text-paper rounded-full w-4 h-4 flex items-center justify-center text-[9px] font-display">
+                <span className="absolute -top-0.5 -right-0.5 bg-ink text-paper rounded-full w-4 h-4 flex items-center justify-center text-[9px] font-display" aria-hidden="true">
                   {items.length}
                 </span>
               )}
@@ -79,7 +81,7 @@ export default function Navbar() {
             <Link
               href="/stores" 
               className="hidden md:block p-2 text-ink-700 hover:text-ink transition-colors group"
-              title="Find a Store"
+              aria-label="Find a Store"
             >
               <MapPin className="h-4 w-4 group-hover:scale-110 transition-transform" />
             </Link>
@@ -88,19 +90,30 @@ export default function Navbar() {
             
             {user ? (
               <div className="hidden sm:block relative group">
-                <button className="p-2 text-ink-700 hover:text-ink transition-colors">
+                <button 
+                  className="p-2 text-ink-700 hover:text-ink transition-colors"
+                  aria-label="User menu"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
                   <User className="h-4 w-4" />
                 </button>
-                <div className="absolute right-0 top-full mt-2 w-48 bg-paper border border-ink/10 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
+                <div 
+                  className="absolute right-0 top-full mt-2 w-48 bg-paper border border-ink/10 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200"
+                  role="menu"
+                  aria-label="User menu"
+                >
                   <Link
                     href="/account"
                     className="block px-6 py-3 text-xs font-display uppercase tracking-wide text-ink-700 hover:bg-sand/10 hover:text-ink transition-colors"
+                    role="menuitem"
                   >
                     My Account
                   </Link>
                   <button
                     onClick={() => signOut()}
                     className="w-full text-left px-6 py-3 text-xs font-display uppercase tracking-wide text-ink-700 hover:bg-sand/10 hover:text-ink transition-colors"
+                    role="menuitem"
                   >
                     Sign Out
                   </button>
@@ -110,7 +123,7 @@ export default function Navbar() {
               <Link 
                 href="/auth" 
                 className="hidden sm:block p-2 text-ink-700 hover:text-ink transition-colors"
-                title="Sign In"
+                aria-label="Sign In"
               >
                 <User className="h-4 w-4" />
               </Link>
@@ -195,7 +208,7 @@ export default function Navbar() {
               <Link 
                 href="/auth" 
                 onClick={() => setMobileMenuOpen(false)}
-                className="block py-3 px-4 text-sm font-mono uppercase tracking-wide text-ink-700 hover:bg-sand/10 hover:text-ink transition-colors"
+                className="block py-3 px-4 text-sm font-display uppercase tracking-wide text-ink-700 hover:bg-sand/10 hover:text-ink transition-colors"
               >
                 Sign In
               </Link>

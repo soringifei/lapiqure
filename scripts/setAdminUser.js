@@ -40,7 +40,7 @@ async function main() {
     initFirebaseAdmin()
 
     const auth = getAuth()
-    const db = getFirestore()
+    const db = getFirestore('lapiqure')
 
     console.log(`Looking up user: ${ADMIN_EMAIL}`)
     let userRecord
