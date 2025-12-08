@@ -12,6 +12,7 @@ import { useCRM } from '@/hooks/useCRM';
 import { Product } from '@/types/crm';
 import { where, limit } from 'firebase/firestore';
 import ProductCardSkeleton from '@/components/product-card-skeleton';
+import { samplePieces } from '@/lib/sample-data';
 
 export default function Home() {
   const { user } = useAuth();
@@ -128,21 +129,41 @@ export default function Home() {
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
-            {loading ? (
-              Array.from({ length: 4 }).map((_, i) => <ProductCardSkeleton key={i} />)
-            ) : (
-              featuredPieces.map((piece) => (
+            {(() => {
+              if (loading) {
+                return Array.from({ length: 4 }).map((_, i) => <ProductCardSkeleton key={i} />)
+              }
+
+              const featuredWithImages = featuredPieces.filter(
+                (piece) => piece.images && piece.images.length > 0,
+              )
+
+              if (featuredWithImages.length > 0) {
+                return featuredWithImages.map((piece) => (
+                  <PieceCard
+                    key={piece.id}
+                    name={piece.name}
+                    slug={piece.id}
+                    designer="LA PIQÛRE"
+                    condition="New"
+                    imageSrc={piece.images[0]}
+                    price={piece.price}
+                  />
+                ))
+              }
+
+              return samplePieces.slice(0, 4).map((piece) => (
                 <PieceCard
                   key={piece.id}
                   name={piece.name}
-                  slug={piece.id}
-                  designer="LA PIQÛRE"
-                  condition="New"
+                  slug={piece.slug}
+                  designer={piece.designer}
+                  condition={piece.condition}
                   imageSrc={piece.images[0]}
                   price={piece.price}
                 />
               ))
-            )}
+            })()}
           </div>
         </div>
       </section>

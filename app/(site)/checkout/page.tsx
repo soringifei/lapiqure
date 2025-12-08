@@ -5,13 +5,21 @@ import { useCart } from '@/lib/cart-context';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ChevronLeft, Lock, CreditCard, Package, MapPin } from 'lucide-react';
+import { ChevronLeft, Lock, Package, MapPin } from 'lucide-react';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
-export default function CheckoutPage() {
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
+
+function CheckoutInner() {
   const router = useRouter();
-  const { items, totalPrice, totalItems } = useCart();
+  const { items, totalPrice, totalItems, clearCart } = useCart();
   const [step, setStep] = useState<'shipping' | 'payment'>('shipping');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
+
+  const stripe = useStripe();
+  const elements = useElements();
 
   const shipping = totalPrice >= 500 ? 0 : 35;
   const tax = totalPrice * 0.08;
@@ -75,11 +83,102 @@ export default function CheckoutPage() {
 
   const handlePaymentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!stripe || !elements) {
+      setPaymentError('Payment system is still loading. Please try again.');
+      return;
+    }
+
     setIsProcessing(true);
-    
-    setTimeout(() => {
+    setPaymentError(null);
+
+    try {
+      const itemsPayload = items.map((item) => ({
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        selectedSize: item.selectedSize,
+      }));
+
+      const createIntentRes = await fetch('/api/stripe/create-payment-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: itemsPayload,
+          currency: 'usd',
+          shippingAmount: shipping,
+          taxAmount: tax,
+          customerEmail: shippingForm.email,
+        }),
+      });
+
+      if (!createIntentRes.ok) {
+        const data = await createIntentRes.json();
+        throw new Error(data.error || 'Failed to start payment');
+      }
+
+      const { clientSecret } = await createIntentRes.json();
+
+      const cardElement = elements.getElement(CardElement);
+      if (!cardElement) {
+        throw new Error('Card element not found');
+      }
+
+      const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: cardElement,
+          billing_details: {
+            email: shippingForm.email,
+            name: `${shippingForm.firstName} ${shippingForm.lastName}`.trim(),
+          },
+        },
+      });
+
+      if (error || !paymentIntent) {
+        throw new Error(error?.message || 'Payment failed');
+      }
+
+      if (paymentIntent.status !== 'succeeded' && paymentIntent.status !== 'processing') {
+        throw new Error('Payment was not completed');
+      }
+
+      const orderItemsPayload = items.map((item) => ({
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        selectedSize: item.selectedSize,
+        image: item.images[0],
+      }));
+
+      const createOrderRes = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          paymentIntentId: paymentIntent.id,
+          items: orderItemsPayload,
+          currency: 'usd',
+          shipping: shippingForm,
+          subtotal: totalPrice,
+          shippingAmount: shipping,
+          taxAmount: tax,
+          total,
+        }),
+      });
+
+      if (!createOrderRes.ok) {
+        const data = await createOrderRes.json();
+        console.error('Order creation failed:', data);
+        // We do not throw here to avoid charging without an order doc; adjust if desired.
+      }
+
+      clearCart();
       router.push('/order-confirmation');
-    }, 2000);
+    } catch (err) {
+      console.error('Payment error:', err);
+      setPaymentError(err instanceof Error ? err.message : 'Payment failed. Please try again.');
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -324,78 +423,32 @@ export default function CheckoutPage() {
                   <div className="space-y-4">
                     <div>
                       <label className="block font-mono text-[9px] uppercase tracking-wide text-ink-700 mb-2">
-                        Card Number
+                        Card Details
                       </label>
-                      <div className="relative">
-                        <input
-                          type="text"
-                          required
-                          value={paymentForm.cardNumber}
-                          onChange={(e) => setPaymentForm({ ...paymentForm, cardNumber: e.target.value })}
-                          className="w-full border border-ink/20 px-4 py-3 pr-12 font-mono text-sm text-ink focus:border-ink focus:outline-none transition-colors"
-                          placeholder="1234 5678 9012 3456"
-                          maxLength={19}
-                        />
-                        <CreditCard className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-ink/30" strokeWidth={1.5} />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block font-mono text-[9px] uppercase tracking-wide text-ink-700 mb-2">
-                        Cardholder Name
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={paymentForm.cardName}
-                        onChange={(e) => setPaymentForm({ ...paymentForm, cardName: e.target.value })}
-                        className="w-full border border-ink/20 px-4 py-3 font-sans text-sm text-ink focus:border-ink focus:outline-none transition-colors"
-                        placeholder="Name on card"
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block font-mono text-[9px] uppercase tracking-wide text-ink-700 mb-2">
-                          Expiry Date
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={paymentForm.expiry}
-                          onChange={(e) => setPaymentForm({ ...paymentForm, expiry: e.target.value })}
-                          className="w-full border border-ink/20 px-4 py-3 font-mono text-sm text-ink focus:border-ink focus:outline-none transition-colors"
-                          placeholder="MM / YY"
-                          maxLength={7}
-                        />
-                      </div>
-                      <div>
-                        <label className="block font-mono text-[9px] uppercase tracking-wide text-ink-700 mb-2">
-                          CVV
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={paymentForm.cvv}
-                          onChange={(e) => setPaymentForm({ ...paymentForm, cvv: e.target.value })}
-                          className="w-full border border-ink/20 px-4 py-3 font-mono text-sm text-ink focus:border-ink focus:outline-none transition-colors"
-                          placeholder="123"
-                          maxLength={4}
+                      <div className="w-full border border-ink/20 px-4 py-3 bg-paper">
+                        <CardElement
+                          options={{
+                            style: {
+                              base: {
+                                fontSize: '14px',
+                                color: '#1F1A17',
+                                fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif',
+                                '::placeholder': {
+                                  color: '#9A8F80',
+                                },
+                              },
+                              invalid: {
+                                color: '#7A231D',
+                              },
+                            },
+                          }}
                         />
                       </div>
                     </div>
 
-                    <label className="flex items-center gap-3 pt-2 cursor-pointer group">
-                      <input
-                        type="checkbox"
-                        checked={paymentForm.saveCard}
-                        onChange={(e) => setPaymentForm({ ...paymentForm, saveCard: e.target.checked })}
-                        className="w-4 h-4 border border-ink/20 text-ink focus:ring-0 focus:ring-offset-0"
-                      />
-                      <span className="font-sans text-sm text-ink-700 group-hover:text-ink transition-colors">
-                        Save card for future purchases
-                      </span>
-                    </label>
+                    {paymentError && (
+                      <p className="mt-3 text-sm text-red-700">{paymentError}</p>
+                    )}
                   </div>
                 </div>
 
@@ -527,5 +580,13 @@ export default function CheckoutPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Elements stripe={stripePromise}>
+      <CheckoutInner />
+    </Elements>
   );
 }

@@ -2,6 +2,7 @@ import { initializeApp, getApps, type FirebaseApp } from 'firebase/app';
 import { getAuth, type Auth } from 'firebase/auth';
 import { getAnalytics, type Analytics, isSupported } from 'firebase/analytics';
 import { getFirestore, type Firestore } from 'firebase/firestore';
+import { getStorage, type FirebaseStorage } from 'firebase/storage';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -17,13 +18,15 @@ let app: FirebaseApp;
 let auth: Auth;
 let analytics: Analytics | null = null;
 let db: Firestore;
+let storage: FirebaseStorage;
 
 export function initFirebase() {
   if (!getApps().length) {
     app = initializeApp(firebaseConfig);
     auth = getAuth(app);
     db = getFirestore(app, 'lapiqure');
-    
+    storage = getStorage(app);
+
     if (typeof window !== 'undefined') {
       isSupported().then((supported) => {
         if (supported) {
@@ -32,7 +35,7 @@ export function initFirebase() {
       });
     }
   }
-  return { app, auth, analytics, db };
+  return { app, auth, analytics, db, storage };
 }
 
 export function getFirebaseAuth(): Auth {
@@ -61,4 +64,11 @@ export function getFirebaseFirestore(): Firestore {
     initFirebase();
   }
   return db;
+}
+
+export function getFirebaseStorage(): FirebaseStorage {
+  if (!storage) {
+    initFirebase();
+  }
+  return storage;
 }

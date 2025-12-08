@@ -62,11 +62,32 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
+    // CRM products - publicly readable so storefront can show products
     match /crm_products/{productId} {
-      allow list: if isStaff();
-      allow read: if isStaff();
-      allow create: if isAdmin();
-      allow update: if isAdmin();
+      // Public read/list for storefront
+      allow list: if true;
+      allow read: if true;
+      // Managers and admins can create/update or delete products
+      allow create: if isManager();
+      allow update: if isManager();
+      allow delete: if isManager();
+    }
+
+    // CRM collections - publicly readable so storefront can group products
+    match /crm_collections/{collectionId} {
+      allow list: if true;
+      allow read: if true;
+      allow create: if isManager();
+      allow update: if isManager();
+      allow delete: if isAdmin();
+    }
+
+    // CMS page content - publicly readable so storefront can render pages
+    match /crm_content/{contentId} {
+      allow list: if true;
+      allow read: if true;
+      allow create: if isManager();
+      allow update: if isManager();
       allow delete: if isAdmin();
     }
     

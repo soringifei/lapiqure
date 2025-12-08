@@ -10,6 +10,19 @@ import { ImageUploader } from '@/components/crm/ImageUploader'
 import { Save, FileText } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
+interface ProcessStepContent {
+  number: string
+  title: string
+  description: string
+  image?: string
+}
+
+interface ProcessHighlightContent {
+  label: string
+  value: string
+  sublabel: string
+}
+
 interface PageContent {
   id: string
   title: string
@@ -26,14 +39,46 @@ interface PageContent {
     text: string
     href: string
   }
+  processSteps?: ProcessStepContent[]
+  processHighlight?: ProcessHighlightContent
 }
 
-const PAGES = [
-  { id: 'home', title: 'Home', slug: 'home' },
-  { id: 'about', title: 'About', slug: 'about' },
-  { id: 'collections', title: 'Collections', slug: 'collections' },
-  { id: 'contact', title: 'Contact', slug: 'contact' },
+const DEFAULT_HOME_PROCESS_STEPS: ProcessStepContent[] = [
+  {
+    number: '01',
+    title: 'Material Selection',
+    description:
+      'We begin by sourcing the finest materials from certified mills in Italy, Portugal, and Japan. Each fabric is hand-selected for its quality, texture, and sustainability credentials.',
+    image: '/images/faux_leather_cropped_pants2_opt.jpeg',
+  },
+  {
+    number: '02',
+    title: 'Pattern Development',
+    description:
+      'Our atelier team creates unique patterns through traditional draping techniques. Each piece is developed with precision, considering both form and function.',
+    image: '/images/turtleneck_sweater_with_intarsia_pattern3_opt.jpg',
+  },
+  {
+    number: '03',
+    title: 'Hand Finishing',
+    description:
+      'Skilled artisans in our Paris atelier complete each garment by hand. From button attachment to final pressing, every detail receives individual attention.',
+    image: '/images/cutsew_distressed_knit_top2_opt.jpeg',
+  },
+  {
+    number: '04',
+    title: 'Quality Control',
+    description:
+      'Before leaving the atelier, each piece undergoes rigorous inspection. We ensure every stitch, seam, and finish meets our exacting standards.',
+    image: '/images/cropped_sleeveless_top_with_zipper_&_flat_silver_studs4_opt.jpg',
+  },
 ]
+
+const DEFAULT_HOME_PROCESS_HIGHLIGHT: ProcessHighlightContent = {
+  label: 'Production Time',
+  value: '14-21 Days',
+  sublabel: 'From Cut to Completion',
+}
 
 export default function ContentPage() {
   const router = useRouter()
@@ -44,6 +89,7 @@ export default function ContentPage() {
     { id: 'about', title: 'About', slug: 'about' },
     { id: 'collections', title: 'Collections', slug: 'collections' },
     { id: 'contact', title: 'Contact', slug: 'contact' },
+    { id: 'pieces', title: 'Pieces', slug: 'pieces' },
   ])
   const [selectedPage, setSelectedPage] = useState('home')
   const [content, setContent] = useState<PageContent>({
@@ -55,6 +101,8 @@ export default function ContentPage() {
     heroImage: '',
     sections: [],
     cta: { text: '', href: '' },
+    processSteps: DEFAULT_HOME_PROCESS_STEPS,
+    processHighlight: DEFAULT_HOME_PROCESS_HIGHLIGHT,
   })
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -73,7 +121,7 @@ export default function ContentPage() {
           const data = await response.json()
           if (data.length > 0) {
             // Merge with default pages to ensure they exist, but prefer DB data
-            const defaultIds = ['home', 'about', 'collections', 'contact']
+            const defaultIds = ['home', 'about', 'collections', 'contact', 'pieces']
             const merged = [...data]
             defaultIds.forEach(id => {
               if (!merged.find(p => p.id === id)) {
@@ -96,7 +144,20 @@ export default function ContentPage() {
         const response = await fetch(`/api/crm/content?id=${selectedPage}`)
         if (!response.ok) return
         const data = await response.json()
-        setContent(data)
+
+        if (data.id === 'home') {
+          const withDefaults: PageContent = {
+            ...data,
+            processSteps:
+              data.processSteps && Array.isArray(data.processSteps) && data.processSteps.length > 0
+                ? data.processSteps
+                : DEFAULT_HOME_PROCESS_STEPS,
+            processHighlight: data.processHighlight || DEFAULT_HOME_PROCESS_HIGHLIGHT,
+          }
+          setContent(withDefaults)
+        } else {
+          setContent(data)
+        }
       } catch (error) {
         console.error('Error loading content:', error)
       }
@@ -303,6 +364,135 @@ export default function ContentPage() {
                 </button>
               )}
             </div>
+
+            {selectedPage === 'home' && (
+              <div className="border-t border-border pt-6">
+                <h3 className="font-display tracking-luxury mb-4">Our Process (Home)</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Control the steps and highlight shown in the Our Process section on the home page.
+                </p>
+
+                {(content.processSteps || []).map((step, idx) => (
+                  <div key={idx} className="mb-6 p-4 bg-secondary/5 rounded space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                      <input
+                        type="text"
+                        value={step.number}
+                        onChange={(e) => {
+                          const steps = [...(content.processSteps || [])]
+                          steps[idx] = { ...steps[idx], number: e.target.value }
+                          setContent({ ...content, processSteps: steps })
+                        }}
+                        className="px-4 py-2 border border-border rounded bg-background"
+                        placeholder="01"
+                      />
+                      <input
+                        type="text"
+                        value={step.title}
+                        onChange={(e) => {
+                          const steps = [...(content.processSteps || [])]
+                          steps[idx] = { ...steps[idx], title: e.target.value }
+                          setContent({ ...content, processSteps: steps })
+                        }}
+                        className="md:col-span-3 px-4 py-2 border border-border rounded bg-background"
+                        placeholder="Step title"
+                      />
+                    </div>
+
+                    <textarea
+                      value={step.description}
+                      onChange={(e) => {
+                        const steps = [...(content.processSteps || [])]
+                        steps[idx] = { ...steps[idx], description: e.target.value }
+                        setContent({ ...content, processSteps: steps })
+                      }}
+                      className="w-full px-4 py-2 border border-border rounded bg-background"
+                      placeholder="Step description"
+                      rows={3}
+                    />
+
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Step Image</label>
+                      <ImageUploader
+                        onImagesChange={(urls) => {
+                          const steps = [...(content.processSteps || [])]
+                          steps[idx] = { ...steps[idx], image: urls[0] || '' }
+                          setContent({ ...content, processSteps: steps })
+                        }}
+                        maxImages={1}
+                        initialImages={step.image ? [step.image] : []}
+                      />
+                    </div>
+                  </div>
+                ))}
+
+                {(content.processSteps || []).length < 4 && (
+                  <button
+                    onClick={() => {
+                      const steps = content.processSteps && content.processSteps.length > 0
+                        ? [...content.processSteps]
+                        : [...DEFAULT_HOME_PROCESS_STEPS]
+                      steps.push({ number: '0' + (steps.length + 1), title: '', description: '', image: '' })
+                      setContent({ ...content, processSteps: steps })
+                    }}
+                    className="w-full px-4 py-2 border border-dashed border-border rounded text-muted-foreground hover:bg-secondary/5 transition-colors mb-6"
+                  >
+                    + Add Process Step
+                  </button>
+                )}
+
+                <div className="mt-8 space-y-3">
+                  <h4 className="font-display text-sm tracking-luxury">Process Highlight</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <input
+                      type="text"
+                      value={content.processHighlight?.label || ''}
+                      onChange={(e) =>
+                        setContent({
+                          ...content,
+                          processHighlight: {
+                            ...(content.processHighlight || DEFAULT_HOME_PROCESS_HIGHLIGHT),
+                            label: e.target.value,
+                          },
+                        })
+                      }
+                      className="px-4 py-2 border border-border rounded bg-background"
+                      placeholder="Production Time"
+                    />
+                    <input
+                      type="text"
+                      value={content.processHighlight?.value || ''}
+                      onChange={(e) =>
+                        setContent({
+                          ...content,
+                          processHighlight: {
+                            ...(content.processHighlight || DEFAULT_HOME_PROCESS_HIGHLIGHT),
+                            value: e.target.value,
+                          },
+                        })
+                      }
+                      className="px-4 py-2 border border-border rounded bg-background"
+                      placeholder="14-21 Days"
+                    />
+                    <input
+                      type="text"
+                      value={content.processHighlight?.sublabel || ''}
+                      onChange={(e) =>
+                        setContent({
+                          ...content,
+                          processHighlight: {
+                            ...(content.processHighlight || DEFAULT_HOME_PROCESS_HIGHLIGHT),
+                            sublabel: e.target.value,
+                          },
+                        })
+                      }
+                      className="px-4 py-2 border border-border rounded bg-background"
+                      placeholder="From Cut to Completion"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

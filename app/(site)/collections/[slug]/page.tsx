@@ -116,10 +116,11 @@ export default function CollectionPage({ params }: CollectionPageProps) {
         </div>
       </section>
 
-      <section className="py-16 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex gap-6 justify-center flex-wrap">
-            {collection.images.map((image, index) => (
+      {Array.isArray(collection.images) && collection.images.length > 0 && (
+        <section className="py-16 overflow-hidden">
+          <div className="max-w-7xl mx-auto px-6 lg:px-8">
+            <div className="flex gap-6 justify-center flex-wrap">
+              {collection.images.map((image, index) => (
               <div 
                 key={index} 
                 className="relative w-[350px] h-[500px] bg-sand/20 overflow-hidden"
@@ -134,9 +135,10 @@ export default function CollectionPage({ params }: CollectionPageProps) {
                 />
               </div>
             ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {collectionPieces.length > 0 && (
         <section className="bg-sand/10 py-24">

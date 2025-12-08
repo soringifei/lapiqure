@@ -1,7 +1,9 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import FadeIn from './fade-in';
+import { useCRM } from '@/hooks/useCRM';
 
 interface ProcessStep {
   number: string;
@@ -10,7 +12,13 @@ interface ProcessStep {
   image: string;
 }
 
-const processSteps: ProcessStep[] = [
+interface ProcessHighlight {
+  label: string;
+  value: string;
+  sublabel: string;
+}
+
+const DEFAULT_PROCESS_STEPS: ProcessStep[] = [
   {
     number: '01',
     title: 'Material Selection',
@@ -34,10 +42,54 @@ const processSteps: ProcessStep[] = [
     title: 'Quality Control',
     description: 'Before leaving the atelier, each piece undergoes rigorous inspection. We ensure every stitch, seam, and finish meets our exacting standards.',
     image: '/images/cropped_sleeveless_top_with_zipper_&_flat_silver_studs4_opt.jpg'
-  }
+  },
 ];
 
+const DEFAULT_HIGHLIGHT: ProcessHighlight = {
+  label: 'Production Time',
+  value: '14-21 Days',
+  sublabel: 'From Cut to Completion',
+};
+
 export default function CraftProcess() {
+  const { service } = useCRM();
+  const [steps, setSteps] = useState<ProcessStep[]>(DEFAULT_PROCESS_STEPS);
+  const [highlight, setHighlight] = useState<ProcessHighlight>(DEFAULT_HIGHLIGHT);
+
+  useEffect(() => {
+    const load = async () => {
+      if (!service) return;
+      try {
+        const content = (await service.getContent('home')) as {
+          processSteps?: Partial<ProcessStep>[];
+          processHighlight?: Partial<ProcessHighlight>;
+        };
+
+        if (content.processSteps && content.processSteps.length > 0) {
+          const mapped = content.processSteps.map((step, index) => ({
+            number: step.number || DEFAULT_PROCESS_STEPS[index]?.number || `0${index + 1}`,
+            title: step.title || DEFAULT_PROCESS_STEPS[index]?.title || '',
+            description: step.description || DEFAULT_PROCESS_STEPS[index]?.description || '',
+            image: step.image || DEFAULT_PROCESS_STEPS[index]?.image || DEFAULT_PROCESS_STEPS[0].image,
+          }));
+          setSteps(mapped);
+        }
+
+        if (content.processHighlight) {
+          setHighlight({
+            label: content.processHighlight.label || DEFAULT_HIGHLIGHT.label,
+            value: content.processHighlight.value || DEFAULT_HIGHLIGHT.value,
+            sublabel: content.processHighlight.sublabel || DEFAULT_HIGHLIGHT.sublabel,
+          });
+        }
+      } catch (error) {
+        console.error('Error loading home process content:', error);
+      }
+    };
+
+    load();
+  }, [service]);
+
   return (
     <section className="py-24 lg:py-32 bg-paper">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
@@ -56,7 +108,7 @@ export default function CraftProcess() {
         </FadeIn>
 
         <div className="space-y-24">
-          {processSteps.map((step, index) => (
+          {steps.map((step, index) => (
             <FadeIn key={step.number} delay={index * 100}>
               <div className={`grid grid-cols-1 lg:grid-cols-2 gap-16 items-center ${
                 index % 2 === 1 ? 'lg:grid-flow-dense' : ''
@@ -97,13 +149,13 @@ export default function CraftProcess() {
         <FadeIn delay={400} className="mt-24 text-center">
           <div className="inline-block border border-ink p-8 bg-paper">
             <p className="font-display text-xs uppercase tracking-wide text-ink mb-4">
-              Production Time
+              {highlight.label}
             </p>
             <p className="font-display text-4xl text-ink mb-2">
-              14-21 Days
+              {highlight.value}
             </p>
             <p className="font-sans text-xs text-ink-700 uppercase tracking-wide">
-              From Cut to Completion
+              {highlight.sublabel}
             </p>
           </div>
         </FadeIn>

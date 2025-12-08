@@ -11,15 +11,19 @@ export function initFirebaseAdmin() {
   if (!getApps().length) {
     if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
       initializeApp();
-    } else if (serviceAccount.privateKey) {
+    } else if (serviceAccount.projectId && serviceAccount.clientEmail && serviceAccount.privateKey) {
       initializeApp({
-        credential: cert(serviceAccount),
-        projectId: serviceAccount.projectId,
+        credential: cert({
+          projectId: serviceAccount.projectId,
+          clientEmail: serviceAccount.clientEmail,
+          privateKey: serviceAccount.privateKey,
+        }),
       });
     } else {
-      // Fallback for local dev if no creds (might fail depending on env)
-      initializeApp({ projectId: 'lapiqure-29' });
+      throw new Error(
+        'Firebase Admin credentials are not configured. Set GOOGLE_APPLICATION_CREDENTIALS or FIREBASE_CLIENT_EMAIL/FIREBASE_PRIVATE_KEY in your environment.',
+      );
     }
   }
-  return getFirestore('lapiqure');
+  return getFirestore();
 }

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getFirebaseFirestore } from '@/lib/firebase'
+import { initFirebaseAdmin } from '@/lib/firebase-admin'
 import { OptimizedCRMService } from '@/lib/firebase-crm-optimized'
 import { CRMAnalytics, type CustomerScore } from '@/lib/crm-analytics'
 import type { Customer } from '@/types/crm'
@@ -47,7 +47,7 @@ function attachLabels(scores: CustomerScore[], customers: Customer[]): InsightCu
 
 export async function GET() {
   try {
-    const db = getFirebaseFirestore()
+    const db = initFirebaseAdmin()
     const service = new OptimizedCRMService(db)
 
     const [customers, orders] = await Promise.all([
@@ -87,9 +87,23 @@ export async function GET() {
     })
   } catch (error) {
     console.error('Error generating CRM insights:', error)
-    return NextResponse.json(
-      { error: 'Failed to generate CRM insights' },
-      { status: 500 },
-    )
+    // Return an empty-but-valid payload so the Insights UI can still render
+    const emptySegments: Segments = {
+      champions: [],
+      loyal: [],
+      atrisk: [],
+      dormant: [],
+      newCustomers: [],
+    }
+
+    return NextResponse.json({
+      churnRisk: [],
+      highValue: [],
+      growth: [],
+      segments: emptySegments,
+      totalCustomers: 0,
+      totalOrders: 0,
+      error: 'Failed to generate CRM insights',
+    })
   }
 }

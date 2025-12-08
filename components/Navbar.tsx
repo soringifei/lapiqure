@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useAuth } from '@/lib/auth-context';
@@ -9,11 +9,41 @@ import CartSheet from './cart-sheet';
 import CommandPalette from './command-palette';
 import CategoryMegaMenu from './category-mega-menu';
 import { Menu, X, Heart, User, MapPin } from 'lucide-react';
+import { getFirebaseApp } from '@/lib/firebase';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 
 export default function Navbar() {
   const { user, signOut } = useAuth();
   const { items } = useWishlist();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isAdminLike, setIsAdminLike] = useState(false);
+
+  useEffect(() => {
+    const checkRole = async () => {
+      if (!user) {
+        setIsAdminLike(false);
+        return;
+      }
+      try {
+        const app = getFirebaseApp();
+        const db = getFirestore(app, 'lapiqure');
+        const staffRef = doc(db, 'crm_staff', user.uid);
+        const snap = await getDoc(staffRef);
+
+        if (snap.exists()) {
+          const data = snap.data() as { role?: string };
+          setIsAdminLike(data.role === 'admin' || data.role === 'manager');
+        } else {
+          setIsAdminLike(false);
+        }
+      } catch (error) {
+        console.error('Error checking CRM role:', error);
+        setIsAdminLike(false);
+      }
+    };
+
+    checkRole();
+  }, [user]);
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-paper/95 backdrop-blur-xl transition-all duration-500 border-b border-ink/5">
@@ -110,6 +140,15 @@ export default function Navbar() {
                   >
                     My Account
                   </Link>
+                  {isAdminLike && (
+                    <Link
+                      href="/crm"
+                      className="block px-6 py-3 text-xs font-display uppercase tracking-wide text-ink-700 hover:bg-sand/10 hover:text-ink transition-colors"
+                      role="menuitem"
+                    >
+                      Admin
+                    </Link>
+                  )}
                   <button
                     onClick={() => signOut()}
                     className="w-full text-left px-6 py-3 text-xs font-display uppercase tracking-wide text-ink-700 hover:bg-sand/10 hover:text-ink transition-colors"
@@ -194,6 +233,15 @@ export default function Navbar() {
                 >
                   My Account
                 </Link>
+                {isAdminLike && (
+                  <Link
+                    href="/crm"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block py-3 px-4 text-sm font-display uppercase tracking-wide text-ink-700 hover:bg-sand/10 hover:text-ink transition-colors"
+                  >
+                    Admin
+                  </Link>
+                )}
                 <button
                   onClick={() => {
                     signOut();

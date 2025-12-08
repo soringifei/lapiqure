@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { Upload, X } from 'lucide-react'
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+import { getFirebaseStorage } from '@/lib/firebase'
 import { optimizeImage, getImageSize } from '@/lib/image-optimization'
 
 interface ImageUploaderProps {
@@ -17,6 +19,7 @@ export function ImageUploader({ onImagesChange, maxImages = 5, initialImages = [
   )
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.currentTarget.files
@@ -29,8 +32,12 @@ export function ImageUploader({ onImagesChange, maxImages = 5, initialImages = [
 
     setUploading(true)
     setError('')
+    setSuccess('')
 
     try {
+      const storage = getFirebaseStorage()
+      const newImages = [...images]
+
       for (const file of Array.from(files)) {
         if (!file.type.startsWith('image/')) {
           setError('Only image files are allowed')
@@ -42,12 +49,26 @@ export function ImageUploader({ onImagesChange, maxImages = 5, initialImages = [
           continue
         }
 
-        const { blob, webpUrl } = await optimizeImage(file)
-        setImages((prev) => [...prev, { url: webpUrl, size: blob.size }])
+        const { blob } = await optimizeImage(file)
+
+        const fileName = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}.webp`
+        const objectPath = `products/${fileName}`
+        const storageRef = ref(storage, objectPath)
+
+        const snapshot = await uploadBytes(storageRef, blob, {
+          contentType: 'image/webp',
+        })
+
+        const downloadUrl = await getDownloadURL(snapshot.ref)
+
+        newImages.push({ url: downloadUrl, size: blob.size })
       }
 
-      const newUrls = images.map((img) => img.url)
-      onImagesChange(newUrls)
+      setImages(newImages)
+      onImagesChange(newImages.map((img) => img.url))
+      if (newImages.length > images.length) {
+        setSuccess('Images uploaded successfully')
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error uploading image')
     } finally {
@@ -83,7 +104,15 @@ export function ImageUploader({ onImagesChange, maxImages = 5, initialImages = [
         </label>
       </div>
 
+      {uploading && (
+        <div className="p-3 bg-secondary/10 text-sm rounded">Uploading images, please wait…</div>
+      )}
+
       {error && <div className="p-3 bg-destructive/10 text-destructive text-sm rounded">{error}</div>}
+
+      {success && !uploading && !error && (
+        <div className="p-3 bg-emerald-50 text-emerald-800 text-sm rounded">{success}</div>
+      )}
 
       {images.length > 0 && (
         <div>

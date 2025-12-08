@@ -1,12 +1,15 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
+    // Product images (uploaded from CRM)
     match /products/{allPaths=**} {
+      // Anyone can read product images
       allow read: if true;
-      allow write: if request.auth != null && 
-                      get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      // Any authenticated user (i.e., logged into the CRM) can upload/delete
+      allow write: if request.auth != null;
     }
-    
+
+    // Per-user files (if used)
     match /users/{userId}/{allPaths=**} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }

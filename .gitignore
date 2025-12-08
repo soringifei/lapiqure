@@ -48,6 +48,9 @@ generate-*.js
 update-*.js
 run-*.ps1
 
+# Firebase service account (contains secrets)
+firebase-service-account.json
+
 # AI-generated documentation (keep local only)
 CONTRIBUTING.md
 .github/PULL_REQUEST_TEMPLATE.md

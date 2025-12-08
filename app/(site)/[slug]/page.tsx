@@ -13,20 +13,27 @@ interface PageProps {
 }
 
 async function getPageContent(slug: string) {
-  const db = initFirebaseAdmin();
-  
-  // Try to find by slug field
-  const snapshot = await db.collection('crm_content').where('slug', '==', slug).limit(1).get();
-  
-  if (snapshot.empty) {
-    // Try by ID if slug fails
-    const docRef = db.collection('crm_content').doc(slug);
-    const docSnap = await docRef.get();
-    if (docSnap.exists) return docSnap.data();
+  try {
+    const db = initFirebaseAdmin();
+
+    const snapshot = await db
+      .collection('crm_content')
+      .where('slug', '==', slug)
+      .limit(1)
+      .get();
+
+    if (snapshot.empty) {
+      const docRef = db.collection('crm_content').doc(slug);
+      const docSnap = await docRef.get();
+      if (docSnap.exists) return docSnap.data();
+      return null;
+    }
+
+    return snapshot.docs[0].data();
+  } catch (error) {
+    console.error('Error loading dynamic page content for slug:', slug, error);
     return null;
   }
-  
-  return snapshot.docs[0].data();
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

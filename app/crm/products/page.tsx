@@ -261,7 +261,11 @@ export default function ProductsPage() {
 
               <div className="col-span-2">
                 <label className="block text-sm font-medium mb-2">Product Images</label>
-                <ImageUploader onImagesChange={(urls) => setFormData({ ...formData, images: urls })} maxImages={5} />
+                <ImageUploader
+                  onImagesChange={(urls) => setFormData({ ...formData, images: urls })}
+                  maxImages={5}
+                  initialImages={formData.images}
+                />
               </div>
 
               <div className="flex gap-2 col-span-2">

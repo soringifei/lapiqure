@@ -2,11 +2,24 @@
 
 import { useState } from 'react';
 import PieceCard from '@/components/piece-card';
-import { Piece } from '@/lib/types';
 import FilterPanel from '@/components/filter-panel';
 
+export interface PiecesClientPiece {
+  id: string;
+  slug: string;
+  name: string;
+  designer: string;
+  condition: string;
+  images: string[];
+  price: number;
+  category: string;
+  sizes: string[];
+  available: boolean;
+  collectionName?: string;
+}
+
 interface PiecesClientProps {
-  pieces: Piece[];
+  pieces: PiecesClientPiece[];
 }
 
 export default function PiecesClient({ pieces }: PiecesClientProps) {
@@ -35,7 +48,8 @@ export default function PiecesClient({ pieces }: PiecesClientProps) {
     const categoryMatch = selectedCategories.includes('all') || selectedCategories.includes(piece.category);
     const conditionMatch = selectedConditions.includes('all') || selectedConditions.includes(piece.condition);
     const sizeMatch = selectedSizes.includes('all') || piece.sizes.some(size => selectedSizes.includes(size));
-    const availabilityMatch = availabilityFilter === 'all' || 
+    const availabilityMatch =
+      availabilityFilter === 'all' ||
       (availabilityFilter === 'available' && piece.available) ||
       (availabilityFilter === 'coming' && !piece.available);
 

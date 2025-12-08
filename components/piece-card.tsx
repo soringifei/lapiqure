@@ -31,6 +31,7 @@ export default function PieceCard({
   const { isInWishlist, toggleItem } = useWishlist();
   const { toast } = useToast();
   const piece = samplePieces.find(p => p.slug === slug);
+  const hasAlternateImage = !!(piece && piece.images && piece.images[1]);
   const [quickViewOpen, setQuickViewOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -63,21 +64,23 @@ export default function PieceCard({
       >
       <div className="relative aspect-[3/4] bg-background overflow-hidden mb-8">{!imageLoaded && (
           <div className="absolute inset-0 bg-sand/20 animate-pulse" />
-        )}<Image
+        )}
+        <Image
           src={imageSrc}
           alt={name}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           className={`object-cover transition-all duration-1000 ease-in-out ${
-            isHovered ? 'opacity-0 scale-[1.03]' : 'opacity-100 scale-100'
+            hasAlternateImage && isHovered ? 'opacity-0 scale-[1.03]' : 'opacity-100 scale-100'
           }`}
           style={{ objectFit: 'cover' }}
           quality={80}
           loading="lazy"
           onLoad={() => setImageLoaded(true)}
-        />{piece && piece.images[1] && (
+        />
+        {hasAlternateImage && (
           <Image
-            src={piece.images[1]}
+            src={piece!.images[1]}
             alt={`${name} alternate view`}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
