@@ -1,5 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  env: {
+    NEXT_PUBLIC_FIREBASE_API_KEY: 'AIzaSyA1fr7c7nyL7Oir0zJazRuXBPSVoq02cw4',
+    NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: 'lapiqure-29.firebaseapp.com',
+    NEXT_PUBLIC_FIREBASE_PROJECT_ID: 'lapiqure-29',
+    NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: 'lapiqure-29.firebasestorage.app',
+    NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: '780599018841',
+    NEXT_PUBLIC_FIREBASE_APP_ID: '1:780599018841:web:00dc834f5f14590f323848',
+    NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: 'G-JP4BP6D0B4',
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: 'pk_live_51SSgWIDBfAfsRE6MzqWBTEzfNdsFP1dr8IF2kOHSGbX1DkH4GEXcB2QIE0AEMzCsMgUdESzKGZcpiJcWcsSHaEHY00lolxmthW',
+  },
   images: {
     unoptimized: true,
     formats: ['image/avif', 'image/webp'],

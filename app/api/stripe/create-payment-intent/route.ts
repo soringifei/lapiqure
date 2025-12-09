@@ -2,7 +2,19 @@ import { NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { initFirebaseAdmin } from '@/lib/firebase-admin'
 
-const stripeSecretKey = process.env.STRIPE_SECRET_KEY
+// Helper to get Stripe key from process.env or firebase functions config
+const getStripeKey = () => {
+  if (process.env.STRIPE_SECRET_KEY) return process.env.STRIPE_SECRET_KEY;
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const functions = require('firebase-functions');
+    return functions.config().stripe?.secret;
+  } catch {
+    return undefined;
+  }
+}
+
+const stripeSecretKey = getStripeKey();
 
 if (!stripeSecretKey) {
   console.warn('STRIPE_SECRET_KEY is not set. Payment API will not work until it is configured.')
