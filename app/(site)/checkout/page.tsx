@@ -45,15 +45,7 @@ function CheckoutInner() {
     state: '',
     zip: '',
     phone: '',
-  });
-
-  const [paymentForm, setPaymentForm] = useState({
-    cardNumber: '',
-    cardName: '',
-    expiry: '',
-    cvv: '',
-    saveCard: false,
-  });
+      });
 
   useEffect(() => {
     return () => {

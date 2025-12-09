@@ -39,9 +39,9 @@ export default function Home() {
         
         if (homeContent) {
           setHeroContent({
-            title: homeContent.heroTitle || 'AW 2024',
-            description: homeContent.heroDescription || 'Material. Craft. Time.',
-            image: homeContent.heroImage || '/images/faux_leather_mixed_with_embossed_zebra_leather_jacket1_optimized.jpg'
+            title: (typeof homeContent.heroTitle === 'string' ? homeContent.heroTitle : '') || 'AW 2024',
+            description: (typeof homeContent.heroDescription === 'string' ? homeContent.heroDescription : '') || 'Material. Craft. Time.',
+            image: (typeof homeContent.heroImage === 'string' ? homeContent.heroImage : '') || '/images/faux_leather_mixed_with_embossed_zebra_leather_jacket1_optimized.jpg'
           });
         }
       } catch (error) {

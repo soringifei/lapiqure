@@ -107,7 +107,7 @@ export default function PieceCard({
           ))}
           {availabilityStatus && availabilityStatus !== 'available' && (
             <ProductBadge 
-              type={availabilityStatus as any} 
+              type={availabilityStatus as 'extended-shipping' | 'pre-order' | 'made-to-order' | 'unavailable'} 
               className="backdrop-blur-sm" 
             />
           )}

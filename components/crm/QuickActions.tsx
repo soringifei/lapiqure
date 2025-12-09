@@ -2,10 +2,8 @@
 
 import { Plus, Package, Users, TrendingUp, ShoppingCart } from 'lucide-react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 
 export function QuickActions() {
-  const router = useRouter()
 
   const actions = [
     {

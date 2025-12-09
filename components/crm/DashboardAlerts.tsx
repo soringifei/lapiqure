@@ -5,7 +5,6 @@ import Link from 'next/link'
 
 interface DashboardAlertsProps {
   lowStockProducts?: number
-  pendingOrders?: number
   urgentOrders?: number
   paymentFailures?: number
   highOrderVolume?: boolean
@@ -13,7 +12,6 @@ interface DashboardAlertsProps {
 
 export function DashboardAlerts({
   lowStockProducts = 0,
-  pendingOrders = 0,
   urgentOrders = 0,
   paymentFailures = 0,
   highOrderVolume = false,

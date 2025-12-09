@@ -72,7 +72,7 @@ export class OptimizedCRMService {
     return data
   }
 
-  private convertCollectionData(data: any): Collection {
+  private convertCollectionData(data: Record<string, unknown>): Collection {
     return {
       ...data,
       id: data.id,
@@ -88,7 +88,7 @@ export class OptimizedCRMService {
     } as Collection
   }
 
-  private convertProductData(data: any): Product {
+  private convertProductData(data: Record<string, unknown>): Product {
     return {
       ...data,
       id: data.id,
@@ -454,7 +454,7 @@ export class OptimizedCRMService {
     })
   }
 
-  async getContent(id: string): Promise<any> {
+  async getContent(id: string): Promise<Record<string, unknown> | null> {
     const key = this.getCacheKey('content', id)
     return this.getCached(key, async () => {
       const docRef = doc(this.db, 'crm_content', id)
@@ -463,7 +463,7 @@ export class OptimizedCRMService {
     })
   }
 
-  async updateContent(id: string, data: any): Promise<void> {
+  async updateContent(id: string, data: Record<string, unknown>): Promise<void> {
     const docRef = doc(this.db, 'crm_content', id)
     await setDoc(docRef, { ...data, updatedAt: Timestamp.now() }, { merge: true })
     this.cache.delete(this.getCacheKey('content', id))

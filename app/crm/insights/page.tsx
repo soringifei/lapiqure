@@ -1,13 +1,13 @@
 'use client'
 
-import { useEffect, useState, useMemo, memo } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
 import { DashboardLayout } from '@/components/crm/DashboardLayout'
 import { PageHeader } from '@/components/crm/PageHeader'
 import { SkeletonLoader } from '@/components/crm/SkeletonLoader'
 import { CustomerScore } from '@/lib/crm-analytics'
-import { AlertCircle, TrendingUp, Heart, Search, RefreshCw, Download, X, Mail, Phone, FileText, ExternalLink } from 'lucide-react'
+import { AlertCircle, TrendingUp, Heart, Search, RefreshCw, Download, X, Mail, FileText, ExternalLink } from 'lucide-react'
 import { InsightRecommendations } from '@/components/crm/InsightRecommendations'
 import { SegmentDistributionChart, RFMDistributionChart, CLVDistributionChart } from '@/components/crm/InsightsCharts'
 
@@ -79,28 +79,27 @@ export default function InsightsPage() {
 
   useEffect(() => {
     fetchInsights()
-  }, [user])
-
-  const filterItems = (items: InsightCustomerScore[]) => {
-    return items.filter((item) => {
-      const matchesSearch = searchTerm === '' || 
-        item.label.toLowerCase().includes(searchTerm.toLowerCase())
-      const matchesTier = selectedTier === 'all' || item.tier === selectedTier
-      const matchesRfm = rfmFilter === 'all' || 
-        (rfmFilter === 'high' && item.rfmScore >= 75) ||
-        (rfmFilter === 'medium' && item.rfmScore >= 50 && item.rfmScore < 75) ||
-        (rfmFilter === 'low' && item.rfmScore < 50)
-      const matchesChurnRisk = churnRiskFilter === 'all' ||
-        (churnRiskFilter === 'high' && item.churnRisk >= 0.5) ||
-        (churnRiskFilter === 'medium' && item.churnRisk >= 0.3 && item.churnRisk < 0.5) ||
-        (churnRiskFilter === 'low' && item.churnRisk < 0.3)
-      
-      return matchesSearch && matchesTier && matchesRfm && matchesChurnRisk
-    })
-  }
+  }, [user]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const insights: InsightSection[] = useMemo(() => {
     if (!data) return []
+    const filterItems = (items: InsightCustomerScore[]) => {
+      return items.filter((item) => {
+        const matchesSearch = searchTerm === '' || 
+          item.label.toLowerCase().includes(searchTerm.toLowerCase())
+        const matchesTier = selectedTier === 'all' || item.tier === selectedTier
+        const matchesRfm = rfmFilter === 'all' || 
+          (rfmFilter === 'high' && item.rfmScore >= 75) ||
+          (rfmFilter === 'medium' && item.rfmScore >= 50 && item.rfmScore < 75) ||
+          (rfmFilter === 'low' && item.rfmScore < 50)
+        const matchesChurnRisk = churnRiskFilter === 'all' ||
+          (churnRiskFilter === 'high' && item.churnRisk >= 0.5) ||
+          (churnRiskFilter === 'medium' && item.churnRisk >= 0.3 && item.churnRisk < 0.5) ||
+          (churnRiskFilter === 'low' && item.churnRisk < 0.3)
+        
+        return matchesSearch && matchesTier && matchesRfm && matchesChurnRisk
+      })
+    }
     return [
       {
         title: 'At Risk',
@@ -124,7 +123,7 @@ export default function InsightsPage() {
         items: filterItems(data.growth),
       },
     ]
-  }, [data, searchTerm, selectedTier, rfmFilter, churnRiskFilter])
+  }, [data, searchTerm, selectedTier, rfmFilter, churnRiskFilter]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const allScores = useMemo(() => {
     if (!data) return []

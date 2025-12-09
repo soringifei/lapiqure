@@ -9,7 +9,7 @@ interface DateRangeSelectorProps {
   onChange: (days: number) => void
 }
 
-export function DateRangeSelector({ value, onChange }: DateRangeSelectorProps) {
+export function DateRangeSelector({ onChange }: DateRangeSelectorProps) {
   const [selectedRange, setSelectedRange] = useState<DateRange>(30)
 
   useEffect(() => {

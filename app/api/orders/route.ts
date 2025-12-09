@@ -93,17 +93,6 @@ export async function POST(request: Request) {
 
     const ref = await db.collection('crm_orders').add(orderDoc)
 
-    try {
-      const { getCRMService } = await import('@/lib/data-adapter')
-      const service = getCRMService()
-      if (service) {
-        service.updateProductAvailability().catch((err) => {
-          console.error('Error updating product availability:', err)
-        })
-      }
-    } catch (error) {
-      console.error('Error triggering product availability update:', error)
-    }
 
     return NextResponse.json({ id: ref.id })
   } catch (error) {

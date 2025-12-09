@@ -10,7 +10,6 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  Legend,
 } from 'recharts'
 
 interface SegmentData {

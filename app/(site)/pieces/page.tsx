@@ -92,14 +92,14 @@ export default function PiecesPage() {
 
         if (piecesContent) {
           setHero({
-            title: piecesContent.heroTitle || 'Pieces',
-            subtitle: piecesContent.heroDescription || 'Current & Archive',
+            title: (typeof piecesContent.heroTitle === 'string' ? piecesContent.heroTitle : '') || 'Pieces',
+            subtitle: (typeof piecesContent.heroDescription === 'string' ? piecesContent.heroDescription : '') || 'Current & Archive',
             description:
-              piecesContent.sections && piecesContent.sections[0]
-                ? piecesContent.sections[0].content || 'Material innovation meets contemporary design'
+              Array.isArray(piecesContent.sections) && piecesContent.sections[0]
+                ? (typeof piecesContent.sections[0].content === 'string' ? piecesContent.sections[0].content : '') || 'Material innovation meets contemporary design'
                 : 'Material innovation meets contemporary design',
             image:
-              piecesContent.heroImage || '/images/oversized_green_faux_leather_pants1_opt.jpg',
+              (typeof piecesContent.heroImage === 'string' ? piecesContent.heroImage : '') || '/images/oversized_green_faux_leather_pants1_opt.jpg',
           });
         }
       } catch (error) {

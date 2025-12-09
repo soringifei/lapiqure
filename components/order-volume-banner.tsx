@@ -6,7 +6,7 @@ import { X, AlertCircle } from 'lucide-react';
 
 export default function OrderVolumeBanner() {
   const { service } = useCRM();
-  const [pendingOrders, setPendingOrders] = useState<number>(0);
+  const [, setPendingOrders] = useState<number>(0);
   const [isVisible, setIsVisible] = useState(false);
   const [dismissed, setDismissed] = useState(false);
 

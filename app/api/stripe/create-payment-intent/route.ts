@@ -10,7 +10,7 @@ if (!stripeSecretKey) {
 
 const stripe = stripeSecretKey
   ? new Stripe(stripeSecretKey, {
-      apiVersion: '2024-04-10',
+      apiVersion: '2024-06-20',
     })
   : null
 

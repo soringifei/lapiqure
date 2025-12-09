@@ -104,7 +104,7 @@ export default async function DynamicPage({ params }: PageProps) {
 
       {/* Content Sections */}
       <div className="max-w-4xl mx-auto px-8 lg:px-12 py-24 space-y-24">
-        {content.sections?.map((section: any, index: number) => (
+        {content.sections?.map((section: { title?: string; content?: string; image?: string }, index: number) => (
           <section key={index} className="space-y-8">
             <h2 className="font-display text-3xl tracking-[0.15em] uppercase text-ink">
               {section.title}
@@ -115,8 +115,8 @@ export default async function DynamicPage({ params }: PageProps) {
             {section.image && (
               <div className="relative aspect-video w-full mt-8">
                 <Image
-                  src={section.image}
-                  alt={section.title}
+                  src={section.image || ''}
+                  alt={section.title || 'Section image'}
                   fill
                   className="object-cover rounded-sm"
                 />

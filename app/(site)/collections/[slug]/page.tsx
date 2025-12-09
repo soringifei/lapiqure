@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import Hero from '@/components/hero';
+import Hero from '@/components/Hero';
 import SectionHeading from '@/components/section-heading';
 import PieceCard from '@/components/piece-card';
 import { useCRM } from '@/hooks/useCRM';
@@ -142,7 +142,7 @@ export default function CollectionPage({ params }: CollectionPageProps) {
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {collectionPieces
-                .filter(piece => piece.images && piece.images.length > 0 && !piece.isHidden)
+                .filter(piece => piece.images && piece.images.length > 0)
                 .map((piece) => (
                   <PieceCard
                     key={piece.id}
@@ -152,8 +152,6 @@ export default function CollectionPage({ params }: CollectionPageProps) {
                     condition="New"
                     imageSrc={piece.images[0]}
                     price={piece.price}
-                    status={piece.status}
-                    availabilityMessage={piece.availabilityMessage}
                   />
                 ))}
             </div>

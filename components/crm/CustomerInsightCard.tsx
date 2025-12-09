@@ -103,7 +103,7 @@ export function CustomerInsightCard({ item, onViewDetails }: CustomerInsightCard
             <div className="p-3 bg-destructive/10 border border-destructive/20 rounded">
               <p className="text-xs font-medium text-destructive mb-1">High Churn Risk</p>
               <p className="text-xs text-muted-foreground">
-                This customer hasn't purchased in {daysSinceLastPurchase} days. Consider sending a re-engagement campaign.
+                This customer hasn&apos;t purchased in {daysSinceLastPurchase} days. Consider sending a re-engagement campaign.
               </p>
             </div>
           )}

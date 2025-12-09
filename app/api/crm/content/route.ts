@@ -58,7 +58,7 @@ export async function POST(request: Request) {
     const docRef = db.collection('crm_content').doc(id);
     const existingDoc = await docRef.get();
     
-    const updateData: any = {
+    const updateData: Record<string, unknown> = {
       id,
       ...data,
       updatedAt: new Date().toISOString(),

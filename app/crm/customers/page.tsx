@@ -137,10 +137,7 @@ export default function CustomersPage() {
 
       const editPath = `/crm/customers/${id}`
       console.log('Navigating to edit customer:', editPath)
-      
-      router.push(editPath).catch((error) => {
-        console.error('Error navigating to edit customer page:', error)
-      })
+      router.push(editPath)
     } catch (error) {
       console.error('Unexpected error in handleEditCustomer:', error)
     }
