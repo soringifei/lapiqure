@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { getFirestore } from 'firebase-admin/firestore';
 import { initFirebaseAdmin } from '@/lib/firebase-admin';
 
 export async function GET(request: Request) {
@@ -10,12 +9,15 @@ export async function GET(request: Request) {
     const db = initFirebaseAdmin();
 
     if (!id) {
-      // List all pages
-      const snapshot = await db.collection('crm_content').select('id', 'title', 'slug').get();
-      const pages = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
+      const snapshot = await db.collection('crm_content').get();
+      const pages = snapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          title: data.title || doc.id.charAt(0).toUpperCase() + doc.id.slice(1),
+          slug: data.slug || doc.id,
+        };
+      });
       return NextResponse.json(pages);
     }
 
@@ -53,11 +55,20 @@ export async function POST(request: Request) {
     }
 
     const db = initFirebaseAdmin();
-    await db.collection('crm_content').doc(id).set({
+    const docRef = db.collection('crm_content').doc(id);
+    const existingDoc = await docRef.get();
+    
+    const updateData: any = {
       id,
       ...data,
       updatedAt: new Date().toISOString(),
-    });
+    };
+    
+    if (!existingDoc.exists) {
+      updateData.createdAt = new Date().toISOString();
+    }
+    
+    await docRef.set(updateData, { merge: true });
 
     return NextResponse.json({ success: true });
   } catch (error) {

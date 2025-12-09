@@ -106,6 +106,8 @@ export default function ContentPage() {
   })
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -140,9 +142,13 @@ export default function ContentPage() {
 
   useEffect(() => {
     const loadContent = async () => {
+      setLoading(true)
+      setError(null)
       try {
         const response = await fetch(`/api/crm/content?id=${selectedPage}`)
-        if (!response.ok) return
+        if (!response.ok) {
+          throw new Error('Failed to load content')
+        }
         const data = await response.json()
 
         if (data.id === 'home') {
@@ -156,10 +162,17 @@ export default function ContentPage() {
           }
           setContent(withDefaults)
         } else {
-          setContent(data)
+          setContent({
+            ...data,
+            sections: Array.isArray(data.sections) ? data.sections : [],
+            cta: data.cta || { text: '', href: '' },
+          })
         }
       } catch (error) {
         console.error('Error loading content:', error)
+        setError('Failed to load content. Please try again.')
+      } finally {
+        setLoading(false)
       }
     }
 
@@ -168,6 +181,7 @@ export default function ContentPage() {
 
   const handleSave = async () => {
     setSaving(true)
+    setError(null)
     try {
       const response = await fetch('/api/crm/content', {
         method: 'POST',
@@ -175,12 +189,16 @@ export default function ContentPage() {
         body: JSON.stringify(content),
       })
 
-      if (!response.ok) throw new Error('Failed to save')
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || 'Failed to save content')
+      }
 
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
     } catch (error) {
       console.error('Error saving content:', error)
+      setError(error instanceof Error ? error.message : 'Failed to save content. Please try again.')
     } finally {
       setSaving(false)
     }
@@ -239,6 +257,12 @@ export default function ContentPage() {
           </div>
         )}
 
+        {error && (
+          <div className="p-3 bg-destructive/10 text-destructive rounded">
+            {error}
+          </div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <div className="bg-card border border-border rounded p-4 h-fit">
             <p className="text-sm font-medium mb-3 text-muted-foreground flex justify-between items-center">
@@ -268,8 +292,12 @@ export default function ContentPage() {
           </div>
 
           <div className="lg:col-span-3 bg-card border border-border rounded p-6 space-y-6">
-            <div>
-              <label className="block text-sm font-medium mb-2">Hero Title</label>
+            {loading ? (
+              <SkeletonLoader variant="form" rows={8} />
+            ) : (
+              <>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Hero Title</label>
               <input
                 type="text"
                 value={content.heroTitle}
@@ -347,6 +375,29 @@ export default function ContentPage() {
                     placeholder="Section content"
                     rows={4}
                   />
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Section Image</label>
+                    <ImageUploader
+                      onImagesChange={(urls) => {
+                        const newSections = [...content.sections]
+                        newSections[idx].image = urls[0] || ''
+                        setContent({ ...content, sections: newSections })
+                      }}
+                      maxImages={1}
+                      initialImages={section.image ? [section.image] : []}
+                    />
+                  </div>
+                  {content.sections.length > 1 && (
+                    <button
+                      onClick={() => {
+                        const newSections = content.sections.filter((_, i) => i !== idx)
+                        setContent({ ...content, sections: newSections })
+                      }}
+                      className="text-xs text-destructive hover:text-destructive/80"
+                    >
+                      Remove Section
+                    </button>
+                  )}
                 </div>
               ))}
 
@@ -492,6 +543,8 @@ export default function ContentPage() {
                   </div>
                 </div>
               </div>
+            )}
+              </>
             )}
           </div>
         </div>
