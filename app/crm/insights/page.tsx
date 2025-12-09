@@ -11,7 +11,7 @@ import { AlertCircle, TrendingUp, Heart, Search, RefreshCw, Download, X, Mail, F
 import { InsightRecommendations } from '@/components/crm/InsightRecommendations'
 import { SegmentDistributionChart, RFMDistributionChart, CLVDistributionChart } from '@/components/crm/InsightsCharts'
 
-interface InsightCustomerScore extends CustomerScore {
+export interface InsightCustomerScore extends CustomerScore {
   label: string
 }
 
@@ -322,7 +322,7 @@ export default function InsightsPage() {
 
         {segmentChartData.length > 0 && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <SegmentDistributionChart data={segmentChartData} />
+                <SegmentDistributionChart data={segmentChartData} />
             <RFMDistributionChart data={rfmDistribution} />
             <CLVDistributionChart data={clvDistribution} />
           </div>

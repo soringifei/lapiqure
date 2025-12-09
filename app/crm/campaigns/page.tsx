@@ -122,9 +122,7 @@ export default function CampaignsPage() {
     if (!service) return
     try {
       const newStatus: CampaignStatus = currentStatus === 'running' ? 'paused' : 'running'
-      const serviceAny = service as unknown as { db: { collection: (name: string) => { doc: (id: string) => { update: (data: Record<string, unknown>) => Promise<void> } } } }
-      const campaignRef = serviceAny.db.collection('crm_campaigns').doc(campaignId)
-      await campaignRef.update({ status: newStatus, updatedAt: new Date() })
+      await service.updateCampaign(campaignId, { status: newStatus })
       const updatedCampaigns = await service.getCampaigns()
       setCampaigns(updatedCampaigns)
     } catch (error) {

@@ -16,6 +16,7 @@ interface SegmentData {
   name: string
   value: number
   color: string
+  [key: string]: string | number
 }
 
 interface RFMData {
@@ -35,7 +36,8 @@ export function SegmentDistributionChart({ data }: { data: SegmentData[] }) {
               cx="50%"
               cy="50%"
               labelLine={false}
-              label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              label={({ name, percent }: any) => `${name}: ${((percent || 0) * 100).toFixed(0)}%`}
               outerRadius={80}
               fill="#8884d8"
               dataKey="value"

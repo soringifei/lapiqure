@@ -18,8 +18,8 @@ export default function AvailabilityBanner() {
 
       try {
         const products = await service.getProducts();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const extendedShippingProducts = products.filter(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (p: any) => p.status === 'extended-shipping' && !p.isHidden
         );
 

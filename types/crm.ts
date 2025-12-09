@@ -137,4 +137,11 @@ export interface DashboardMetrics {
   activeConversations: number;
   topCustomers: Customer[];
   recentOrders: Order[];
+  revenueTrend?: { date: string; revenue: number }[];
+  revenueTrendData?: { date: string; revenue: number }[];
+  newCustomersTrend?: number;
+  totalRevenueTrend?: number;
+  lowStockProducts?: number;
+  urgentOrders?: number;
+  ordersByStatus?: { name: string; value: number; color: string }[];
 }

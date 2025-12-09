@@ -76,10 +76,14 @@ export class OptimizedCRMService {
     return {
       ...data,
       id: data.id,
-      createdAt: data.createdAt?.toDate ? data.createdAt.toDate() : (data.createdAt || new Date()),
-      updatedAt: data.updatedAt?.toDate ? data.updatedAt.toDate() : (data.updatedAt || new Date()),
-      startDate: data.startDate?.toDate ? data.startDate.toDate() : data.startDate,
-      endDate: data.endDate?.toDate ? data.endDate.toDate() : data.endDate,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      createdAt: (data.createdAt as any)?.toDate ? (data.createdAt as any).toDate() : (data.createdAt || new Date()),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      updatedAt: (data.updatedAt as any)?.toDate ? (data.updatedAt as any).toDate() : (data.updatedAt || new Date()),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      startDate: (data.startDate as any)?.toDate ? (data.startDate as any).toDate() : data.startDate,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      endDate: (data.endDate as any)?.toDate ? (data.endDate as any).toDate() : data.endDate,
       heroImage: data.heroImage || '',
       image: data.image || '',
       images: Array.isArray(data.images) ? data.images : [],
@@ -92,8 +96,10 @@ export class OptimizedCRMService {
     return {
       ...data,
       id: data.id,
-      createdAt: data.createdAt?.toDate ? data.createdAt.toDate() : (data.createdAt || new Date()),
-      updatedAt: data.updatedAt?.toDate ? data.updatedAt.toDate() : (data.updatedAt || new Date()),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      createdAt: (data.createdAt as any)?.toDate ? (data.createdAt as any).toDate() : (data.createdAt || new Date()),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      updatedAt: (data.updatedAt as any)?.toDate ? (data.updatedAt as any).toDate() : (data.updatedAt || new Date()),
       images: Array.isArray(data.images) ? data.images : [],
       availabilityStatus: data.availabilityStatus || 'available',
       isVisible: data.isVisible !== undefined ? data.isVisible : true,
@@ -427,10 +433,11 @@ export class OptimizedCRMService {
   async getDashboardMetrics(): Promise<DashboardMetrics> {
     const key = 'dashboard_metrics'
     return this.getCached(key, async () => {
-      const [customers, orders, interactions] = await Promise.all([
+      const [customers, orders, interactions, products] = await Promise.all([
         this.getCustomers(),
         this.getOrders(),
         this.getInteractions([where('completed', '==', false)]),
+        this.getProducts(),
       ])
 
       const totalRevenue = orders.reduce((sum, order) => sum + order.totalAmount, 0)
@@ -443,6 +450,47 @@ export class OptimizedCRMService {
         .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
         .slice(0, 5)
 
+      // Calculate trends
+      const previousPeriodDate = new Date()
+      previousPeriodDate.setDate(previousPeriodDate.getDate() - 60)
+      const previousPeriodCustomers = customers.filter((c) => c.createdAt > previousPeriodDate && c.createdAt <= newCustomersDate).length
+      const newCustomersTrend = previousPeriodCustomers > 0 ? ((newCustomers - previousPeriodCustomers) / previousPeriodCustomers) * 100 : 0
+
+      // Calculate revenue trend
+      const revenueTrend = orders
+        .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+        .reduce((acc, order) => {
+          const date = new Date(order.createdAt).toISOString().split('T')[0]
+          const existing = acc.find((item) => item.date === date)
+          if (existing) {
+            existing.revenue += order.totalAmount
+          } else {
+            acc.push({ date, revenue: order.totalAmount })
+          }
+          return acc
+        }, [] as { date: string; revenue: number }[])
+        .slice(-30) // Last 30 days
+
+      // Calculate low stock products
+      const lowStockProducts = products.filter((p) => p.stock < (p.orderThreshold || 5)).length
+
+      // Calculate urgent orders (pending for more than 3 days)
+      const threeDaysAgo = new Date()
+      threeDaysAgo.setDate(threeDaysAgo.getDate() - 3)
+      const urgentOrders = orders.filter((o) => o.status === 'pending' && new Date(o.createdAt) < threeDaysAgo).length
+
+      // Calculate orders by status
+      const ordersByStatus = Object.values(
+        orders.reduce((acc, order) => {
+          const status = order.status
+          if (!acc[status]) {
+            acc[status] = { name: status, value: 0, color: '#000000' } // Colors should be mapped properly
+          }
+          acc[status].value += 1
+          return acc
+        }, {} as Record<string, { name: string; value: number; color: string }>)
+      )
+
       return {
         totalRevenue,
         newCustomers,
@@ -450,8 +498,74 @@ export class OptimizedCRMService {
         activeConversations: interactions.length,
         topCustomers,
         recentOrders,
+        newCustomersTrend,
+        revenueTrend,
+        revenueTrendData: revenueTrend,
+        lowStockProducts,
+        urgentOrders,
+        ordersByStatus,
       }
     })
+  }
+
+  async updateCampaign(id: string, updates: Partial<Campaign>): Promise<void> {
+    const docRef = doc(this.db, 'crm_campaigns', id)
+    await updateDoc(docRef, {
+      ...updates,
+      updatedAt: Timestamp.now(),
+    })
+    this.cache.delete(this.getCacheKey('campaigns', ''))
+  }
+
+  async updateProductAvailability(): Promise<void> {
+    const products = await this.getProducts()
+    const orders = await this.getOrders([where('status', 'in', ['pending', 'processing'])])
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const batch = (this.db as any).batch ? (this.db as any).batch() : null // Use batch if available, otherwise individual updates
+
+    for (const product of products) {
+      if (product.autoThresholdEnabled && product.orderThreshold) {
+        // Count pending orders for this product
+        const pendingProductOrders = orders.reduce((count, order) => {
+          const item = order.items.find((i) => i.productId === product.id)
+          return count + (item ? item.quantity : 0)
+        }, 0)
+
+        let newStatus = product.availabilityStatus
+        let newMessage = product.availabilityMessage
+
+        if (pendingProductOrders >= product.orderThreshold) {
+          newStatus = 'extended-shipping'
+          newMessage = `High demand: Shipping delayed by 2-3 weeks`
+        } else if (product.stock <= 0) {
+          newStatus = 'unavailable'
+          newMessage = 'Out of stock'
+        }
+
+        if (newStatus !== product.availabilityStatus || newMessage !== product.availabilityMessage) {
+          const productRef = doc(this.db, 'crm_products', product.id)
+          if (batch) {
+            batch.update(productRef, {
+              availabilityStatus: newStatus,
+              availabilityMessage: newMessage,
+              updatedAt: Timestamp.now(),
+            })
+          } else {
+            await updateDoc(productRef, {
+              availabilityStatus: newStatus,
+              availabilityMessage: newMessage,
+              updatedAt: Timestamp.now(),
+            })
+          }
+        }
+      }
+    }
+
+    if (batch) {
+      await batch.commit()
+    }
+    this.cache.delete(this.getCacheKey('products', ''))
   }
 
   async getContent(id: string): Promise<Record<string, unknown> | null> {
