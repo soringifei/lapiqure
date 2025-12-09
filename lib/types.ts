@@ -26,6 +26,8 @@ export interface Piece {
   story: string;
   category: 'outerwear' | 'tops' | 'bottoms' | 'dresses' | 'accessories' | 'footwear';
   available: boolean;
+  status?: 'available' | 'unavailable' | 'extended-shipping' | 'pre-order' | 'made-to-order';
+  availabilityMessage?: string;
   material?: string;
   care?: string;
   badges?: ('new' | 'exclusive' | 'low-stock')[];

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useId } from 'react'
 import Image from 'next/image'
 import { Upload, X } from 'lucide-react'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
@@ -14,6 +14,8 @@ interface ImageUploaderProps {
 }
 
 export function ImageUploader({ onImagesChange, maxImages = 5, initialImages = [] }: ImageUploaderProps) {
+  const uniqueId = useId()
+  const inputId = `image-upload-${uniqueId}`
   const [images, setImages] = useState<{ url: string; size: number }[]>(
     initialImages.map(url => ({ url, size: 0 }))
   )
@@ -85,15 +87,27 @@ export function ImageUploader({ onImagesChange, maxImages = 5, initialImages = [
     onImagesChange(newImages.map((img) => img.url))
   }
 
+  const handleClick = () => {
+    if (!uploading && images.length < maxImages) {
+      const input = document.getElementById(inputId) as HTMLInputElement
+      if (input) {
+        input.click()
+      }
+    }
+  }
+
   return (
     <div className="space-y-4">
-      <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary transition-colors cursor-pointer">
-        <label htmlFor="image-upload" className="cursor-pointer block">
+      <div 
+        onClick={handleClick}
+        className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary transition-colors cursor-pointer"
+      >
+        <div className="cursor-pointer">
           <Upload className="mx-auto mb-2 text-muted-foreground" size={32} />
           <p className="font-medium">Drop images or click to upload</p>
           <p className="text-sm text-muted-foreground">WebP optimized • Max {maxImages} images • 10MB each</p>
           <input
-            id="image-upload"
+            id={inputId}
             type="file"
             multiple
             accept="image/*"
@@ -101,7 +115,7 @@ export function ImageUploader({ onImagesChange, maxImages = 5, initialImages = [
             disabled={uploading || images.length >= maxImages}
             className="hidden"
           />
-        </label>
+        </div>
       </div>
 
       {uploading && (

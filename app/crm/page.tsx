@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, memo } from 'react'
+import { useEffect, useState, memo, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
 import { useCRM } from '@/hooks/useCRM'
@@ -8,6 +8,10 @@ import { DashboardLayout } from '@/components/crm/DashboardLayout'
 import { DashboardMetrics, Order, Customer } from '@/types/crm'
 import { TrendingUp, Users, Package, MessageSquare } from 'lucide-react'
 import { RevenueTrendChart, OrdersByStatusChart } from '@/components/crm/CRMCharts'
+import { StatusBadge } from '@/components/crm/StatusBadge'
+import { DateRangeSelector } from '@/components/crm/DateRangeSelector'
+
+type StatusType = 'active' | 'inactive' | 'draft' | 'published' | 'pending' | 'error' | 'processing' | 'completed' | 'cancelled'
 
 interface MetricCardProps {
   label: string
@@ -16,32 +20,95 @@ interface MetricCardProps {
   trendLabel?: string
 }
 
-function MetricCard({ label, value, icon: Icon, trendLabel }: MetricCardProps) {
+interface MetricCardProps {
+  label: string
+  value: string | number
+  icon: React.ElementType
+  trendLabel?: string
+  trend?: number
+  onClick?: () => void
+}
+
+function MetricCard({ label, value, icon: Icon, trendLabel, trend, onClick }: MetricCardProps) {
+  const hasTrend = trend !== undefined && trend !== null
+  const isPositive = trend !== undefined && trend > 0
+  const isNegative = trend !== undefined && trend < 0
+  const trendColor = isPositive
+    ? 'bg-accent-olive/10 text-accent-olive'
+    : isNegative
+    ? 'bg-accent-burgundy/10 text-accent-burgundy'
+    : 'bg-secondary/10 text-muted-foreground'
+
+  const trendIcon = isPositive ? '↑' : isNegative ? '↓' : ''
+
   return (
-    <div className="relative overflow-hidden rounded-xl border border-border bg-card/95 backdrop-blur-sm p-6 group">
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none bg-gradient-to-br from-primary/5 via-transparent to-accent-olive/10" />
+    <div
+      className={`relative overflow-hidden border border-border bg-card p-6 group transition-all ${
+        onClick ? 'cursor-pointer hover:shadow-sm' : ''
+      }`}
+      onClick={onClick}
+    >
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none bg-gradient-to-br from-ink/5 via-transparent to-accent-olive/5" />
       <div className="relative flex items-start justify-between gap-4">
-        <div>
-          <p className="text-[11px] uppercase tracking-[0.16em] text-muted-foreground/80 mb-1">
+        <div className="min-w-0 flex-1">
+          <p className="text-[11px] uppercase tracking-[0.16em] text-muted-foreground/70 mb-2 font-medium">
             {label}
           </p>
-          <p className="text-3xl font-display tracking-luxury mt-1">{value}</p>
-          {trendLabel && (
-            <p className="mt-2 inline-flex items-center gap-1 rounded-full bg-accent-olive/10 px-3 py-1 text-[11px] text-accent-olive">
+          <p className="text-3xl font-display tracking-luxury text-ink mb-2 truncate">{value}</p>
+          {hasTrend && (
+            <p className={`mt-2 inline-flex items-center gap-1.5 rounded-full ${trendColor} px-3 py-1 text-[11px] font-medium`}>
+              <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: 'currentColor' }} />
+              {trendIcon} {Math.abs(trend).toFixed(1)}% vs previous period
+            </p>
+          )}
+          {!hasTrend && trendLabel && (
+            <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-accent-olive/10 px-3 py-1 text-[11px] text-accent-olive font-medium">
               <span className="h-1.5 w-1.5 rounded-full bg-accent-olive" />
               {trendLabel}
             </p>
           )}
         </div>
-        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-secondary/20 text-accent-olive">
-          <Icon size={22} />
+        <div className="flex h-12 w-12 items-center justify-center border border-border bg-secondary/10 text-accent-olive flex-shrink-0">
+          <Icon size={20} />
         </div>
       </div>
     </div>
   )
 }
 
-const RecentOrdersTable = memo(function RecentOrdersTable({ orders }: { orders: Order[] }) {
+const RecentOrdersTable = memo(function RecentOrdersTable({ orders, customers, showUrgency }: { orders: Order[]; customers: Customer[]; showUrgency?: boolean }) {
+  const router = useRouter()
+  const { getStatusType } = useMemo(() => {
+    const statusMap: Record<string, StatusType> = {
+      pending: 'pending',
+      confirmed: 'processing',
+      processing: 'processing',
+      shipped: 'processing',
+      delivered: 'completed',
+      cancelled: 'cancelled',
+    }
+    return {
+      getStatusType: (status: string) => statusMap[status.toLowerCase()] || 'pending'
+    }
+  }, [])
+
+  const customerMap = useMemo(() => {
+    const map = new Map<string, Customer>()
+    customers.forEach((customer) => {
+      map.set(customer.id, customer)
+    })
+    return map
+  }, [customers])
+
+  const getTierColor = (tier: string) => {
+    const tierMap: Record<string, string> = {
+      platinum: 'bg-accent-olive/10 text-accent-olive',
+      gold: 'bg-accent-orange/10 text-accent-orange',
+      silver: 'bg-ink/10 text-ink-700',
+    }
+    return tierMap[tier.toLowerCase()] || 'bg-secondary/10 text-muted-foreground'
+  }
+
   return (
     <div className="bg-card border border-border rounded overflow-hidden">
       <div className="p-6 border-b border-border">
@@ -50,26 +117,91 @@ const RecentOrdersTable = memo(function RecentOrdersTable({ orders }: { orders: 
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-border">
-              <th className="px-6 py-3 text-left text-muted-foreground font-medium">Order ID</th>
-              <th className="px-6 py-3 text-left text-muted-foreground font-medium">Customer</th>
-              <th className="px-6 py-3 text-left text-muted-foreground font-medium">Amount</th>
-              <th className="px-6 py-3 text-left text-muted-foreground font-medium">Status</th>
+            <tr className="border-b border-border bg-secondary/5">
+              <th className="px-6 py-3 text-left text-muted-foreground font-medium text-xs uppercase tracking-[0.1em]">Order ID</th>
+              <th className="px-6 py-3 text-left text-muted-foreground font-medium text-xs uppercase tracking-[0.1em]">Customer</th>
+              <th className="px-6 py-3 text-left text-muted-foreground font-medium text-xs uppercase tracking-[0.1em]">Amount</th>
+              <th className="px-6 py-3 text-left text-muted-foreground font-medium text-xs uppercase tracking-[0.1em]">Status</th>
             </tr>
           </thead>
           <tbody>
-            {orders.map((order: Order) => (
-              <tr key={order.id} className="border-b border-border hover:bg-secondary/5">
-                <td className="px-6 py-3">{order.id.slice(0, 8)}</td>
-                <td className="px-6 py-3">{order.customerId.slice(0, 8)}</td>
-                <td className="px-6 py-3">${order.totalAmount.toLocaleString()}</td>
-                <td className="px-6 py-3">
-                  <span className="px-3 py-1 bg-secondary/10 text-primary rounded text-xs">
-                    {order.status}
-                  </span>
-                </td>
-              </tr>
-            ))}
+            {orders.map((order: Order) => {
+              const customer = customerMap.get(order.customerId)
+              const customerName = customer 
+                ? `${customer.firstName} ${customer.lastName}`.trim() || customer.email
+                : order.customerId.slice(0, 12)
+              
+              const orderDate = order.createdAt instanceof Date ? order.createdAt : new Date(order.createdAt)
+              const daysSinceOrder = Math.floor((Date.now() - orderDate.getTime()) / (1000 * 60 * 60 * 24))
+              const isUrgent = showUrgency && (daysSinceOrder > 3 || order.paymentStatus === 'failed')
+              const isPaymentFailed = order.paymentStatus === 'failed'
+              
+              return (
+                <tr 
+                  key={order.id} 
+                  className={`border-b border-border hover:bg-secondary/5 transition-colors ${
+                    isUrgent ? 'bg-accent-burgundy/5' : ''
+                  }`}
+                >
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-2">
+                      {isUrgent && (
+                        <span className="h-2 w-2 rounded-full bg-accent-burgundy" title="Requires attention" />
+                      )}
+                      <span className="font-mono text-xs text-ink-700 truncate block max-w-[120px]">
+                        {order.id.slice(0, 12)}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    {customer ? (
+                      <div className="space-y-1">
+                        <button
+                          onClick={() => router.push(`/crm/customers/${customer.id}`)}
+                          className="text-ink hover:text-accent-olive transition-colors text-left"
+                        >
+                          <span className="font-medium truncate block max-w-[180px]">
+                            {customerName}
+                          </span>
+                        </button>
+                        <div className="flex items-center gap-2">
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-medium ${getTierColor(customer.tier)}`}>
+                            {customer.tier.toUpperCase()}
+                          </span>
+                          <span className="text-xs text-muted-foreground truncate max-w-[120px]">
+                            {customer.email}
+                          </span>
+                        </div>
+                      </div>
+                    ) : (
+                      <span className="text-ink-700 truncate block max-w-[120px]">
+                        {customerName}
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className="font-display tracking-luxury text-ink">
+                      ${order.totalAmount.toLocaleString()}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-2">
+                      <StatusBadge status={getStatusType(order.status)} />
+                      {isPaymentFailed && (
+                        <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-accent-burgundy/10 text-accent-burgundy">
+                          Payment Failed
+                        </span>
+                      )}
+                      {isUrgent && !isPaymentFailed && (
+                        <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-accent-orange/10 text-accent-orange">
+                          {daysSinceOrder}d old
+                        </span>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              )
+            })}
           </tbody>
         </table>
       </div>
@@ -78,20 +210,35 @@ const RecentOrdersTable = memo(function RecentOrdersTable({ orders }: { orders: 
 })
 
 const TopCustomersCard = memo(function TopCustomersCard({ customers }: { customers: Customer[] }) {
+  const getTierColor = (tier: string) => {
+    const tierMap: Record<string, string> = {
+      platinum: 'text-accent-olive',
+      gold: 'text-accent-orange',
+      silver: 'text-ink-700',
+    }
+    return tierMap[tier.toLowerCase()] || 'text-muted-foreground'
+  }
+
   return (
-    <div className="bg-card border border-border rounded">
+    <div className="bg-card border border-border rounded overflow-hidden">
       <div className="p-6 border-b border-border">
         <h3 className="font-display tracking-luxury">Top Customers</h3>
       </div>
       <div className="divide-y divide-border">
         {customers.map((customer: Customer) => (
           <div key={customer.id} className="p-4 hover:bg-secondary/5 transition-colors">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium">{customer.firstName} {customer.lastName}</p>
-                <p className="text-xs text-muted-foreground">{customer.tier.toUpperCase()}</p>
+            <div className="flex items-center justify-between gap-4">
+              <div className="min-w-0 flex-1">
+                <p className="font-medium text-ink truncate">
+                  {customer.firstName} {customer.lastName}
+                </p>
+                <p className={`text-xs font-medium mt-1 ${getTierColor(customer.tier)}`}>
+                  {customer.tier.toUpperCase()}
+                </p>
               </div>
-              <p className="font-display tracking-luxury">${customer.totalSpent.toLocaleString()}</p>
+              <p className="font-display tracking-luxury text-ink whitespace-nowrap">
+                ${customer.totalSpent.toLocaleString()}
+              </p>
             </div>
           </div>
         ))}
@@ -105,7 +252,9 @@ export default function CRMDashboard() {
   const { user, loading: authLoading } = useAuth()
   const { service } = useCRM()
   const [metrics, setMetrics] = useState<DashboardMetrics | null>(null)
+  const [customers, setCustomers] = useState<Customer[]>([])
   const [loading, setLoading] = useState(true)
+  const [dateRange, setDateRange] = useState(30)
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -114,20 +263,25 @@ export default function CRMDashboard() {
   }, [user, authLoading, router])
 
   useEffect(() => {
-    const fetchMetrics = async () => {
+    const fetchData = async () => {
       if (!service) return
       try {
-        const data = await service.getDashboardMetrics()
-        setMetrics(data)
+        setLoading(true)
+        const [metricsData, customersData] = await Promise.all([
+          service.getDashboardMetrics(dateRange),
+          service.getCustomers(),
+        ])
+        setMetrics(metricsData)
+        setCustomers(customersData)
       } catch (error) {
-        console.error('Error fetching metrics:', error)
+        console.error('Error fetching dashboard data:', error)
       } finally {
         setLoading(false)
       }
     }
 
-    fetchMetrics()
-  }, [service])
+    fetchData()
+  }, [service, dateRange])
 
   if (authLoading || loading) {
     return (
@@ -162,18 +316,12 @@ export default function CRMDashboard() {
     return null
   }
 
-  const revenueTrend =
-    metrics?.recentOrders.map((order, index) => ({
-      label: `#${index + 1}`,
-      value: order.totalAmount,
-    })) ?? []
+  const revenueTrend = metrics?.revenueTrendData?.map((point) => ({
+    label: new Date(point.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+    value: point.revenue,
+  })) ?? []
 
-  const ordersByStatus = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'].map(
-    (status) => ({
-      status,
-      count: metrics?.recentOrders.filter((o) => o.status === status).length ?? 0,
-    })
-  )
+  const ordersByStatus = metrics?.ordersByStatus ?? []
 
   const hasRecentOrders = (metrics?.recentOrders?.length ?? 0) > 0
 
@@ -192,10 +340,7 @@ export default function CRMDashboard() {
               <span className="h-1.5 w-1.5 rounded-full bg-accent-olive animate-pulse" />
               Live data
             </span>
-            <span className="hidden sm:inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-muted-foreground">
-              <span className="text-[10px] uppercase tracking-[0.16em]">Range</span>
-              <span className="rounded-full bg-secondary/60 px-2 py-0.5 text-[11px]">Last 30 days</span>
-            </span>
+            <DateRangeSelector value={dateRange} onChange={setDateRange} />
           </div>
         </div>
 
@@ -204,19 +349,22 @@ export default function CRMDashboard() {
             label="Total Revenue"
             value={metrics?.totalRevenue ? `$${metrics.totalRevenue.toLocaleString()}` : '$0'}
             icon={TrendingUp}
-            trendLabel="Up 12% vs. last month"
+            trend={metrics?.revenueTrend}
+            onClick={() => router.push('/crm/orders')}
           />
           <MetricCard
             label="New Customers"
             value={metrics?.newCustomers ?? 0}
             icon={Users}
-            trendLabel="8 new VIPs this month"
+            trend={metrics?.newCustomersTrend}
+            onClick={() => router.push('/crm/customers')}
           />
           <MetricCard
             label="Open Orders"
             value={metrics?.pendingOrders ?? 0}
             icon={Package}
             trendLabel={metrics?.pendingOrders ? `${metrics.pendingOrders} awaiting fulfillment` : undefined}
+            onClick={() => router.push('/crm/orders?status=pending')}
           />
           <MetricCard
             label="Active Conversations"
@@ -224,6 +372,21 @@ export default function CRMDashboard() {
             icon={MessageSquare}
             trendLabel={metrics?.activeConversations ? `${metrics.activeConversations} open threads` : undefined}
           />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <DashboardAlerts
+              lowStockProducts={metrics?.lowStockProducts}
+              pendingOrders={metrics?.pendingOrders}
+              urgentOrders={metrics?.urgentOrders}
+              paymentFailures={metrics?.recentOrders?.filter((o) => o.paymentStatus === 'failed').length}
+              highOrderVolume={(metrics?.pendingOrders ?? 0) >= 10}
+            />
+          </div>
+          <div>
+            <QuickActions />
+          </div>
         </div>
 
         {hasRecentOrders ? (
@@ -246,7 +409,7 @@ export default function CRMDashboard() {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
-                {metrics?.recentOrders && <RecentOrdersTable orders={metrics.recentOrders} />}
+                {metrics?.recentOrders && <RecentOrdersTable orders={metrics.recentOrders} customers={customers} showUrgency />}
               </div>
               <div className="space-y-3">
                 {metrics?.topCustomers && <TopCustomersCard customers={metrics.topCustomers} />}

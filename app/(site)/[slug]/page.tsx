@@ -6,6 +6,19 @@ import { initFirebaseAdmin } from '@/lib/firebase-admin';
 // Force dynamic rendering for this route
 export const dynamic = 'force-dynamic';
 
+const STATIC_FILES = [
+  'favicon.ico',
+  'robots.txt',
+  'sitemap.xml',
+  'manifest.json',
+  'apple-touch-icon.png',
+  'browserconfig.xml',
+];
+
+function isStaticFile(slug: string): boolean {
+  return STATIC_FILES.includes(slug.toLowerCase()) || slug.includes('.');
+}
+
 interface PageProps {
   params: {
     slug: string;
@@ -37,6 +50,10 @@ async function getPageContent(slug: string) {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  if (isStaticFile(params.slug)) {
+    return {};
+  }
+
   const content = await getPageContent(params.slug);
   if (!content) return {};
   
@@ -47,6 +64,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function DynamicPage({ params }: PageProps) {
+  if (isStaticFile(params.slug)) {
+    notFound();
+  }
+
   const content = await getPageContent(params.slug);
 
   if (!content) {

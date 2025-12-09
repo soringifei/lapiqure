@@ -17,8 +17,7 @@ export default function CollectionsPage() {
       if (!service) return;
       try {
         setLoading(true);
-        const data = await service.getCollections();
-        // Sort by creation date to show newest first
+        const data = await service.getActiveCollections();
         const sortedData = data.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         setCollections(sortedData);
       } catch (error) {
@@ -92,19 +91,25 @@ export default function CollectionsPage() {
             collections.map((collection, index) => (
               <Link 
                 key={collection.id} 
-                href={`/collections/${collection.id}`}
+                href={`/collections/${collection.slug || collection.id}`}
                 className="group block"
               >
                 <div className="relative aspect-[3/4] bg-sand/20 overflow-hidden mb-8">
-                  <Image
-                    src={collection.heroImage}
-                    alt={collection.name}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-cover group-hover:scale-103 transition-transform duration-1000 ease-in-out"
-                    quality={80}
-                    loading="lazy"
-                  />
+                  {(collection.heroImage || collection.image) ? (
+                    <Image
+                      src={collection.heroImage || collection.image}
+                      alt={collection.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      className="object-cover group-hover:scale-103 transition-transform duration-1000 ease-in-out"
+                      quality={80}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-ink-300">
+                      <span className="text-sm">No image</span>
+                    </div>
+                  )}
                 </div>
                 
                 <div className="space-y-4">

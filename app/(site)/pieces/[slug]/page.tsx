@@ -61,6 +61,19 @@ export default function ProductPage({ params }: ProductPageProps) {
 
   const handleAddToCart = () => {
     if (!piece) return;
+    
+    const isUnavailable = piece.availabilityStatus === 'unavailable' || 
+                          (piece.availabilityStatus !== 'available' && piece.stock <= 0);
+    
+    if (isUnavailable) {
+      toast({
+        variant: "destructive",
+        title: "Item unavailable",
+        description: piece.availabilityMessage || "This item is currently unavailable.",
+      });
+      return;
+    }
+    
     if (!selectedSize) {
       toast({
         variant: "destructive",
@@ -145,14 +158,44 @@ export default function ProductPage({ params }: ProductPageProps) {
 
           <div className="space-y-12">
             <div>
-              <div className="flex items-center gap-3 mb-4">
+              <div className="flex items-center gap-3 mb-4 flex-wrap">
                 <Badge variant="default">New</Badge>
-                {piece.stock > 0 ? (
+                {piece.availabilityStatus === 'available' && piece.stock > 0 ? (
+                  <Badge variant="outline">Available</Badge>
+                ) : piece.availabilityStatus === 'unavailable' ? (
+                  <Badge variant="outline" className="bg-ink/60 text-paper">Unavailable</Badge>
+                ) : piece.availabilityStatus === 'extended-shipping' ? (
+                  <Badge variant="outline" className="bg-yellow-500 text-paper">Extended Shipping</Badge>
+                ) : piece.availabilityStatus === 'pre-order' ? (
+                  <Badge variant="outline" className="bg-accent-olive text-paper">Pre-Order</Badge>
+                ) : piece.availabilityStatus === 'made-to-order' ? (
+                  <Badge variant="outline" className="bg-ink/80 text-paper">Made to Order</Badge>
+                ) : piece.stock > 0 ? (
                   <Badge variant="outline">Available</Badge>
                 ) : (
                   <Badge variant="outline">Sold Out</Badge>
                 )}
               </div>
+
+              {(piece.availabilityMessage || (piece.availabilityStatus && piece.availabilityStatus !== 'available')) && (
+                <div className={`mb-4 p-4 rounded ${
+                  piece.availabilityStatus === 'extended-shipping' ? 'bg-yellow-500/10 border border-yellow-500/20' :
+                  piece.availabilityStatus === 'unavailable' ? 'bg-destructive/10 border border-destructive/20' :
+                  'bg-accent-olive/10 border border-accent-olive/20'
+                }`}>
+                  <p className="font-sans text-sm text-ink-700">
+                    {piece.availabilityMessage || (
+                      piece.availabilityStatus === 'extended-shipping' 
+                        ? 'Due to high demand, shipping may take longer than usual.'
+                        : piece.availabilityStatus === 'pre-order'
+                        ? 'This item is available for pre-order. Shipping will begin once the item is ready.'
+                        : piece.availabilityStatus === 'made-to-order'
+                        ? 'This item is made to order. Please allow additional time for production.'
+                        : 'This item is currently unavailable.'
+                    )}
+                  </p>
+                </div>
+              )}
 
               <h1 className="font-display text-3xl md:text-4xl lg:text-5xl tracking-luxury text-ink mb-3">
                 {piece.name}
@@ -197,18 +240,30 @@ export default function ProductPage({ params }: ProductPageProps) {
             )}
 
             <div className="space-y-4">
-              {piece.stock > 0 ? (
-                <Button onClick={handleAddToCart} variant="primary" className="w-full">
-                  Add to Cart
-                </Button>
-              ) : (
-                <button
-                  disabled
-                  className="w-full px-10 py-4 border border-ink/10 text-ink/50 transition-all duration-500 font-sans uppercase tracking-[0.15em] text-[11px]"
-                >
-                  Sold out
-                </button>
-              )}
+              {(() => {
+                const isUnavailable = piece.availabilityStatus === 'unavailable' || 
+                                      (piece.availabilityStatus !== 'available' && piece.stock <= 0) ||
+                                      (piece.availabilityStatus === 'available' && piece.stock <= 0);
+                
+                if (isUnavailable) {
+                  return (
+                    <button
+                      disabled
+                      className="w-full px-10 py-4 border border-ink/10 text-ink/50 transition-all duration-500 font-sans uppercase tracking-[0.15em] text-[11px] cursor-not-allowed"
+                    >
+                      {piece.availabilityStatus === 'unavailable' ? 'Unavailable' : 'Sold out'}
+                    </button>
+                  );
+                }
+                
+                return (
+                  <Button onClick={handleAddToCart} variant="primary" className="w-full">
+                    {piece.availabilityStatus === 'pre-order' ? 'Pre-Order' : 
+                     piece.availabilityStatus === 'made-to-order' ? 'Order Now' : 
+                     'Add to Cart'}
+                  </Button>
+                );
+              })()}
               <Button 
                 onClick={handleWishlistToggle}
                 variant="secondary" 

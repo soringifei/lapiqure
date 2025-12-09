@@ -104,7 +104,7 @@ export async function getProductsByCollection(collectionId: string): Promise<Pie
 
     const products = await service.getProducts()
     return products
-      .filter(p => p.collection === collectionId)
+      .filter(p => p.collection === collectionId && (p.isVisible !== false))
       .map(p => ({
         id: p.id,
         name: p.name,
@@ -141,7 +141,7 @@ export async function getProductBySlug(slug: string): Promise<Piece | null> {
     }
 
     const products = await service.getProducts()
-    const product = products.find(p => p.name.toLowerCase().replace(/\s+/g, '-') === slug)
+    const product = products.find(p => p.name.toLowerCase().replace(/\s+/g, '-') === slug && (p.isVisible !== false))
     if (!product) return null
 
     return {
@@ -178,7 +178,9 @@ export async function getAllPieces(): Promise<Piece[]> {
     if (!service) return samplePieces
 
     const products = await service.getProducts()
-    return products.map(p => ({
+    return products
+      .filter(p => p.isVisible !== false)
+      .map(p => ({
       id: p.id,
       name: p.name,
       slug: p.name.toLowerCase().replace(/\s+/g, '-'),

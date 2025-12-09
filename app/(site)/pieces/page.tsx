@@ -30,6 +30,9 @@ function mapProductToPiece(product: Product): PiecesClientPiece {
     ? product.size.split(',').map((s) => s.trim()).filter(Boolean)
     : [];
 
+  const availabilityStatus = product.availabilityStatus || 'available';
+  const isAvailable = availabilityStatus === 'available' && product.stock > 0;
+
   return {
     id: product.id,
     slug: product.id,
@@ -40,8 +43,10 @@ function mapProductToPiece(product: Product): PiecesClientPiece {
     price: product.price,
     category: 'outerwear',
     sizes,
-    available: product.stock > 0,
+    available: isAvailable,
     collectionName: product.collection,
+    availabilityStatus: availabilityStatus,
+    availabilityMessage: product.availabilityMessage,
   };
 }
 
@@ -72,6 +77,7 @@ export default function PiecesPage() {
         if (products && products.length > 0) {
           const crmPieces = products
             .filter((product) =>
+              (product.isVisible !== false) &&
               Array.isArray(product.images) &&
               product.images.length > 0 &&
               typeof product.images[0] === 'string' &&

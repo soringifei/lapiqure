@@ -9,8 +9,8 @@ import { PageHeader } from '@/components/crm/PageHeader'
 import { EmptyState } from '@/components/crm/EmptyState'
 import { SkeletonLoader } from '@/components/crm/SkeletonLoader'
 import { ImageUploader } from '@/components/crm/ImageUploader'
-import { Product, CustomerTier } from '@/types/crm'
-import { Plus, Edit, Trash2, Search, Star } from 'lucide-react'
+import { Product, CustomerTier, AvailabilityStatus } from '@/types/crm'
+import { Plus, Edit, Trash2, Search, Star, AlertTriangle, Eye, EyeOff } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 export default function ProductsPage() {
@@ -24,6 +24,7 @@ export default function ProductsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [pendingOrdersCount, setPendingOrdersCount] = useState<number>(0)
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -35,6 +36,11 @@ export default function ProductsPage() {
     tierExclusive: 'prospect' as CustomerTier,
     images: [] as string[],
     featured: false,
+    availabilityStatus: 'available' as AvailabilityStatus,
+    isVisible: true,
+    availabilityMessage: '',
+    orderThreshold: 10,
+    autoThresholdEnabled: false,
   })
 
   useEffect(() => {
@@ -42,19 +48,25 @@ export default function ProductsPage() {
   }, [user, authLoading, router])
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchData = async () => {
       if (!service) return
       try {
-        const data = await service.getProducts()
-        setProducts(data)
+        const [productsData, metrics] = await Promise.all([
+          service.getProducts(),
+          service.getDashboardMetrics().catch(() => null),
+        ])
+        setProducts(productsData)
+        if (metrics) {
+          setPendingOrdersCount(metrics.pendingOrders)
+        }
       } catch (error) {
-        console.error('Error fetching products:', error)
+        console.error('Error fetching data:', error)
       } finally {
         setLoading(false)
       }
     }
 
-    fetchProducts()
+    fetchData()
   }, [service])
 
   useEffect(() => {
@@ -80,6 +92,11 @@ export default function ProductsPage() {
       tierExclusive: product.tierExclusive || 'prospect',
       images: product.images,
       featured: product.featured || false,
+      availabilityStatus: product.availabilityStatus || 'available',
+      isVisible: product.isVisible !== undefined ? product.isVisible : true,
+      availabilityMessage: product.availabilityMessage || '',
+      orderThreshold: product.orderThreshold || 10,
+      autoThresholdEnabled: product.autoThresholdEnabled || false,
     })
     setEditingId(product.id)
     setShowForm(true)
@@ -102,6 +119,11 @@ export default function ProductsPage() {
           color: formData.color || undefined,
           tierExclusive: formData.tierExclusive,
           featured: formData.featured,
+          availabilityStatus: formData.availabilityStatus,
+          isVisible: formData.isVisible,
+          availabilityMessage: formData.availabilityMessage || undefined,
+          orderThreshold: formData.orderThreshold || undefined,
+          autoThresholdEnabled: formData.autoThresholdEnabled,
         })
       } else {
         await service.addProduct({
@@ -115,6 +137,11 @@ export default function ProductsPage() {
           color: formData.color || undefined,
           tierExclusive: formData.tierExclusive,
           featured: formData.featured,
+          availabilityStatus: formData.availabilityStatus,
+          isVisible: formData.isVisible,
+          availabilityMessage: formData.availabilityMessage || undefined,
+          orderThreshold: formData.orderThreshold || undefined,
+          autoThresholdEnabled: formData.autoThresholdEnabled,
         })
       }
 
@@ -129,6 +156,11 @@ export default function ProductsPage() {
         tierExclusive: 'prospect',
         images: [],
         featured: false,
+        availabilityStatus: 'available',
+        isVisible: true,
+        availabilityMessage: '',
+        orderThreshold: 10,
+        autoThresholdEnabled: false,
       })
       setEditingId(null)
       setShowForm(false)
@@ -259,6 +291,98 @@ export default function ProductsPage() {
                 <label htmlFor="featured">Featured Product</label>
               </div>
 
+              <div className="col-span-2 border-t border-border pt-4 mt-4">
+                <h3 className="font-display text-lg mb-4">Availability Management</h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Availability Status</label>
+                    <select
+                      value={formData.availabilityStatus}
+                      onChange={(e) => setFormData({ ...formData, availabilityStatus: e.target.value as AvailabilityStatus })}
+                      className="w-full px-4 py-2 border border-border rounded bg-background"
+                    >
+                      <option value="available">Available</option>
+                      <option value="unavailable">Unavailable</option>
+                      <option value="extended-shipping">Extended Shipping</option>
+                      <option value="pre-order">Pre-Order</option>
+                      <option value="made-to-order">Made to Order</option>
+                    </select>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="isVisible"
+                      checked={formData.isVisible}
+                      onChange={(e) => setFormData({ ...formData, isVisible: e.target.checked })}
+                      className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                    />
+                    <label htmlFor="isVisible" className="flex items-center gap-2">
+                      {formData.isVisible ? <Eye size={16} /> : <EyeOff size={16} />}
+                      Visible on Storefront
+                    </label>
+                  </div>
+
+                  <div className="col-span-2">
+                    <label className="block text-sm font-medium mb-2">Custom Availability Message</label>
+                    <textarea
+                      placeholder="e.g., 'Due to high demand, shipping may take 2-3 weeks'"
+                      value={formData.availabilityMessage}
+                      onChange={(e) => setFormData({ ...formData, availabilityMessage: e.target.value })}
+                      className="w-full px-4 py-2 border border-border rounded bg-background"
+                      rows={2}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Order Threshold</label>
+                    <input
+                      type="number"
+                      placeholder="10"
+                      value={formData.orderThreshold}
+                      onChange={(e) => setFormData({ ...formData, orderThreshold: parseInt(e.target.value) || 10 })}
+                      className="w-full px-4 py-2 border border-border rounded bg-background"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Auto-hide when pending orders exceed this number
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="autoThresholdEnabled"
+                      checked={formData.autoThresholdEnabled}
+                      onChange={(e) => setFormData({ ...formData, autoThresholdEnabled: e.target.checked })}
+                      className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                    />
+                    <label htmlFor="autoThresholdEnabled">Enable Auto-Threshold</label>
+                  </div>
+                </div>
+
+                {pendingOrdersCount > 0 && (
+                  <div className={`mt-4 p-3 rounded flex items-center gap-2 ${
+                    pendingOrdersCount >= (formData.orderThreshold || 10)
+                      ? 'bg-destructive/10 text-destructive'
+                      : pendingOrdersCount >= (formData.orderThreshold || 10) * 0.8
+                      ? 'bg-yellow-500/10 text-yellow-700'
+                      : 'bg-accent-olive/10 text-accent-olive'
+                  }`}>
+                    <AlertTriangle size={16} />
+                    <span className="text-sm">
+                      Current pending orders: <strong>{pendingOrdersCount}</strong>
+                      {formData.autoThresholdEnabled && formData.orderThreshold && (
+                        <span>
+                          {' '}/ {formData.orderThreshold} threshold
+                          {pendingOrdersCount >= formData.orderThreshold && ' (Threshold exceeded!)'}
+                        </span>
+                      )}
+                    </span>
+                  </div>
+                )}
+              </div>
+
               <div className="col-span-2">
                 <label className="block text-sm font-medium mb-2">Product Images</label>
                 <ImageUploader
@@ -291,6 +415,11 @@ export default function ProductsPage() {
                       tierExclusive: 'prospect',
                       images: [],
                       featured: false,
+                      availabilityStatus: 'available',
+                      isVisible: true,
+                      availabilityMessage: '',
+                      orderThreshold: 10,
+                      autoThresholdEnabled: false,
                     })
                   }}
                   className="flex-1 px-4 py-2 bg-secondary/20 rounded hover:bg-secondary/30"
@@ -334,6 +463,7 @@ export default function ProductsPage() {
                   <th className="px-6 py-3 text-left text-muted-foreground font-medium">Collection</th>
                   <th className="px-6 py-3 text-left text-muted-foreground font-medium">Price</th>
                   <th className="px-6 py-3 text-left text-muted-foreground font-medium">Stock</th>
+                  <th className="px-6 py-3 text-left text-muted-foreground font-medium">Availability</th>
                   <th className="px-6 py-3 text-left text-muted-foreground font-medium">Tier</th>
                   <th className="px-6 py-3 text-left text-muted-foreground font-medium">Actions</th>
                 </tr>
@@ -353,6 +483,23 @@ export default function ProductsPage() {
                       }`}>
                         {product.stock} in stock
                       </span>
+                    </td>
+                    <td className="px-6 py-3">
+                      <div className="flex flex-col gap-1">
+                        <span className={`px-2 py-1 rounded text-xs capitalize ${
+                          product.availabilityStatus === 'available' ? 'bg-accent-olive/10 text-accent-olive' :
+                          product.availabilityStatus === 'unavailable' ? 'bg-destructive/10 text-destructive' :
+                          product.availabilityStatus === 'extended-shipping' ? 'bg-yellow-500/10 text-yellow-700' :
+                          'bg-ink/10 text-ink'
+                        }`}>
+                          {product.availabilityStatus || 'available'}
+                        </span>
+                        {!product.isVisible && (
+                          <span className="text-xs text-muted-foreground flex items-center gap-1">
+                            <EyeOff size={12} /> Hidden
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td className="px-6 py-3 text-xs capitalize">{product.tierExclusive || 'All'}</td>
                     <td className="px-6 py-3">

@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server'
 import { initFirebaseAdmin } from '@/lib/firebase-admin'
-import { OptimizedCRMService } from '@/lib/firebase-crm-optimized'
 import { CRMAnalytics, type CustomerScore } from '@/lib/crm-analytics'
-import type { Customer } from '@/types/crm'
+import type { Customer, Order } from '@/types/crm'
 
 export const revalidate = 300
 
@@ -48,12 +47,54 @@ function attachLabels(scores: CustomerScore[], customers: Customer[]): InsightCu
 export async function GET() {
   try {
     const db = initFirebaseAdmin()
-    const service = new OptimizedCRMService(db)
 
-    const [customers, orders] = await Promise.all([
-      service.getCustomers(),
-      service.getOrders(),
+    const [customersSnapshot, ordersSnapshot] = await Promise.all([
+      db.collection('crm_customers').get(),
+      db.collection('crm_orders').get(),
     ])
+
+    const customers: Customer[] = customersSnapshot.docs.map((doc) => {
+      const data = doc.data()
+      return {
+        id: doc.id,
+        email: data.email || '',
+        phone: data.phone || '',
+        firstName: data.firstName || '',
+        lastName: data.lastName || '',
+        tier: data.tier || 'prospect',
+        company: data.company,
+        address: data.address,
+        preferences: data.preferences,
+        tags: data.tags || [],
+        totalSpent: data.totalSpent || 0,
+        totalOrders: data.totalOrders || 0,
+        lastPurchaseDate: data.lastPurchaseDate?.toDate ? data.lastPurchaseDate.toDate() : data.lastPurchaseDate,
+        createdAt: data.createdAt?.toDate ? data.createdAt.toDate() : data.createdAt,
+        updatedAt: data.updatedAt?.toDate ? data.updatedAt.toDate() : data.updatedAt,
+        assignedStaffId: data.assignedStaffId,
+        notes: data.notes,
+      } as Customer
+    })
+
+    const orders: Order[] = ordersSnapshot.docs.map((doc) => {
+      const data = doc.data()
+      return {
+        id: doc.id,
+        customerId: data.customerId || '',
+        staffId: data.staffId || '',
+        items: data.items || [],
+        totalAmount: data.totalAmount || 0,
+        status: data.status || 'pending',
+        paymentStatus: data.paymentStatus || 'pending',
+        paymentMethod: data.paymentMethod,
+        shippingAddress: data.shippingAddress,
+        billingAddress: data.billingAddress,
+        createdAt: data.createdAt?.toDate ? data.createdAt.toDate() : data.createdAt,
+        updatedAt: data.updatedAt?.toDate ? data.updatedAt.toDate() : data.updatedAt,
+        expectedDelivery: data.expectedDelivery?.toDate ? data.expectedDelivery.toDate() : data.expectedDelivery,
+        notes: data.notes,
+      } as Order
+    })
 
     const limitedCustomers = customers.slice(0, 200)
     const limitedOrders = orders.slice(0, 500)

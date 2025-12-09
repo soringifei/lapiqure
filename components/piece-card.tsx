@@ -18,6 +18,8 @@ interface PieceCardProps {
   condition: string;
   imageSrc: string;
   price: number;
+  availabilityStatus?: string;
+  available?: boolean;
 }
 
 export default function PieceCard({ 
@@ -26,7 +28,9 @@ export default function PieceCard({
   designer, 
   condition, 
   imageSrc, 
-  price
+  price,
+  availabilityStatus,
+  available = true
 }: PieceCardProps) {
   const { isInWishlist, toggleItem } = useWishlist();
   const { toast } = useToast();
@@ -101,6 +105,15 @@ export default function PieceCard({
           {piece && piece.badges && piece.badges.map((badge) => (
             <ProductBadge key={badge} type={badge} className="backdrop-blur-sm" />
           ))}
+          {availabilityStatus && availabilityStatus !== 'available' && (
+            <ProductBadge 
+              type={availabilityStatus as any} 
+              className="backdrop-blur-sm" 
+            />
+          )}
+          {!available && !availabilityStatus && (
+            <ProductBadge type="unavailable" className="backdrop-blur-sm" />
+          )}
         </div>
         {piece && (
           <>

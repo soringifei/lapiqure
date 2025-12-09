@@ -17,9 +17,18 @@ function CheckoutInner() {
   const [step, setStep] = useState<'shipping' | 'payment'>('shipping');
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
+  const [stripeError, setStripeError] = useState<string | null>(null);
 
   const stripe = useStripe();
   const elements = useElements();
+
+  useEffect(() => {
+    if (step === 'payment' && !stripe) {
+      setStripeError('Payment system is loading. Please wait...');
+    } else {
+      setStripeError(null);
+    }
+  }, [step, stripe]);
 
   const shipping = totalPrice >= 500 ? 0 : 35;
   const tax = totalPrice * 0.08;
@@ -421,33 +430,60 @@ function CheckoutInner() {
                   </h2>
 
                   <div className="space-y-4">
-                    <div>
-                      <label className="block font-mono text-[9px] uppercase tracking-wide text-ink-700 mb-2">
-                        Card Details
-                      </label>
-                      <div className="w-full border border-ink/20 px-4 py-3 bg-paper">
-                        <CardElement
-                          options={{
-                            style: {
-                              base: {
-                                fontSize: '14px',
-                                color: '#1F1A17',
-                                fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif',
-                                '::placeholder': {
-                                  color: '#9A8F80',
-                                },
-                              },
-                              invalid: {
-                                color: '#7A231D',
-                              },
-                            },
-                          }}
-                        />
+                    {!stripe && (
+                      <div className="w-full border border-ink/20 px-4 py-8 bg-paper text-center">
+                        <p className="font-sans text-sm text-ink-700">Loading payment form...</p>
                       </div>
-                    </div>
+                    )}
+                    
+                    {stripe && (
+                      <div>
+                        <label className="block font-mono text-[9px] uppercase tracking-wide text-ink-700 mb-2">
+                          Card Details
+                        </label>
+                        <div 
+                          className="w-full border border-ink/20 px-4 py-3 bg-paper" 
+                          style={{ 
+                            minHeight: '40px',
+                            position: 'relative',
+                            zIndex: 1
+                          }}
+                        >
+                          <div style={{ 
+                            userSelect: 'text',
+                            WebkitUserSelect: 'text',
+                            MozUserSelect: 'text',
+                            msUserSelect: 'text',
+                            pointerEvents: 'auto'
+                          }}>
+                            <CardElement
+                              options={{
+                                style: {
+                                  base: {
+                                    fontSize: '14px',
+                                    color: '#1F1A17',
+                                    fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif',
+                                    '::placeholder': {
+                                      color: '#9A8F80',
+                                    },
+                                  },
+                                  invalid: {
+                                    color: '#7A231D',
+                                  },
+                                },
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {stripeError && (
+                      <p className="text-sm text-ink-700">{stripeError}</p>
+                    )}
 
                     {paymentError && (
-                      <p className="mt-3 text-sm text-red-700">{paymentError}</p>
+                      <p className="text-sm text-accent-burgundy">{paymentError}</p>
                     )}
                   </div>
                 </div>
@@ -584,8 +620,29 @@ function CheckoutInner() {
 }
 
 export default function CheckoutPage() {
+  const stripeKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+  
+  if (!stripeKey) {
+    return (
+      <div className="min-h-screen bg-paper flex items-center justify-center px-4">
+        <div className="max-w-md w-full text-center">
+          <p className="font-sans text-sm text-ink-700 mb-4">
+            Payment system is not configured. Please contact support.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <Elements stripe={stripePromise}>
+    <Elements 
+      stripe={stripePromise}
+      options={{
+        appearance: {
+          theme: 'stripe',
+        },
+      }}
+    >
       <CheckoutInner />
     </Elements>
   );

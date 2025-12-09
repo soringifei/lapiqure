@@ -43,8 +43,8 @@ export default function CartSheet() {
           )}
         </button>
       </SheetTrigger>
-      <SheetContent className="w-full sm:max-w-lg bg-paper flex flex-col">
-        <SheetHeader className="border-b border-ink/10 pb-6">
+      <SheetContent className="w-full sm:max-w-lg bg-paper flex flex-col p-0">
+        <SheetHeader className="border-b border-ink/10 pb-6 px-6 pt-6">
           <SheetTitle className="font-display text-xl tracking-[0.2em] uppercase text-ink">
             Your Cart
           </SheetTitle>
@@ -53,7 +53,7 @@ export default function CartSheet() {
           </SheetDescription>
         </SheetHeader>
 
-        <div className="flex-1 overflow-y-auto py-6">
+        <div className="flex-1 overflow-y-auto py-6 px-6">
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20">
               <div className="w-20 h-20 border-2 border-ink/20 flex items-center justify-center mb-6">
@@ -136,7 +136,8 @@ export default function CartSheet() {
         </div>
 
         {items.length > 0 && (
-          <SheetFooter className="flex-col gap-6 pt-6 border-t border-ink/10"><div className="w-full space-y-3">
+          <SheetFooter className="flex-col gap-4 pt-6 border-t border-ink/10 px-6 pb-6">
+            <div className="w-full space-y-3">
               <div className="flex items-center justify-between">
                 <span className="font-mono text-[10px] tracking-wide uppercase text-ink-700">
                   Subtotal
@@ -148,27 +149,34 @@ export default function CartSheet() {
               <p className="font-sans text-[10px] text-ink-700 leading-relaxed">
                 Shipping, taxes, and discount codes calculated at checkout
               </p>
-            </div>{totalPrice < 500 && (
-              <div className="w-full p-3 bg-sand/10 border border-ink/10">
-                <p className="font-mono text-[10px] uppercase tracking-wide text-ink text-center">
+            </div>
+            
+            {totalPrice < 500 && (
+              <div className="w-full p-4 bg-sand/10 border border-ink/10">
+                <p className="font-mono text-[10px] uppercase tracking-wide text-ink text-center mb-2">
                   Add ${(500 - totalPrice).toLocaleString()} for free shipping
                 </p>
-                <div className="mt-2 h-1 bg-ink/10 overflow-hidden">
+                <div className="h-1 bg-ink/10 overflow-hidden">
                   <div 
                     className="h-full bg-ink transition-all duration-500"
                     style={{ width: `${Math.min((totalPrice / 500) * 100, 100)}%` }}
                   />
                 </div>
               </div>
-            )}<Link href="/checkout" className="w-full">
-              <button className="w-full bg-ink text-paper px-8 py-4 font-mono text-xs uppercase tracking-wide hover:bg-ink-800 transition-all duration-300">
-                Proceed to Checkout
-              </button>
-            </Link><Link href="/pieces" className="w-full">
-              <button className="w-full border border-ink/20 text-ink px-8 py-3 font-mono text-xs uppercase tracking-wide hover:border-ink hover:bg-sand/5 transition-all">
-                Continue Shopping
-              </button>
-            </Link>
+            )}
+            
+            <div className="w-full space-y-3">
+              <Link href="/checkout" className="w-full block">
+                <button className="w-full bg-ink text-paper px-8 py-4 font-mono text-xs uppercase tracking-wide hover:bg-ink-800 transition-all duration-300">
+                  Proceed to Checkout
+                </button>
+              </Link>
+              <Link href="/pieces" className="w-full block">
+                <button className="w-full border border-ink/20 text-ink px-8 py-3 font-mono text-xs uppercase tracking-wide hover:border-ink hover:bg-sand/5 transition-all">
+                  Continue Shopping
+                </button>
+              </Link>
+            </div>
           </SheetFooter>
         )}
       </SheetContent>

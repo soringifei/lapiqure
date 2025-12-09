@@ -7,13 +7,13 @@ type StatusType = 'active' | 'inactive' | 'draft' | 'published' | 'pending' | 'e
 const statusConfig: Record<StatusType, { bg: string; text: string; dot: string; label: string }> = {
   active: { bg: 'bg-accent-olive/10', text: 'text-accent-olive', dot: 'bg-accent-olive', label: 'Active' },
   inactive: { bg: 'bg-muted/20', text: 'text-muted-foreground', dot: 'bg-muted-foreground', label: 'Inactive' },
-  draft: { bg: 'bg-yellow-500/10', text: 'text-yellow-500', dot: 'bg-yellow-500', label: 'Draft' },
-  published: { bg: 'bg-blue-500/10', text: 'text-blue-500', dot: 'bg-blue-500', label: 'Published' },
-  pending: { bg: 'bg-orange-500/10', text: 'text-orange-500', dot: 'bg-orange-500', label: 'Pending' },
-  error: { bg: 'bg-red-500/10', text: 'text-red-500', dot: 'bg-red-500', label: 'Error' },
-  processing: { bg: 'bg-blue-500/10', text: 'text-blue-500', dot: 'bg-blue-500', label: 'Processing' },
+  draft: { bg: 'bg-sand/40', text: 'text-ink-700', dot: 'bg-ink-700', label: 'Draft' },
+  published: { bg: 'bg-accent-olive/10', text: 'text-accent-olive', dot: 'bg-accent-olive', label: 'Published' },
+  pending: { bg: 'bg-accent-orange/10', text: 'text-accent-orange', dot: 'bg-accent-orange', label: 'Pending' },
+  error: { bg: 'bg-accent-burgundy/10', text: 'text-accent-burgundy', dot: 'bg-accent-burgundy', label: 'Error' },
+  processing: { bg: 'bg-ink/10', text: 'text-ink', dot: 'bg-ink', label: 'Processing' },
   completed: { bg: 'bg-accent-olive/10', text: 'text-accent-olive', dot: 'bg-accent-olive', label: 'Completed' },
-  cancelled: { bg: 'bg-red-500/10', text: 'text-red-500', dot: 'bg-red-500', label: 'Cancelled' },
+  cancelled: { bg: 'bg-accent-burgundy/10', text: 'text-accent-burgundy', dot: 'bg-accent-burgundy', label: 'Cancelled' },
 }
 
 interface StatusBadgeProps {

@@ -16,6 +16,8 @@ export interface PiecesClientPiece {
   sizes: string[];
   available: boolean;
   collectionName?: string;
+  availabilityStatus?: string;
+  availabilityMessage?: string;
 }
 
 interface PiecesClientProps {
@@ -120,6 +122,8 @@ export default function PiecesClient({ pieces }: PiecesClientProps) {
               condition={piece.condition}
               imageSrc={piece.images[0]}
               price={piece.price}
+              availabilityStatus={piece.availabilityStatus}
+              available={piece.available}
             />
           ))}
       </div>

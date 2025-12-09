@@ -3,6 +3,7 @@ export type CustomerTier = 'platinum' | 'gold' | 'silver' | 'prospect';
 export type OrderStatus = 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
 export type InteractionType = 'call' | 'email' | 'note' | 'meeting' | 'sms';
 export type CampaignStatus = 'draft' | 'scheduled' | 'running' | 'completed' | 'paused';
+export type AvailabilityStatus = 'available' | 'unavailable' | 'extended-shipping' | 'pre-order' | 'made-to-order';
 
 export interface Customer {
   id: string;
@@ -120,6 +121,11 @@ export interface Product {
   color?: string;
   tierExclusive?: CustomerTier;
   featured?: boolean;
+  availabilityStatus?: AvailabilityStatus;
+  isVisible?: boolean;
+  availabilityMessage?: string;
+  orderThreshold?: number;
+  autoThresholdEnabled?: boolean;
   createdAt: Date;
   updatedAt: Date;
 }

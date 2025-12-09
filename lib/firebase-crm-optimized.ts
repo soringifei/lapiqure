@@ -72,6 +72,37 @@ export class OptimizedCRMService {
     return data
   }
 
+  private convertCollectionData(data: any): Collection {
+    return {
+      ...data,
+      id: data.id,
+      createdAt: data.createdAt?.toDate ? data.createdAt.toDate() : (data.createdAt || new Date()),
+      updatedAt: data.updatedAt?.toDate ? data.updatedAt.toDate() : (data.updatedAt || new Date()),
+      startDate: data.startDate?.toDate ? data.startDate.toDate() : data.startDate,
+      endDate: data.endDate?.toDate ? data.endDate.toDate() : data.endDate,
+      heroImage: data.heroImage || '',
+      image: data.image || '',
+      images: Array.isArray(data.images) ? data.images : [],
+      story: data.story || '',
+      description: data.description || '',
+    } as Collection
+  }
+
+  private convertProductData(data: any): Product {
+    return {
+      ...data,
+      id: data.id,
+      createdAt: data.createdAt?.toDate ? data.createdAt.toDate() : (data.createdAt || new Date()),
+      updatedAt: data.updatedAt?.toDate ? data.updatedAt.toDate() : (data.updatedAt || new Date()),
+      images: Array.isArray(data.images) ? data.images : [],
+      availabilityStatus: data.availabilityStatus || 'available',
+      isVisible: data.isVisible !== undefined ? data.isVisible : true,
+      availabilityMessage: data.availabilityMessage || '',
+      orderThreshold: data.orderThreshold,
+      autoThresholdEnabled: data.autoThresholdEnabled || false,
+    } as Product
+  }
+
   private async getCached<T>(key: string, fetcher: () => Promise<T>): Promise<T> {
     if (this.isValidCache(key)) {
       return this.cache.get(key)!.data as T
@@ -265,10 +296,9 @@ export class OptimizedCRMService {
     return this.getCached(key, async () => {
       const q = query(collection(this.db, 'crm_products'), ...constraints)
       const querySnapshot = await getDocs(q)
-      return querySnapshot.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      } as Product))
+      return querySnapshot.docs.map((doc) => 
+        this.convertProductData({ ...doc.data(), id: doc.id })
+      )
     })
   }
 
@@ -277,7 +307,15 @@ export class OptimizedCRMService {
     return this.getCached(key, async () => {
       const docRef = doc(this.db, 'crm_products', id)
       const docSnap = await getDoc(docRef)
-      return docSnap.exists() ? ({ ...docSnap.data(), id: docSnap.id } as Product) : null
+      return docSnap.exists() ? this.convertProductData({ ...docSnap.data(), id: docSnap.id }) : null
+    })
+  }
+
+  async getPendingOrdersCount(): Promise<number> {
+    const key = this.getCacheKey('pending_orders_count', '')
+    return this.getCached(key, async () => {
+      const orders = await this.getOrders()
+      return orders.filter((o) => o.status === 'pending' || o.status === 'processing').length
     })
   }
 
@@ -312,10 +350,9 @@ export class OptimizedCRMService {
     return this.getCached(key, async () => {
       const q = query(collection(this.db, 'crm_collections'), ...constraints)
       const querySnapshot = await getDocs(q)
-      return querySnapshot.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      } as Collection))
+      return querySnapshot.docs.map((doc) => 
+        this.convertCollectionData({ ...doc.data(), id: doc.id })
+      )
     })
   }
 
@@ -324,7 +361,7 @@ export class OptimizedCRMService {
     return this.getCached(key, async () => {
       const docRef = doc(this.db, 'crm_collections', id)
       const docSnap = await getDoc(docRef)
-      return docSnap.exists() ? ({ ...docSnap.data(), id: docSnap.id } as Collection) : null
+      return docSnap.exists() ? this.convertCollectionData({ ...docSnap.data(), id: docSnap.id }) : null
     })
   }
 

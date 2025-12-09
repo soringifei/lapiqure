@@ -30,19 +30,12 @@ export default function CollectionPage({ params }: CollectionPageProps) {
       if (!service) return;
       try {
         setLoading(true);
-        const data = await service.getCollection(params.slug);
-        
-        // Fallback: If getCollection(id) fails (returns null), try finding by slug field
-        if (!data) {
-          const allCollections = await service.getCollections();
-          const found = allCollections.find(c => c.slug === params.slug);
-          if (found) {
-            setCollection(found);
-          } else {
-            notFound();
-          }
+        const allCollections = await service.getActiveCollections();
+        const found = allCollections.find(c => c.slug === params.slug || c.id === params.slug);
+        if (found) {
+          setCollection(found);
         } else {
-          setCollection(data);
+          notFound();
         }
       } catch (error) {
         console.error('Error fetching collection:', error);
@@ -96,13 +89,15 @@ export default function CollectionPage({ params }: CollectionPageProps) {
 
   return (
     <div className="min-h-screen">
-      <Hero
-        imageSrc={collection.heroImage}
-        imageAlt={collection.name}
-        title={collection.name}
-        subtitle={collection.season}
-        height="large"
-      />
+      {(collection.heroImage || collection.image) && (
+        <Hero
+          imageSrc={collection.heroImage || collection.image}
+          imageAlt={collection.name}
+          title={collection.name}
+          subtitle={collection.season}
+          height="large"
+        />
+      )}
 
       <section className="max-w-7xl mx-auto px-6 lg:px-8 py-24">
         <div className="max-w-3xl mx-auto">
@@ -120,21 +115,21 @@ export default function CollectionPage({ params }: CollectionPageProps) {
         <section className="py-16 overflow-hidden">
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
             <div className="flex gap-6 justify-center flex-wrap">
-              {collection.images.map((image, index) => (
-              <div 
-                key={index} 
-                className="relative w-[350px] h-[500px] bg-sand/20 overflow-hidden"
-              >
-                <Image
-                  src={image}
-                  alt={`${collection.name} detail ${index + 1}`}
-                  fill
-                  sizes="350px"
-                  className="object-cover"
-                  quality={85}
-                />
-              </div>
-            ))}
+              {collection.images.filter(img => img && img.trim() !== '').map((image, index) => (
+                <div 
+                  key={index} 
+                  className="relative w-[350px] h-[500px] bg-sand/20 overflow-hidden"
+                >
+                  <Image
+                    src={image}
+                    alt={`${collection.name} detail ${index + 1}`}
+                    fill
+                    sizes="350px"
+                    className="object-cover"
+                    quality={85}
+                  />
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -146,17 +141,21 @@ export default function CollectionPage({ params }: CollectionPageProps) {
             <SectionHeading className="mb-12">Pieces in This Collection</SectionHeading>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-              {collectionPieces.map((piece) => (
-                <PieceCard
-                  key={piece.id}
-                  name={piece.name}
-                  slug={piece.id}
-                  designer="LA PIQÛRE"
-                  condition="New"
-                  imageSrc={piece.images[0]}
-                  price={piece.price}
-                />
-              ))}
+              {collectionPieces
+                .filter(piece => piece.images && piece.images.length > 0 && !piece.isHidden)
+                .map((piece) => (
+                  <PieceCard
+                    key={piece.id}
+                    name={piece.name}
+                    slug={piece.id}
+                    designer="LA PIQÛRE"
+                    condition="New"
+                    imageSrc={piece.images[0]}
+                    price={piece.price}
+                    status={piece.status}
+                    availabilityMessage={piece.availabilityMessage}
+                  />
+                ))}
             </div>
           </div>
         </section>
