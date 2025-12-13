@@ -21,7 +21,6 @@
   }
 }
 
-/* Custom Copperplate webfont - add your licensed font files here */
 @font-face {
   font-family: 'Copperplate';
   src: url('/fonts/copperplate.woff2') format('woff2'),
