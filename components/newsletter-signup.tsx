@@ -12,14 +12,35 @@ export default function NewsletterSignup() {
     e.preventDefault();
     setLoading(true);
 
-    setTimeout(() => {
+    try {
+      const response = await fetch('/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to subscribe');
+      }
+
       toast({
-        title: "Subscribed!",
-        description: "Welcome to LA PIQÛRE. You'll receive our newsletter with early access to new collections.",
+        title: data.alreadySubscribed ? "Already subscribed" : "Subscribed!",
+        description: data.message || "Welcome to LA PIQÛRE. You'll receive our newsletter with early access to new collections.",
       });
       setEmail('');
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Subscription failed",
+        description: error instanceof Error ? error.message : "Failed to subscribe. Please try again later.",
+      });
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   return (

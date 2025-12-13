@@ -19,7 +19,7 @@ const faqData: FAQCategory[] = [
     items: [
       {
         question: "HOW DO I RETURN AN ITEM?",
-        answer: "To initiate a return, contact us at contact@lapiqure.com within 14 days of receiving your order. Include your order number and reason for return. We'll provide a prepaid return label. Items must be unworn, with all tags attached, in original packaging."
+        answer: "To initiate a return, contact us at alin@lapiqure.com within 14 days of receiving your order. Include your order number and reason for return. We'll provide a prepaid return label. Items must be unworn, with all tags attached, in original packaging."
       },
       {
         question: "HOW MANY DAYS DO I HAVE TO EXCHANGE OR RETURN AN ITEM?",
@@ -44,7 +44,7 @@ const faqData: FAQCategory[] = [
       },
       {
         question: "HOW DO I CARE FOR MY PIECE?",
-        answer: "Care varies by material. Faux leather items should be spot-cleaned with a damp cloth and stored away from direct sunlight. Knits should be hand-washed or dry-cleaned. Detailed care labels are included with each garment. For specific questions, email contact@lapiqure.com."
+        answer: "Care varies by material. Faux leather items should be spot-cleaned with a damp cloth and stored away from direct sunlight. Knits should be hand-washed or dry-cleaned. Detailed care labels are included with each garment. For specific questions, email alin@lapiqure.com."
       },
       {
         question: "ARE YOUR PIECES TRUE TO SIZE?",
@@ -65,7 +65,7 @@ const faqData: FAQCategory[] = [
       },
       {
         question: "CAN I MODIFY MY ORDER AFTER PLACING IT?",
-        answer: "Orders are processed immediately. If you need to modify or cancel an order, contact us at contact@lapiqure.com within 2 hours of placing it. We cannot guarantee changes after this window."
+        answer: "Orders are processed immediately. If you need to modify or cancel an order, contact us at alin@lapiqure.com within 2 hours of placing it. We cannot guarantee changes after this window."
       },
       {
         question: "DO YOU OFFER GIFT WRAPPING?",
@@ -90,11 +90,11 @@ const faqData: FAQCategory[] = [
       },
       {
         question: "HOW CAN I TRACK MY ORDER?",
-        answer: "Once your order ships, you'll receive a tracking number via email. Track your shipment through the carrier's website. For assistance, contact contact@lapiqure.com with your order number."
+        answer: "Once your order ships, you'll receive a tracking number via email. Track your shipment through the carrier's website. For assistance, contact alin@lapiqure.com with your order number."
       },
       {
         question: "WHAT IF MY PACKAGE IS LOST OR DAMAGED?",
-        answer: "All shipments are insured. If your package is lost or arrives damaged, contact us immediately at contact@lapiqure.com with photos (if damaged). We'll file a claim and arrange a replacement or refund."
+        answer: "All shipments are insured. If your package is lost or arrives damaged, contact us immediately at alin@lapiqure.com with photos (if damaged). We'll file a claim and arrange a replacement or refund."
       }
     ]
   },
@@ -115,7 +115,7 @@ const faqData: FAQCategory[] = [
       },
       {
         question: "HOW DO I DELETE MY ACCOUNT?",
-        answer: "To delete your account, email contact@lapiqure.com with your request. All personal data will be permanently removed within 30 days in accordance with GDPR."
+        answer: "To delete your account, email alin@lapiqure.com with your request. All personal data will be permanently removed within 30 days in accordance with GDPR."
       }
     ]
   },
@@ -148,7 +148,7 @@ const faqData: FAQCategory[] = [
       },
       {
         question: "DO YOU OFFER REPAIR SERVICES?",
-        answer: "Yes. We offer repair and restoration services for LA PIQÛRE pieces to extend their lifespan indefinitely. This includes zipper replacement, leather conditioning, seam reinforcement, and hardware repair. Contact us at contact@lapiqure.com with details and photos. Repair costs vary by service required. We believe in building relationships with our pieces, not replacing them."
+        answer: "Yes. We offer repair and restoration services for LA PIQÛRE pieces to extend their lifespan indefinitely. This includes zipper replacement, leather conditioning, seam reinforcement, and hardware repair. Contact us at alin@lapiqure.com with details and photos. Repair costs vary by service required. We believe in building relationships with our pieces, not replacing them."
       },
       {
         question: "CAN I RETURN MY USED PIECE TO BE RESOLD?",
@@ -279,7 +279,7 @@ export default function FAQPage() {
             Our team is here to assist you with any inquiries about products, orders, or services.
           </p>
           <a
-            href="mailto:contact@lapiqure.com"
+            href="mailto:alin@lapiqure.com"
             className="inline-block px-8 py-3 bg-ink text-paper font-display text-xs uppercase tracking-wide hover:bg-ink-800 transition-all"
           >
             Contact Us

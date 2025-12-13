@@ -147,11 +147,11 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto px-8 lg:px-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
             <div className="border-r border-ink/10 last:border-r-0">
-              <p className="font-display text-4xl text-ink mb-3">2020</p>
+              <p className="font-display text-4xl text-ink mb-3">2025</p>
               <p className="font-display text-xs tracking-[0.2em] uppercase text-ink-700">Founded</p>
             </div>
             <div className="border-r border-ink/10 last:border-r-0">
-              <p className="font-display text-4xl text-ink mb-3">Paris</p>
+              <p className="font-display text-4xl text-ink mb-3">New York</p>
               <p className="font-display text-xs tracking-[0.2em] uppercase text-ink-700">Atelier</p>
             </div>
             <div>
@@ -172,9 +172,8 @@ export default function AboutPage() {
             By appointment only for private viewings, fittings, and consultations.
           </p>
           <div className="space-y-2 font-sans text-sm text-paper/70">
-            <p className="tracking-wide">15 Rue de la Pierre Levée</p>
-            <p className="tracking-wide">75011 Paris</p>
-            <p className="pt-6 tracking-wide">contact@lapiqure.com</p>
+            <p className="tracking-wide">New York, USA</p>
+            <p className="pt-6 tracking-wide">alin@lapiqure.com</p>
           </div>
         </div>
       </section>

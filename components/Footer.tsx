@@ -24,12 +24,11 @@ export default function Footer() {
                       Atelier
                     </p>
                     <p className="font-sans text-sm leading-relaxed text-ink/70">
-                      15 Rue de la Pierre Levée<br />
-                      75011 Paris, France
+                      New York, USA
                     </p>
                   </div>
                   <p className="font-sans text-sm text-ink/70">
-                    contact@lapiqure.com
+                    alin@lapiqure.com
                   </p>
                 </div>
               </div>

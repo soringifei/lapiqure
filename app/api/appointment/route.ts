@@ -42,7 +42,7 @@ This request was submitted via the LA PIQÛRE atelier booking form.
       to: [
         {
           email_address: {
-            address: process.env.ZOHO_TO_EMAIL || 'contact@lapiqure.com',
+            address: process.env.ZOHO_TO_EMAIL || 'alin@lapiqure.com',
           },
         },
       ],

@@ -33,13 +33,13 @@ const nextConfig = {
   async headers() {
     const isDev = process.env.NODE_ENV !== 'production'
     const scriptSrc = isDev
-      ? "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com https://js.stripe.com;"
-      : "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com https://js.stripe.com;"
+      ? "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com https://js.stripe.com https://apis.google.com;"
+      : "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com https://js.stripe.com https://apis.google.com;"
 
     const csp =
-      "default-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com https://firebase.googleapis.com https://firestore.googleapis.com https://securetoken.googleapis.com https://js.stripe.com; " +
+      "default-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com https://firebase.googleapis.com https://firestore.googleapis.com https://securetoken.googleapis.com https://js.stripe.com https://apis.google.com; " +
       scriptSrc +
-      " connect-src 'self' https://firestore.googleapis.com https://firebase.googleapis.com https://firebaseinstallations.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://region1.google-analytics.com https://www.google-analytics.com https://firebasestorage.googleapis.com https://api.stripe.com; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; frame-src https://js.stripe.com https://hooks.stripe.com; frame-ancestors 'self';"
+      " connect-src 'self' https://firestore.googleapis.com https://firebase.googleapis.com https://firebaseinstallations.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://region1.google-analytics.com https://www.google-analytics.com https://firebasestorage.googleapis.com https://api.stripe.com https://apis.google.com; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; frame-src https://js.stripe.com https://hooks.stripe.com https://accounts.google.com https://apis.google.com; frame-ancestors 'self';"
 
     return [
       {
@@ -55,7 +55,7 @@ const nextConfig = {
           },
           {
             key: 'Cross-Origin-Opener-Policy',
-            value: 'same-origin',
+            value: 'same-origin-allow-popups',
           },
           {
             key: 'X-Frame-Options',

@@ -8,8 +8,11 @@ import { DashboardLayout } from '@/components/crm/DashboardLayout'
 import { PageHeader } from '@/components/crm/PageHeader'
 import { EmptyState } from '@/components/crm/EmptyState'
 import { SkeletonLoader } from '@/components/crm/SkeletonLoader'
-import { Campaign, CampaignStatus } from '@/types/crm'
-import { Plus, BarChart2, Mail, Pause } from 'lucide-react'
+import { EmailEditor } from '@/components/crm/EmailEditor'
+import { Campaign, CampaignStatus, Product } from '@/types/crm'
+import { EmailTemplateType, EmailTemplateData } from '@/lib/email-templates'
+import { Plus, BarChart2, Mail, Pause, Send, Loader2 } from 'lucide-react'
+import { useToast } from '@/hooks/use-toast'
 
 
 function CampaignStatusBadge({ status }: { status: CampaignStatus }) {
@@ -57,15 +60,27 @@ export default function CampaignsPage() {
   const router = useRouter()
   const { user, loading: authLoading } = useAuth()
   const { service } = useCRM()
+  const { toast } = useToast()
   const [campaigns, setCampaigns] = useState<Campaign[]>([])
+  const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
+  const [loadingProducts, setLoadingProducts] = useState(true)
   const [showForm, setShowForm] = useState(false)
+  const [sending, setSending] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    targetTiers: [] as string[],
-    targetTags: [] as string[],
-    emailTemplate: '',
+    subject: '',
+    recipientType: 'all_subscribers' as 'all_subscribers' | 'custom',
+    customEmails: '',
+  })
+  const [emailTemplate, setEmailTemplate] = useState<EmailTemplateType>('newsletter')
+  const [emailData, setEmailData] = useState<EmailTemplateData>({
+    headline: '',
+    subheadline: '',
+    bodyText: '',
+    ctaText: 'Shop Now',
+    ctaUrl: '',
   })
 
   useEffect(() => {
@@ -73,48 +88,119 @@ export default function CampaignsPage() {
   }, [user, authLoading, router])
 
   useEffect(() => {
-    const fetchCampaigns = async () => {
+    const fetchData = async () => {
       if (!service) return
       try {
-        const data = await service.getCampaigns()
-        setCampaigns(data)
+        const [campaignsData, productsData] = await Promise.all([
+          service.getCampaigns(),
+          service.getProducts(),
+        ])
+        setCampaigns(campaignsData)
+        setProducts(productsData)
       } catch (error) {
-        console.error('Error fetching campaigns:', error)
+        console.error('Error fetching data:', error)
       } finally {
         setLoading(false)
+        setLoadingProducts(false)
       }
     }
 
-    fetchCampaigns()
+    fetchData()
   }, [service])
 
   const activeCampaigns = campaigns.filter(c => c.status === 'running').length
   const totalRecipients = campaigns.reduce((sum, c) => sum + c.recipients.length, 0)
 
-  const handleCreateCampaign = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!service || !user) {
-      console.error('Missing service or user', { service: !!service, user: !!user })
+  const handleSendNewsletter = async () => {
+    if (!formData.subject || !emailData.headline || !emailData.bodyText) {
+      toast({
+        variant: "destructive",
+        title: "Missing required fields",
+        description: "Please fill in subject, headline, and body text",
+      })
       return
     }
+
+    setSending(true)
     try {
-      await service.addCampaign({
-        name: formData.name,
-        description: formData.description,
-        targetTiers: formData.targetTiers as ('platinum' | 'gold' | 'silver' | 'prospect')[],
-        targetTags: formData.targetTags,
-        status: 'draft',
-        emailTemplate: formData.emailTemplate,
-        recipients: [],
-        metrics: { sent: 0, opened: 0, clicked: 0, bounced: 0 },
-        createdBy: user.uid,
+      const recipientEmails = formData.recipientType === 'all_subscribers' 
+        ? ['all_subscribers']
+        : formData.customEmails.split(',').map(e => e.trim()).filter(Boolean)
+
+      const response = await fetch('/api/newsletter/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          templateType: emailTemplate,
+          emailData,
+          recipientEmails,
+          subject: formData.subject,
+        }),
       })
-      setFormData({ name: '', description: '', targetTiers: [], targetTags: [], emailTemplate: '' })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to send newsletter')
+      }
+
+      // Create campaign record
+      if (service && user) {
+        await service.addCampaign({
+          name: formData.name || formData.subject,
+          description: formData.description || 'Newsletter campaign',
+          targetTiers: [],
+          targetTags: [],
+          status: 'completed',
+          emailTemplate: JSON.stringify({ template: emailTemplate, data: emailData }),
+          recipients: recipientEmails,
+          metrics: {
+            sent: data.results?.sent || 0,
+            opened: 0,
+            clicked: 0,
+            bounced: data.results?.failed || 0,
+          },
+          createdBy: user.uid,
+        })
+      }
+
+      toast({
+        title: "Newsletter sent!",
+        description: `Successfully sent to ${data.results?.sent || 0} recipients`,
+      })
+
+      // Reset form
+      setFormData({ 
+        name: '', 
+        description: '', 
+        subject: '',
+        recipientType: 'all_subscribers',
+        customEmails: '',
+      })
+      setEmailData({
+        headline: '',
+        subheadline: '',
+        bodyText: '',
+        ctaText: 'Shop Now',
+        ctaUrl: '',
+      })
       setShowForm(false)
-      const updatedCampaigns = await service.getCampaigns()
-      setCampaigns(updatedCampaigns)
+
+      // Refresh campaigns
+      if (service) {
+        const updatedCampaigns = await service.getCampaigns()
+        setCampaigns(updatedCampaigns)
+      }
     } catch (error) {
-      console.error('Error creating campaign:', error)
+      toast({
+        variant: "destructive",
+        title: "Failed to send newsletter",
+        description: error instanceof Error ? error.message : 'Please try again',
+      })
+    } finally {
+      setSending(false)
     }
   }
 
@@ -149,19 +235,139 @@ export default function CampaignsPage() {
         />
 
         {showForm && (
-          <div className="bg-card border border-border rounded p-6">
-            <h2 className="font-display tracking-luxury mb-4">New Campaign</h2>
-            <form onSubmit={handleCreateCampaign} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input type="text" placeholder="Campaign name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="px-4 py-2 border border-border rounded bg-background col-span-2" required />
-              <textarea placeholder="Description" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} className="px-4 py-2 border border-border rounded bg-background col-span-2" rows={3} required />
-              <input type="text" placeholder="Target tiers (platinum, gold, silver)" value={formData.targetTiers.join(', ')} onChange={(e) => setFormData({ ...formData, targetTiers: e.target.value.split(',').map(t => t.trim()) })} className="px-4 py-2 border border-border rounded bg-background" />
-              <input type="text" placeholder="Target tags (comma-separated)" value={formData.targetTags.join(', ')} onChange={(e) => setFormData({ ...formData, targetTags: e.target.value.split(',').map(t => t.trim()) })} className="px-4 py-2 border border-border rounded bg-background" />
-              <textarea placeholder="Email template" value={formData.emailTemplate} onChange={(e) => setFormData({ ...formData, emailTemplate: e.target.value })} className="px-4 py-2 border border-border rounded bg-background col-span-2" rows={3} />
-              <div className="flex gap-2 col-span-2">
-                <button type="submit" className="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90">Create Campaign</button>
-                <button type="button" onClick={() => { setShowForm(false); setFormData({ name: '', description: '', targetTiers: [], targetTags: [], emailTemplate: '' }) }} className="flex-1 px-4 py-2 bg-secondary/20 rounded hover:bg-secondary/30">Cancel</button>
+          <div className="bg-card border border-border rounded p-6 space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="font-display tracking-luxury text-xl">Create Newsletter</h2>
+              <button
+                onClick={() => {
+                  setShowForm(false)
+                  setFormData({ 
+                    name: '', 
+                    description: '', 
+                    subject: '',
+                    recipientType: 'all_subscribers',
+                    customEmails: '',
+                  })
+                  setEmailData({
+                    headline: '',
+                    subheadline: '',
+                    bodyText: '',
+                    ctaText: 'Shop Now',
+                    ctaUrl: '',
+                  })
+                }}
+                className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground"
+              >
+                Cancel
+              </button>
+            </div>
+
+            {/* Campaign Details */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-6 border-b border-border">
+              <div>
+                <label className="block text-sm font-medium mb-2">Campaign Name (optional)</label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  placeholder="e.g., Spring 2025 Collection Launch"
+                  className="w-full px-4 py-2 border border-border rounded bg-background"
+                />
               </div>
-            </form>
+              <div>
+                <label className="block text-sm font-medium mb-2">Email Subject *</label>
+                <input
+                  type="text"
+                  value={formData.subject}
+                  onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                  placeholder="Newsletter subject line"
+                  className="w-full px-4 py-2 border border-border rounded bg-background"
+                  required
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium mb-2">Description (optional)</label>
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  placeholder="Internal notes about this campaign"
+                  rows={2}
+                  className="w-full px-4 py-2 border border-border rounded bg-background resize-none"
+                />
+              </div>
+            </div>
+
+            {/* Recipients */}
+            <div className="pb-6 border-b border-border">
+              <label className="block text-sm font-medium mb-3">Recipients</label>
+              <div className="space-y-3">
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="recipientType"
+                    value="all_subscribers"
+                    checked={formData.recipientType === 'all_subscribers'}
+                    onChange={(e) => setFormData({ ...formData, recipientType: e.target.value as 'all_subscribers' | 'custom' })}
+                    className="w-4 h-4"
+                  />
+                  <span>All newsletter subscribers</span>
+                </label>
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="recipientType"
+                    value="custom"
+                    checked={formData.recipientType === 'custom'}
+                    onChange={(e) => setFormData({ ...formData, recipientType: e.target.value as 'all_subscribers' | 'custom' })}
+                    className="w-4 h-4 mt-1"
+                  />
+                  <div className="flex-1">
+                    <span className="block mb-2">Custom email list</span>
+                    <textarea
+                      value={formData.customEmails}
+                      onChange={(e) => setFormData({ ...formData, customEmails: e.target.value })}
+                      placeholder="Enter emails separated by commas"
+                      rows={3}
+                      className="w-full px-4 py-2 border border-border rounded bg-background resize-none"
+                      disabled={formData.recipientType !== 'custom'}
+                    />
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            {/* Email Editor */}
+            <EmailEditor
+              initialTemplate={emailTemplate}
+              initialData={emailData}
+              products={products}
+              loadingProducts={loadingProducts}
+              onSave={(template, data) => {
+                setEmailTemplate(template)
+                setEmailData(data)
+              }}
+            />
+
+            {/* Send Button */}
+            <div className="flex gap-3 pt-4 border-t border-border">
+              <button
+                onClick={handleSendNewsletter}
+                disabled={sending || !formData.subject || !emailData.headline || !emailData.bodyText}
+                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {sending ? (
+                  <>
+                    <Loader2 className="animate-spin" size={18} />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <Send size={18} />
+                    Send Newsletter
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         )}
 

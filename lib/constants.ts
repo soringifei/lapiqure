@@ -20,11 +20,11 @@ export const FOOTER_NAV = {
 } as const;
 
 export const CONTACT_INFO = {
-  email: 'contact@lapiqure.com',
+  email: 'alin@lapiqure.com',
   address: {
-    street: '15 Rue de la Pierre Levée',
-    city: '75011 Paris',
-    country: 'France',
+    street: '',
+    city: 'New York',
+    country: 'USA',
   },
 } as const;
 

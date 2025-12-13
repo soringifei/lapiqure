@@ -21,18 +21,40 @@ export default function NewsletterModal() {
     }
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    localStorage.setItem('newsletter-modal-seen', 'true');
-    
-    toast({
-      title: "Thank you for subscribing",
-      description: "You'll receive our latest collections and stories.",
-    });
-    
-    setOpen(false);
-    setEmail('');
+    try {
+      const response = await fetch('/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to subscribe');
+      }
+
+      localStorage.setItem('newsletter-modal-seen', 'true');
+      
+      toast({
+        title: data.alreadySubscribed ? "Already subscribed" : "Thank you for subscribing",
+        description: data.message || "You'll receive our latest collections and stories.",
+      });
+      
+      setOpen(false);
+      setEmail('');
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Subscription failed",
+        description: error instanceof Error ? error.message : "Failed to subscribe. Please try again later.",
+      });
+    }
   };
 
   const handleClose = () => {

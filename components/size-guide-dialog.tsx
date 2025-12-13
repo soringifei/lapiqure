@@ -115,7 +115,7 @@ export default function SizeGuideDialog() {
               <li>• Our pieces are designed with a contemporary, relaxed fit</li>
               <li>• Faux leather items may require a size up for comfort</li>
               <li>• For between sizes, we recommend sizing up</li>
-              <li>• Contact us at contact@lapiqure.com for personalized fit advice</li>
+              <li>• Contact us at alin@lapiqure.com for personalized fit advice</li>
             </ul>
           </div>
         </div>
